@@ -6,10 +6,14 @@
     <title>My Cool Project</title>
     <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/main.css">
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAzxOAB0n_KcjSRofpG8dFGbS9KjYyXc78"></script>
   </head>
-  <body>
-    <div class="container">
-      <p>Welcome to your life.</p>
+  <body ng-app="app">
+
+    <div class="container" ui-view>
+      <ng-map center="[40.74, -74.18]">
+        <marker position="[40.74, -74.18]"></marker>
+      </ng-map>
     </div>
     <script src="js/bundle.js"></script>
   </body>
