@@ -5,6 +5,7 @@ function TrailUpdateController ($http, $stateParams, NgMap) {
   vm.placeMarker = placeMarker;
   vm.loadMarker = loadMarker;
   vm.drawLine = drawLine;
+  vm.updateTrail = updateTrail;
   vm.markers = [];
   vm.currentTrail = {};
 
@@ -18,6 +19,7 @@ function TrailUpdateController ($http, $stateParams, NgMap) {
       $http.get(`${SERVER}trails/${mapId}`).then((resp) => {
         resp.data.waypoints.forEach(function (element) {
           vm.loadMarker(element);
+          console.log(vm.markers)
         });
         vm.drawLine();
 
@@ -43,6 +45,7 @@ function TrailUpdateController ($http, $stateParams, NgMap) {
     var marker = new google.maps.Marker({
         map: vm.map,
         draggable: true,
+        animation: google.maps.Animation.DROP,
         position: myLatlng,
         lat: myLatlng.lat(),
         lng: myLatlng.lng()
@@ -75,6 +78,24 @@ function TrailUpdateController ($http, $stateParams, NgMap) {
         marker.lng = marker.getPosition().lng();
         vm.drawLine();
       })
+  }
+  function updateTrail() {
+      console.log('i got clicked')
+      let newTrail = {};
+      newTrail.waypoints = [];
+      vm.markers.forEach(function (marker) {
+        let waypoint = {};
+        waypoint.lat = marker.lat;
+        waypoint.lng = marker.lng;
+        newTrail.waypoints.push(waypoint);
+      });
+      newTrail.title = vm.currentTrail.title;
+
+      $http.patch(`${SERVER}trails/${$stateParams.id}`, newTrail).then((resp) => {
+        console.log(resp.data)
+      }, (reject) => {
+        console.log(reject)
+      });
   }
 
   function drawLine() {
