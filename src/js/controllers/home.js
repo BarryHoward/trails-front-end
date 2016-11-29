@@ -3,6 +3,7 @@ const SERVER = "https://trails-back-end.herokuapp.com/"
 function HomeController ($state, NgMap, $http) {
   let vm = this;
   vm.placeMarker = placeMarker;
+  vm.addNewTrail = addNewTrail;
 
   // console.log('vm.map is: ', vm.map)
   function init(){
@@ -32,9 +33,11 @@ function HomeController ($state, NgMap, $http) {
       var latLong = {lat: -25.363, lng: 131.044};
       var marker = new google.maps.Marker({
           position: location.latLng,
-          map: vm.map
+          map: vm.map,
+          lat: location.latLng.lat(),
+          lng: location.latLng.lng()
       });
-      console.log(location.latLng);
+      console.log(location.latLng.lat())
       vm.markers.push(marker);
       console.log(vm.markers);
   }
@@ -43,6 +46,27 @@ function HomeController ($state, NgMap, $http) {
     NgMap.getMap(id).then(function(map) {
       vm.map = map;
     });
+  }
+
+  function addNewTrail(trailData) {
+      // console.log(vm.markers)
+      let newTrail = {};
+      newTrail.waypoints = [];
+      vm.markers.forEach(function (marker) {
+        let waypoint = {};
+        waypoint.lat = marker.lat;
+        waypoint.lng = marker.lng;
+        newTrail.waypoints.push(waypoint);
+      });
+      newTrail.title = trailData.title;
+
+      $http.post(`${SERVER}trails`, newTrail).then((resp) => {
+        console.log(resp.data)
+        vm.markers = [];
+        //eventually need to redirect to a map view page or user's homepage with new trail added
+      }, (reject) => {
+        console.log(reject)
+      });
   }
 
 
