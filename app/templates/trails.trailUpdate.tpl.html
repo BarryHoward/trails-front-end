@@ -1,6 +1,10 @@
 <h2>Hello From trail update! </h2>
 
 <h3>{{trailUpdate.currentTrail.title}}</h3>
+
+<input class="title-input" name="title" type="text" placeholder="Trail Name..."
+       ng-model="trailUpdate.currentTrail.title" />
+<button type="button" name="update" ng-click="trailUpdate.updateTrail()">Save Changes</button>
 <ng-map id="trailUpdateMap" on-click="trailUpdate.placeMarker($event)" center="[40.74, -74.18]">
 
 </ng-map>
