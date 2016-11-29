@@ -61,7 +61,7 @@ function routerConfig ($stateProvider , $urlRouterProvider) {
      })
      .state('root.trails.update', {
        url: '/:id/update',
-       templateUrl: 'templates/trailUpdate.tpl.html',
+       templateUrl: 'templates/trails.trailUpdate.tpl.html',
        controller: 'TrailUpdateController as trailUpdate'
      })
     //  .state('root.trails.view', {
