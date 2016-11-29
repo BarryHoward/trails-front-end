@@ -42,8 +42,34 @@ function routerConfig ($stateProvider , $urlRouterProvider) {
       url: '/comments/new',
       templateUrl: 'templates/commentNew.tpl.html',
       controller: 'CommentNewController as comNew'
+      })
+      .state('root.topTrails', {
+        url: '/trails/top',
+        templateUrl: 'templates/topTrails.tpl.html',
+        controller: 'TopTrailsController as topTrails'
+      })
+      .state('root.trails', {
+        url: '/trails',
+        abstract: true,
+        templateUrl: 'templates/trails.tpl.html',
+        controller: 'TrailController as trail'
+      })
+      .state('root.trails.new', {
+       url: '/new',
+       templateUrl: 'templates/trails.trailNew.tpl.html',
+       controller: 'TrailNewController as trailNew'
      })
-
+    //  .state('root.trails.update', {
+    //    url: '/:id/update',
+    //    templateUrl: 'templates/trailUpdate.tpl.html',
+    //    controller: 'TrailUpdateController as trailUpdate'
+    //  })
+    //  .state('root.trails.view', {
+    //    url: '/:id/view',
+    //    templateUrl: 'templates/trailView.tpl.html',
+    //    controller: 'TrailViewController as trailView'
+    //  })
+     //
 
      $urlRouterProvider.otherwise('/home');
 };
