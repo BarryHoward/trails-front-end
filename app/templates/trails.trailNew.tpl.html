@@ -1,0 +1,12 @@
+<h2>Hello from New Trail Template!</h2>
+
+<h1 class="title">Add a New Trail</h1>
+
+  <form name="new-trail" ng-submit="trailNew.addNewTrail(trail)">
+      <input class="title-input" name="title" type="text" placeholder="Trail Name..."
+             required ng-model="trail.title" />
+			<button class="add-trail-button">Add New Trail!</button>
+	</form>
+<ng-map id="trailsNewMap" on-click="trailNew.placeMarker($event)" center="[40.74, -74.18]">
+	<!-- <marker position="[40.74, -74.18]"></marker> -->
+</ng-map>
