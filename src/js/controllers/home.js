@@ -62,6 +62,8 @@ function HomeController ($state, NgMap, $http) {
 
       $http.post(`${SERVER}trails`, newTrail).then((resp) => {
         console.log(resp.data)
+        vm.markers = [];
+        //eventually need to redirect to a map view page or user's homepage with new trail added
       }, (reject) => {
         console.log(reject)
       });
