@@ -59,11 +59,11 @@ function routerConfig ($stateProvider , $urlRouterProvider) {
        templateUrl: 'templates/trails.trailNew.tpl.html',
        controller: 'TrailNewController as trailNew'
      })
-    //  .state('root.trails.update', {
-    //    url: '/:id/update',
-    //    templateUrl: 'templates/trailUpdate.tpl.html',
-    //    controller: 'TrailUpdateController as trailUpdate'
-    //  })
+     .state('root.trails.update', {
+       url: '/:id/update',
+       templateUrl: 'templates/trailUpdate.tpl.html',
+       controller: 'TrailUpdateController as trailUpdate'
+     })
     //  .state('root.trails.view', {
     //    url: '/:id/view',
     //    templateUrl: 'templates/trailView.tpl.html',
