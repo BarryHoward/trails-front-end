@@ -4,25 +4,25 @@ function HomeController ($state, NgMap, $http) {
   let vm = this;
   vm.placeMarker = placeMarker;
   vm.addNewTrail = addNewTrail;
-
+  vm.drawLine = drawLine;
   // console.log('vm.map is: ', vm.map)
   function init(){
       getMap('homeMap');
       vm.markers= [];
 
-
-      let testData = {title: "Test Trail 4", waypoints: [{lat: 5.2, lng: -100.5}, {lat: -25.363, lng: 131.044}, {lat: -50.3432, lng: 23.1231}]}
-      $http.post(`${SERVER}trails`, testData).then((resp) => {
-        console.log(resp.data)
-      }, (reject) => {
-        console.log(reject)
-      })
-
-      $http.get(`${SERVER}trails/1`).then((resp) => {
-        console.log(resp.data)
-      }, (reject) => {
-        console.log(reject)
-      })
+      //
+      // let testData = {title: "Test Trail 4", waypoints: [{lat: 5.2, lng: -100.5}, {lat: -25.363, lng: 131.044}, {lat: -50.3432, lng: 23.1231}]}
+      // $http.post(`${SERVER}trails`, testData).then((resp) => {
+      //   console.log(resp.data)
+      // }, (reject) => {
+      //   console.log(reject)
+      // })
+      //
+      // $http.get(`${SERVER}trails/1`).then((resp) => {
+      //   console.log(resp.data)
+      // }, (reject) => {
+      //   console.log(reject)
+      // })
   }
 
   init();
@@ -34,12 +34,19 @@ function HomeController ($state, NgMap, $http) {
       var marker = new google.maps.Marker({
           position: location.latLng,
           map: vm.map,
+          draggable: true,
           lat: location.latLng.lat(),
           lng: location.latLng.lng()
       });
       console.log(location.latLng.lat())
       vm.markers.push(marker);
-      console.log(vm.markers);
+      google.maps.event.addListener(marker, 'dragend', function (event){
+        marker.lat = marker.getPosition().lat();
+        marker.lng = marker.getPosition().lng();
+        vm.drawLine();
+      })
+      // console.log(vm.markers);
+      // console.log(vm.markers[0].getPosition())
   }
 
   function getMap(id){
@@ -62,11 +69,32 @@ function HomeController ($state, NgMap, $http) {
 
       $http.post(`${SERVER}trails`, newTrail).then((resp) => {
         console.log(resp.data)
-        vm.markers = [];
-        //eventually need to redirect to a map view page or user's homepage with new trail added
       }, (reject) => {
         console.log(reject)
       });
+  }
+
+  function drawLine() {
+    if (vm.trail){
+      removeLine()
+    }
+    console.log(vm.markers)
+    var addTrail = new google.maps.Polyline({
+        path: vm.markers,
+        geodesic: true,
+        strokeColor: '#FF0000',
+        strokeOpacity: 1.0,
+        strokeWeight: 2
+      });
+
+    addTrail.setMap(vm.map);
+    // console.log(vm.map)
+
+    vm.trail = addTrail;
+
+    function removeLine () {
+      vm.trail.setMap(null);
+    };
   }
 
 
