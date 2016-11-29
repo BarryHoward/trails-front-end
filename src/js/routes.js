@@ -23,7 +23,7 @@ function routerConfig ($stateProvider , $urlRouterProvider) {
       controller: 'OwnerNewController as ownNew'
      })
      .state('root.ownerInfo', {
-      url: '/owners/:id', 
+      url: '/owners/:id',
       templateUrl: 'templates/ownerInfo.tpl.html',
       controller: 'OwnerInfoController as ownInfo'
      })
@@ -35,15 +35,41 @@ function routerConfig ($stateProvider , $urlRouterProvider) {
 
      .state('root.comments', {
       url: '/comments',
-      templateUrl: 'templates/commentList.tpl.html', 
+      templateUrl: 'templates/commentList.tpl.html',
       controller: 'CommentListController as comList'
      })
      .state('root.newComment', {
-      url: '/comments/new', 
+      url: '/comments/new',
       templateUrl: 'templates/commentNew.tpl.html',
       controller: 'CommentNewController as comNew'
+      })
+      .state('root.topTrails', {
+        url: '/trails/top',
+        templateUrl: 'templates/topTrails.tpl.html',
+        controller: 'TopTrailsController as topTrails'
+      })
+      .state('root.trails', {
+        url: '/trails',
+        abstract: true,
+        templateUrl: 'templates/trails.tpl.html',
+        controller: 'TrailController as trail'
+      })
+      .state('root.trails.new', {
+       url: '/new',
+       templateUrl: 'templates/trails.trailNew.tpl.html',
+       controller: 'TrailNewController as trailNew'
      })
-
+     .state('root.trails.update', {
+       url: '/:id/update',
+       templateUrl: 'templates/trails.trailUpdate.tpl.html',
+       controller: 'TrailUpdateController as trailUpdate'
+     })
+    //  .state('root.trails.view', {
+    //    url: '/:id/view',
+    //    templateUrl: 'templates/trailView.tpl.html',
+    //    controller: 'TrailViewController as trailView'
+    //  })
+     //
 
      $urlRouterProvider.otherwise('/home');
 };

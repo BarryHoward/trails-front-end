@@ -1,35 +1,19 @@
 const SERVER = "https://trails-back-end.herokuapp.com/"
 
-function HomeController ($state, NgMap, $http) {
+function TrailNewController ($state, NgMap, $http) {
   let vm = this;
   vm.placeMarker = placeMarker;
   vm.addNewTrail = addNewTrail;
   vm.drawLine = drawLine;
-  // console.log('vm.map is: ', vm.map)
-  function init(){
-      getMap('homeMap');
-      vm.markers= [];
 
-      //
-      // let testData = {title: "Test Trail 4", waypoints: [{lat: 5.2, lng: -100.5}, {lat: -25.363, lng: 131.044}, {lat: -50.3432, lng: 23.1231}]}
-      // $http.post(`${SERVER}trails`, testData).then((resp) => {
-      //   console.log(resp.data)
-      // }, (reject) => {
-      //   console.log(reject)
-      // })
-      //
-      // $http.get(`${SERVER}trails/1`).then((resp) => {
-      //   console.log(resp.data)
-      // }, (reject) => {
-      //   console.log(reject)
-      // })
+  function init(){
+      getMap('trailNewMap');
+      vm.markers= [];
   }
 
   init();
 
-
   function placeMarker(location) {
-    // console.log(vm.map.getTotalMarkers());
       var latLong = {lat: -25.363, lng: 131.044};
       var marker = new google.maps.Marker({
           position: location.latLng,
@@ -40,13 +24,12 @@ function HomeController ($state, NgMap, $http) {
       });
       console.log(location.latLng.lat())
       vm.markers.push(marker);
+      vm.drawLine();
       google.maps.event.addListener(marker, 'dragend', function (event){
         marker.lat = marker.getPosition().lat();
         marker.lng = marker.getPosition().lng();
         vm.drawLine();
       })
-      // console.log(vm.markers);
-      // console.log(vm.markers[0].getPosition())
   }
 
   function getMap(id){
@@ -56,7 +39,6 @@ function HomeController ($state, NgMap, $http) {
   }
 
   function addNewTrail(trailData) {
-      // console.log(vm.markers)
       let newTrail = {};
       newTrail.waypoints = [];
       vm.markers.forEach(function (marker) {
@@ -97,8 +79,7 @@ function HomeController ($state, NgMap, $http) {
     };
   }
 
+}
 
-};
-
-HomeController.$inject = ['$state', 'NgMap', '$http'];
-export {HomeController};
+TrailNewController.$inject = ['$state', 'NgMap', '$http'];
+export { TrailNewController }
