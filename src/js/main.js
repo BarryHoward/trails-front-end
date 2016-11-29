@@ -9,6 +9,7 @@ import {HomeController} from "./controllers/home";
 
 import {TrailController} from "./controllers/trail";
 import {TrailNewController} from "./controllers/trailNew";
+import {TrailUpdateController} from "./controllers/trailUpdate";
 
 import {OwnerService} from "./services/owner";
 
@@ -20,4 +21,5 @@ angular.module('app', ['ngMap', 'ui.router', 'ngCookies'])
 	.controller('HomeController', HomeController)
 	.controller('TrailController', TrailController)
 	.controller('TrailNewController', TrailNewController)
+	.controller('TrailUpdateController', TrailUpdateController)
 	.service('OwnerService', OwnerService)

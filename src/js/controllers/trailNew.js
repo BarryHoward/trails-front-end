@@ -7,7 +7,7 @@ function TrailNewController ($state, NgMap, $http) {
   vm.drawLine = drawLine;
 
   function init(){
-      getMap('trailsNewMap');
+      getMap('trailNewMap');
       vm.markers= [];
   }
 
