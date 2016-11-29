@@ -7,7 +7,7 @@
              required ng-model="trail.title" />
 			<button class="add-trail-button">Add New Trail!</button>
 	</form>
-
+  <button type="button" ng-click="home.drawLine()" id="draw-trail">Draw Trail!</button>
 <ng-map id="homeMap" on-click="home.placeMarker($event)" center="[40.74, -74.18]">
 	<!-- <marker position="[40.74, -74.18]"></marker> -->
 </ng-map>

@@ -23,7 +23,7 @@ function routerConfig ($stateProvider , $urlRouterProvider) {
       controller: 'OwnerNewController as ownNew'
      })
      .state('root.ownerInfo', {
-      url: '/owners/:id', 
+      url: '/owners/:id',
       templateUrl: 'templates/ownerInfo.tpl.html',
       controller: 'OwnerInfoController as ownInfo'
      })
@@ -35,11 +35,11 @@ function routerConfig ($stateProvider , $urlRouterProvider) {
 
      .state('root.comments', {
       url: '/comments',
-      templateUrl: 'templates/commentList.tpl.html', 
+      templateUrl: 'templates/commentList.tpl.html',
       controller: 'CommentListController as comList'
      })
      .state('root.newComment', {
-      url: '/comments/new', 
+      url: '/comments/new',
       templateUrl: 'templates/commentNew.tpl.html',
       controller: 'CommentNewController as comNew'
      })
