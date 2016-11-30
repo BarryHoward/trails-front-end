@@ -41,11 +41,11 @@ function routerConfig ($stateProvider , $urlRouterProvider) {
       templateUrl: 'templates/trails.trailUpdate.tpl.html',
       controller: 'TrailUpdateController as trailUpdate'
     })
-     .state('root.trails.view', {
-       url: '/:id/view',
-       templateUrl: 'templates/trails.trailView.tpl.html',
-       controller: 'TrailViewController as trailView'
-     })
+    .state('root.trails.view', {
+      url: '/:id/view',
+      templateUrl: 'templates/trails.trailView.tpl.html',
+      controller: 'TrailViewController as trailView'
+    })
 
 
   // users states --------------------------------
