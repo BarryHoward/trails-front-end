@@ -8,9 +8,6 @@ function TrailUpdateController ($stateParams, TrailsService) {
   vm.updateTrail = updateTrail;
   vm.TrailsService = TrailsService;
 
-  vm.markers = [];
-  vm.currentTrail = {};
-
   function init () {
     let trail_id = $stateParams.id
     TrailsService.getMap(mapId, trail_id);
