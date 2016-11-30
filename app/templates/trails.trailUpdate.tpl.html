@@ -1,18 +1,26 @@
-<h2>Hello From trail update! </h2>
+<h2>{{trailUpdate.status}}</h2>
 
 <h3>{{trailUpdate.trailTitle}}</h3>
 
 <input class="title-input" name="title" type="text" placeholder="Trail Name..."
-       ng-model="trailUpdate.trailTitle" />
+       ng-model="trailUpdate.trailTitle" /></input>
+
+	<div class="add-delete">
+		<input type="radio" ng-model="trailUpdate.TrailsService.delete" name="delete" ng-value="false"></input>
+	    <span>Add Points</span>
+	    <input type="radio" ng-model="trailUpdate.TrailsService.delete" name="delete" ng-value="true"></input>
+	    <span>Delete Points</span>
+	</div>
 
 	<div class="move-delete">
-	    <input type="radio" ng-model="trailUpdate.delete" name="delete" ng-value="false">
-	    Move/Place
-	    <input type="radio" ng-model="trailUpdate.delete" name="delete" ng-value="true">
-	    Delete
+	    <input type="radio" ng-model="trailUpdate.TrailsService.insert" name="insert" ng-value="true"></input>
+	    <span>Insert Between</span>
+	    <input type="radio" ng-model="trailUpdate.TrailsService.insert" name="insert" ng-value="false"></input>
+	    <span>Add to End</span>
 	</div>
 
 <button type="button" name="update" ng-click="trailUpdate.updateTrail()">Save Changes</button>
+<button type="button" name="delete" ng-click="trailUpdate.deleteTrail()">Delete Trail</button>
 <ng-map id="trailUpdateMap" on-click="trailUpdate.placeMarker($event)" center="[40.74, -74.18]">
 
 </ng-map>

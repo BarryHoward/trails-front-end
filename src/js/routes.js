@@ -29,7 +29,7 @@ function routerConfig ($stateProvider , $urlRouterProvider) {
       url: '/trails',
       abstract: true,
       templateUrl: 'templates/trails.tpl.html',
-      controller: 'TrailController as trail'
+      // controller: 'TrailController as trail'
     })
     .state('root.trails.new', {
       url: '/new',
