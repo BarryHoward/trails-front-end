@@ -3,6 +3,8 @@ import {routerConfig} from "./routes";
 import 'angular-ui-router';
 import 'angular-cookies';
 import 'ngMap';
+import 'chart.js';
+import 'angular-chart.js';
 
 import {RootController} from "./controllers/root";
 import {HomeController} from "./controllers/home";
@@ -18,7 +20,7 @@ import {TrailsService} from "./services/trails";
 
 
 
-angular.module('app', ['ngMap', 'ui.router', 'ngCookies'])
+angular.module('app', ['ngMap', 'ui.router', 'ngCookies', 'chart.js'])
 	.config(routerConfig)
 	.controller('RootController', RootController)
 	.controller('HomeController', HomeController)

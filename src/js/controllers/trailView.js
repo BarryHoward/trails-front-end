@@ -1,5 +1,4 @@
-
-const mapId = "trailViewMap"
+const mapId = "trailViewMap";
 
 function TrailViewController (TrailsService, $stateParams) {
   let vm = this;
@@ -30,8 +29,6 @@ function TrailViewController (TrailsService, $stateParams) {
           console.log(reject)
       });
   }
-
-
 }
 
 TrailViewController.$inject = ['TrailsService', '$stateParams'];
