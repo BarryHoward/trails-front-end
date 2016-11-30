@@ -79,12 +79,32 @@ function TrailsService ($http, $cookies, NgMap) {
           dist[i] = google.maps.geometry.spherical.computeDistanceBetween(location.latLng, markers[i].position)
         }
         var minIndex = dist.reduce((iMax, x, i, arr) => x < arr[iMax] ? i : iMax, 0);
-        if (dist[minIndex-1]<dist[minIndex+1]){
+
+        if (minIndex === 0){
+          markers.splice(1, 0, marker);
+        } else if (minIndex === markers.length-1){
+          markers.splice(markers.length-1, 0, marker)
+        } else {
+          let markBefore = markers[minIndex-1];
+          let markMin = markers[minIndex];
+          let markAfter = markers[minIndex +1];
+
+          let beforeAngle = Math.asin((markBefore.lng - markMin.lng)/Math.sqrt(Math.pow((markBefore.lng-markMin.lng),2)+Math.pow((markBefore.lat-markMin.lat),2)));
+          let afterAngle = Math.asin((markAfter.lng - markMin.lng)/Math.sqrt(Math.pow((markAfter.lng-markMin.lng),2)+Math.pow((markAfter.lat-markMin.lat),2)));
+          let newAngle = Math.asin((marker.lng - markMin.lng)/Math.sqrt(Math.pow((marker.lng-markMin.lng),2)+Math.pow((marker.lat-markMin.lat),2)));
+
+          let beforeDif = Math.PI - Math.abs(Math.PI - Math.abs(beforeAngle - newAngle));
+          let afterDif = Math.PI - Math.abs(Math.PI - Math.abs(afterAngle - newAngle));
+
+        if (beforeDif<afterDif){
           var insertIndex = minIndex;
         } else {
           var insertIndex = minIndex+1;
         }
         markers.splice(insertIndex, 0, marker);
+      }
+
+
       } else {
         markers.push(marker);
       }
