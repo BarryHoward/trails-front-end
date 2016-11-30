@@ -12,6 +12,7 @@ function TrailsService ($http, $cookies, NgMap) {
   vm.updateTrail = updateTrail;
   vm.dragListener = dragListener;
   vm.newTrail = newTrail;
+  vm.getElevation = getElevation;
 
 
   function getMap(id){
@@ -74,7 +75,22 @@ function TrailsService ($http, $cookies, NgMap) {
 
     addLine.setMap(map);
     vm.line = addLine;
+    vm.getElevation(markers);
   }
+
+  function getElevation(markers){
+     var elevator = new google.maps.ElevationService;
+     elevator.getElevationAlongPath({
+        'path': markers,
+        'samples': 256
+      }, plotElevation);
+
+      function plotElevation(elevations, status){
+        console.log(elevations, status)
+      }
+  }
+
+
 
   function updateTrail(newTrail, id) {
       $http.patch(`${SERVER}trails/${id}`, newTrail).then((resp) => {
