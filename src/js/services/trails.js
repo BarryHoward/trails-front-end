@@ -80,6 +80,8 @@ function TrailsService ($http, $cookies, NgMap) {
 
   function getElevation(markers){
      var elevator = new google.maps.ElevationService;
+     var elevationsArray = [];
+     var elevationsLabels = [];
      elevator.getElevationAlongPath({
         'path': markers,
         'samples': 256
@@ -87,6 +89,36 @@ function TrailsService ($http, $cookies, NgMap) {
 
       function plotElevation(elevations, status){
         console.log(elevations, status)
+        elevations.forEach(function (datapoint) {
+          elevationsArray.push(datapoint.elevation);
+          elevationsLabels.push(String(datapoint.elevation))
+        })
+        console.log(elevationsArray)
+        console.log(elevationsLabels)
+        var ctx = document.getElementById('myChart');
+        var data = {
+            labels: elevationsLabels,
+            datasets: [
+                {
+                    label: "Elevation",
+                    fillColor: "#F0BC74",
+                    strokeColor: "#F08C00",
+                    pointColor: "#F08C00",
+                    pointStrokeColor: "#fff",
+                    pointHighlightFill: "#fff",
+                    pointHighlightStroke: "#F08C00",
+                    data: elevationsArray
+                }
+            ]
+        };
+        var options = {
+            scaleShowVerticalLines: false
+        };
+        var myLineChart = new Chart(ctx, {
+            type: 'line',
+            data: data,
+            options: options
+        });
       }
   }
 
