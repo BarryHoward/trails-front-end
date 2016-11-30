@@ -4,7 +4,7 @@
 
   <form name="new-trail" ng-submit="trailNew.addNewTrail(trail)">
       <input class="title-input" name="title" type="text" placeholder="Trail Name..."
-             required ng-model="trail.title" />
+             ng-model="trailNew.trailTitle" />
 			<button class="add-trail-button">Add New Trail!</button>
 	</form>
 <ng-map id="trailNewMap" on-click="trailNew.placeMarker($event)" center="[40.74, -74.18]">
