@@ -7,6 +7,7 @@ function TrailUpdateController (TrailsService, $stateParams) {
   vm.getTrail = getTrail;
   vm.placeMarker = placeMarker;
   vm.updateTrail = updateTrail;
+  vm.deleteTrail = deleteTrail;
   vm.TrailsService = TrailsService;
 
   
@@ -15,6 +16,8 @@ function TrailUpdateController (TrailsService, $stateParams) {
     vm.markers = [];
     vm.status = "Update a Trail!"
     vm.TrailsService.delete = false;
+    vm.TrailsService.insert = true;
+
 
     TrailsService.getMap(mapId).then(function (map) {
       vm.map = map;
@@ -57,6 +60,14 @@ function TrailUpdateController (TrailsService, $stateParams) {
         console.log(resp.data)
         vm.status = "Trail Updated!"
       }, (reject) => {
+        console.log(reject)
+      });
+  }
+
+  function deleteTrail(){
+    TrailsService.deleteTrail($stateParams.id).then((resp) => {
+      vm.status = "Trail Deleted!"
+    }, (reject) => {
         console.log(reject)
       });
   }

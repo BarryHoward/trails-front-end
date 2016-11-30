@@ -10,6 +10,7 @@ function TrailsService ($http, $cookies, NgMap) {
   vm.placeMarker = placeMarker;
   vm.getTrail = getTrail;
   vm.updateTrail = updateTrail;
+  vm.deleteTrail = deleteTrail;
   vm.dragListener = dragListener;
   vm.newTrail = newTrail;
   vm.deleteListener = deleteListener;
@@ -71,7 +72,22 @@ function TrailsService ($http, $cookies, NgMap) {
           lat: location.latLng.lat(),
           lng: location.latLng.lng()
       });
-      markers.push(marker);
+
+      if (vm.insert){
+        let dist = [];
+        for (var i=0; i<markers.length; i++){
+          dist[i] = google.maps.geometry.spherical.computeDistanceBetween(location.latLng, markers[i].position)
+        }
+        var minIndex = dist.reduce((iMax, x, i, arr) => x < arr[iMax] ? i : iMax, 0);
+        if (dist[minIndex-1]<dist[minIndex+1]){
+          var insertIndex = minIndex;
+        } else {
+          var insertIndex = minIndex+1;
+        }
+        markers.splice(insertIndex, 0, marker);
+      } else {
+        markers.push(marker);
+      }
       vm.drawLine(map, markers);
       vm.dragListener(marker, markers, map)
       vm.deleteListener(marker, markers, map)
@@ -97,6 +113,10 @@ function TrailsService ($http, $cookies, NgMap) {
 
   function updateTrail(newTrail, id) {
       return $http.patch(`${SERVER}trails/${id}`, newTrail);
+  }
+  function deleteTrail(id){
+    console.log("delete")
+    return $http.delete(`${SERVER}trails/${id}`);
   }
 
   function newTrail(newTrail){
