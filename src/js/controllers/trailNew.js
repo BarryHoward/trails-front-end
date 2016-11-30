@@ -6,6 +6,7 @@ function TrailNewController (TrailsService) {
 
   vm.placeMarker = placeMarker;
   vm.addNewTrail = addNewTrail;
+  vm.TrailsService = TrailsService;
 
 
   function init () {

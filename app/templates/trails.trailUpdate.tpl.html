@@ -1,15 +1,15 @@
-<h2>Hello From trail update! </h2>
+<h2>{{trailUpdate.status}}</h2>
 
 <h3>{{trailUpdate.trailTitle}}</h3>
 
 <input class="title-input" name="title" type="text" placeholder="Trail Name..."
-       ng-model="trailUpdate.trailTitle" />
+       ng-model="trailUpdate.trailTitle" /></input>
 
 	<div class="move-delete">
-	    <input type="radio" ng-model="trailUpdate.delete" name="delete" ng-value="false">
-	    Move/Place
-	    <input type="radio" ng-model="trailUpdate.delete" name="delete" ng-value="true">
-	    Delete
+	    <input type="radio" ng-model="trailUpdate.TrailsService.delete" name="delete" ng-value="true"></input>
+	    <span>Delete Points</span>
+	    <input type="radio" ng-model="trailUpdate.TrailsService.delete" name="delete" ng-value="false"></input>
+	    <span>Add Points</span>
 	</div>
 
 <button type="button" name="update" ng-click="trailUpdate.updateTrail()">Save Changes</button>

@@ -12,6 +12,7 @@ function TrailsService ($http, $cookies, NgMap) {
   vm.updateTrail = updateTrail;
   vm.dragListener = dragListener;
   vm.newTrail = newTrail;
+  vm.deleteListener = deleteListener;
 
 
   function getMap(id){
@@ -35,18 +36,34 @@ function TrailsService ($http, $cookies, NgMap) {
     markers.push(marker);
     if (draggable){
       vm.dragListener(marker, markers, map)
+      vm.deleteListener(marker, markers, map)
     }
   }
 
   function dragListener (marker, markers, map){
       google.maps.event.addListener(marker, 'dragend', function (event){
-      marker.lat = marker.getPosition().lat();
-      marker.lng = marker.getPosition().lng();
-      vm.drawLine(map, markers);
+        marker.lat = marker.getPosition().lat();
+        marker.lng = marker.getPosition().lng();
+        vm.drawLine(map, markers);
+    })
+  }
+
+  function deleteListener (marker, markers, map){
+      google.maps.event.addListener(marker, 'click', function (event){
+        if (vm.delete){
+          var index = markers.indexOf(marker);
+          if (index > -1) {
+            markers.splice(index, 1);
+          }
+          console.log(markers)
+          marker.setMap(null);
+          vm.drawLine(map, markers);
+        }
     })
   }
 
   function placeMarker(markers, map, location) {
+    if (!vm.delete){
       var marker = new google.maps.Marker({
           position: location.latLng,
           map: map,
@@ -57,6 +74,8 @@ function TrailsService ($http, $cookies, NgMap) {
       markers.push(marker);
       vm.drawLine(map, markers);
       vm.dragListener(marker, markers, map)
+      vm.deleteListener(marker, markers, map)
+    }
   }
 
 
@@ -77,11 +96,7 @@ function TrailsService ($http, $cookies, NgMap) {
   }
 
   function updateTrail(newTrail, id) {
-      $http.patch(`${SERVER}trails/${id}`, newTrail).then((resp) => {
-        console.log(resp.data)
-      }, (reject) => {
-        console.log(reject)
-      });
+      return $http.patch(`${SERVER}trails/${id}`, newTrail);
   }
 
   function newTrail(newTrail){
