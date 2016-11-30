@@ -1,85 +1,43 @@
-const SERVER = "https://trails-back-end.herokuapp.com/"
+const mapId = "trailNewMap"
 
-function TrailNewController ($state, NgMap, $http) {
+function TrailNewController (TrailsService) {
+
   let vm = this;
+
   vm.placeMarker = placeMarker;
   vm.addNewTrail = addNewTrail;
-  vm.drawLine = drawLine;
 
-  function init(){
-      getMap('trailNewMap');
-      vm.markers= [];
+
+  function init () {
+    vm.markers = [];
+
+    TrailsService.getMap(mapId).then(function (map) {
+      vm.map = map;
+    })
   }
 
   init();
 
-  function placeMarker(location) {
-      var latLong = {lat: -25.363, lng: 131.044};
-      var marker = new google.maps.Marker({
-          position: location.latLng,
-          map: vm.map,
-          draggable: true,
-          lat: location.latLng.lat(),
-          lng: location.latLng.lng()
-      });
-      console.log(location.latLng.lat())
-      vm.markers.push(marker);
-      vm.drawLine();
-      google.maps.event.addListener(marker, 'dragend', function (event){
-        marker.lat = marker.getPosition().lat();
-        marker.lng = marker.getPosition().lng();
-        vm.drawLine();
-      })
+  function placeMarker(event){
+    TrailsService.placeMarker(vm.markers, vm.map, event);
   }
 
-  function getMap(id){
-    NgMap.getMap(id).then(function(map) {
-      vm.map = map;
-    });
-  }
 
   function addNewTrail(trailData) {
-      let newTrail = {};
-      newTrail.waypoints = [];
-      vm.markers.forEach(function (marker) {
-        let waypoint = {};
-        waypoint.lat = marker.lat;
-        waypoint.lng = marker.lng;
-        newTrail.waypoints.push(waypoint);
-      });
-      newTrail.title = trailData.title;
+    let newTrail = {};
+    newTrail.waypoints = [];
+    vm.markers.forEach(function (marker) {
+      let waypoint = {};
+      waypoint.lat = marker.lat;
+      waypoint.lng = marker.lng;
+      newTrail.waypoints.push(waypoint);
+    });
+    newTrail.title = vm.trailTitle;
 
-      $http.post(`${SERVER}trails`, newTrail).then((resp) => {
-        console.log(resp.data)
-      }, (reject) => {
-        console.log(reject)
-      });
-  }
-
-  function drawLine() {
-    if (vm.trail){
-      removeLine()
-    }
-    console.log(vm.markers)
-    var addTrail = new google.maps.Polyline({
-        path: vm.markers,
-        geodesic: true,
-        strokeColor: '#FF0000',
-        strokeOpacity: 1.0,
-        strokeWeight: 2
-      });
-
-    addTrail.setMap(vm.map);
-    // console.log(vm.map)
-
-    vm.trail = addTrail;
-
-    function removeLine () {
-      vm.trail.setMap(null);
-    };
+    TrailsService.newTrail(newTrail);
   }
 
 }
 
-TrailNewController.$inject = ['$state', 'NgMap', '$http'];
+TrailNewController.$inject = ['TrailsService'];
 export { TrailNewController }
