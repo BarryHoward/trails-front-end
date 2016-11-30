@@ -27,7 +27,7 @@ function TrailUpdateController (TrailsService, $stateParams) {
     TrailsService.getTrail(id).then(
       (resp) => {
         resp.data.waypoints.forEach(function (waypoint) {
-          TrailsService.loadMarker(vm.map, vm.markers, waypoint)
+          TrailsService.loadMarker(vm.map, vm.markers, waypoint, true)
         });
         TrailsService.drawLine(vm.map, vm.markers)
         vm.trailTitle = resp.data.trailInfo.title;
