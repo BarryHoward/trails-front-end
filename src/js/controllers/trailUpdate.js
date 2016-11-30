@@ -5,8 +5,6 @@ function TrailUpdateController (TrailsService, $stateParams) {
   let vm = this;
 
   vm.getTrail = getTrail;
-  vm.loadMarker = loadMarker;
-  vm.drawLine = drawLine;
   vm.placeMarker = placeMarker;
   vm.updateTrail = updateTrail;
 
@@ -29,21 +27,13 @@ function TrailUpdateController (TrailsService, $stateParams) {
     TrailsService.getTrail(id).then(
       (resp) => {
         resp.data.waypoints.forEach(function (waypoint) {
-          vm.loadMarker(waypoint);
+          TrailsService.loadMarker(vm.map, vm.markers, waypoint)
         });
-        vm.drawLine();
+        TrailsService.drawLine(vm.map, vm.markers)
         vm.trailTitle = resp.data.trailInfo.title;
       }, (reject) => {
           console.log(reject)
       });
-  }
-
-  function loadMarker(waypoint){
-    TrailsService.loadMarker(vm.map, vm.markers, waypoint)
-  }
-
-  function drawLine(){
-    TrailsService.drawLine(vm.map, vm.markers)
   }
 
   function placeMarker(event){
