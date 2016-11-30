@@ -22,18 +22,20 @@ function TrailsService ($http, $cookies, NgMap) {
     return $http.get(`${SERVER}trails/${trail_id}`)
   }
 
-  function loadMarker(map, markers, waypoint){
+  function loadMarker(map, markers, waypoint, draggable){
     var myLatlng = new google.maps.LatLng(waypoint.lat, waypoint.lng)
     var marker = new google.maps.Marker({
         map: map,
-        draggable: true,
+        draggable: draggable,
         animation: google.maps.Animation.DROP,
         position: myLatlng,
         lat: myLatlng.lat(),
         lng: myLatlng.lng()
     });
     markers.push(marker);
-    vm.dragListener(marker, markers, map)
+    if (draggable){
+      vm.dragListener(marker, markers, map)
+    }
   }
 
   function dragListener (marker, markers, map){
