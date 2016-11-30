@@ -7,6 +7,21 @@
              ng-model="trailNew.trailTitle" />
 			<button class="add-trail-button">Add New Trail!</button>
 	</form>
+
+	<div class="add-delete">
+		<input type="radio" ng-model="trailNew.TrailsService.delete" name="delete" ng-value="false"></input>
+	    <span>Add Points</span>
+	    <input type="radio" ng-model="trailNew.TrailsService.delete" name="delete" ng-value="true"></input>
+	    <span>Delete Points</span>
+	</div>
+
+	<div class="insert">
+	    <input type="radio" ng-model="trailNew.TrailsService.insert" name="insert" ng-value="true"></input>
+	    <span>Insert Between</span>
+	    <input type="radio" ng-model="trailNew.TrailsService.insert" name="insert" ng-value="false"></input>
+	    <span>Add to End</span>
+	</div>
+
 <ng-map id="trailNewMap" on-click="trailNew.placeMarker($event)" center="[40.74, -74.18]">
 	<!-- <marker position="[40.74, -74.18]"></marker> -->
 </ng-map>

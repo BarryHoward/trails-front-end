@@ -6,10 +6,13 @@ function TrailNewController (TrailsService) {
 
   vm.placeMarker = placeMarker;
   vm.addNewTrail = addNewTrail;
+  vm.TrailsService = TrailsService;
 
 
   function init () {
     vm.markers = [];
+    vm.TrailsService.delete = false;
+    vm.TrailsService.insert = true;
 
     TrailsService.getMap(mapId).then(function (map) {
       vm.map = map;
