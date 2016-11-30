@@ -5,7 +5,6 @@ function TrailViewController (TrailsService, $stateParams) {
   let vm = this;
 
   vm.getTrail = getTrail;
-  
   function init () {
     let trail_id = $stateParams.id
     vm.markers = [];
@@ -19,7 +18,6 @@ function TrailViewController (TrailsService, $stateParams) {
 
   init();
 
-  
   function getTrail(id){
     TrailsService.getTrail(id).then(
       (resp) => {
@@ -32,7 +30,6 @@ function TrailViewController (TrailsService, $stateParams) {
           console.log(reject)
       });
   }
-
 
 
 }

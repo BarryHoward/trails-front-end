@@ -3,7 +3,7 @@ function TrailsService ($http, $cookies, NgMap) {
   const SERVER = "https://trails-back-end.herokuapp.com/"
 
   let vm = this;
-
+  vm.deleteListener = deleteListener;
   vm.drawLine = drawLine;
   vm.getMap = getMap;
   vm.loadMarker = loadMarker;
@@ -13,8 +13,7 @@ function TrailsService ($http, $cookies, NgMap) {
   vm.deleteTrail = deleteTrail;
   vm.dragListener = dragListener;
   vm.newTrail = newTrail;
-  vm.deleteListener = deleteListener;
-
+  vm.getElevation = getElevation;
 
   function getMap(id){
      return NgMap.getMap(id)
@@ -129,7 +128,22 @@ function TrailsService ($http, $cookies, NgMap) {
 
     addLine.setMap(map);
     vm.line = addLine;
+    vm.getElevation(markers);
   }
+
+  function getElevation(markers){
+     var elevator = new google.maps.ElevationService;
+     elevator.getElevationAlongPath({
+        'path': markers,
+        'samples': 256
+      }, plotElevation);
+
+      function plotElevation(elevations, status){
+        console.log(elevations, status)
+      }
+  }
+
+
 
   function updateTrail(newTrail, id) {
       return $http.patch(`${SERVER}trails/${id}`, newTrail);
