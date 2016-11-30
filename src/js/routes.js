@@ -2,7 +2,7 @@ function routerConfig ($stateProvider , $urlRouterProvider) {
 
   $stateProvider
 
- // root states ------------------------------- 
+ // root states -------------------------------
     .state('root', {
       abstract: true,
       templateUrl: 'templates/root.tpl.html',
@@ -24,7 +24,7 @@ function routerConfig ($stateProvider , $urlRouterProvider) {
       controller: 'TopTrailsController as topTrails'
     })
 
-// trails states ------------------------------    
+// trails states ------------------------------
     .state('root.trails', {
       url: '/trails',
       abstract: true,
@@ -41,12 +41,12 @@ function routerConfig ($stateProvider , $urlRouterProvider) {
       templateUrl: 'templates/trails.trailUpdate.tpl.html',
       controller: 'TrailUpdateController as trailUpdate'
     })
-    //  .state('root.trails.view', {
-    //    url: '/:id/view',
-    //    templateUrl: 'templates/trailView.tpl.html',
-    //    controller: 'TrailViewController as trailView'
-    //  })
-     //
+     .state('root.trails.view', {
+       url: '/:id/view',
+       templateUrl: 'templates/trails.trailView.tpl.html',
+       controller: 'TrailViewController as trailView'
+     })
+
 
   // users states --------------------------------
 
