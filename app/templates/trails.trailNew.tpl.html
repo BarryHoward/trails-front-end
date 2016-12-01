@@ -22,6 +22,11 @@
 	    <span>Add to End</span>
 	</div>
 
+  <form name="map-center" ng-submit="trailNew.geocodeAddress()">
+    <input type="text" name="address" ng-model="trailNew.address"></input>
+    <button class="geocode" ng-click="trailNew.geocodeAddress()" type="button">Geocode</button>
+  </form>
+
 <ng-map id="trailNewMap" on-click="trailNew.placeMarker($event)" center="[40.74, -74.18]">
 	<!-- <marker position="[40.74, -74.18]"></marker> -->
 </ng-map>
