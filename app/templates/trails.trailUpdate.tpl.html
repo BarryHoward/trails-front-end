@@ -13,9 +13,11 @@
 	</div>
 
 	<div class="move-delete">
-	    <input type="radio" ng-model="trailUpdate.TrailsService.insert" name="insert" ng-value="true"></input>
+		<input type="radio" ng-model="trailUpdate.TrailsService.insert" name="insert" value="frontInsert"></input>
+	    <span>Add to Front</span>
+	    <input type="radio" ng-model="trailUpdate.TrailsService.insert" name="insert" value="midInsert"></input>
 	    <span>Insert Between</span>
-	    <input type="radio" ng-model="trailUpdate.TrailsService.insert" name="insert" ng-value="false"></input>
+	    <input type="radio" ng-model="trailUpdate.TrailsService.insert" name="insert" value="backInsert"></input>
 	    <span>Add to End</span>
 	</div>
 

@@ -12,7 +12,7 @@ function TrailNewController (TrailsService) {
   function init () {
     vm.markers = [];
     vm.TrailsService.delete = false;
-    vm.TrailsService.insert = true;
+    vm.TrailsService.insert = "backInsert";
 
     TrailsService.getMap(mapId).then(function (map) {
       vm.map = map;

@@ -15,10 +15,12 @@
 	    <span>Delete Points</span>
 	</div>
 
-	<div class="insert">
-	    <input type="radio" ng-model="trailNew.TrailsService.insert" name="insert" ng-value="true"></input>
+	<div class="insert-buttons">
+		<input type="radio" ng-model="trailNew.TrailsService.insert" name="insert" value="frontInsert"></input>
+	    <span>Add to Front</span>
+	    <input type="radio" ng-model="trailNew.TrailsService.insert" name="insert" value="midInsert"></input>
 	    <span>Insert Between</span>
-	    <input type="radio" ng-model="trailNew.TrailsService.insert" name="insert" ng-value="false"></input>
+	    <input type="radio" ng-model="trailNew.TrailsService.insert" name="insert" value="backInsert"></input>
 	    <span>Add to End</span>
 	</div>
 
