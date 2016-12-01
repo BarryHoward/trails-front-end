@@ -73,7 +73,7 @@ function TrailsService ($http, $cookies, NgMap) {
           map: map,
           draggable: true,
           lat: location.latLng.lat(),
-          lng: location.latLng.lng()
+          lng: location.latLng.lng(),
       });
 
       if (vm.insert === "midInsert"){
@@ -207,30 +207,39 @@ function TrailsService ($http, $cookies, NgMap) {
      var elevator = new google.maps.ElevationService;
      var elevationsArray = [];
      var elevationsLabels = [];
+     var elevationsResolutions = [];
      elevator.getElevationAlongPath({
         'path': markers,
-        'samples': 256
+        'samples': 50
       }, plotElevation);
 
       function plotElevation(elevations, status){
-        // console.log(elevations, status)
+        console.log(elevations, status)
+        let metersFeetConversion = 3.28084;
+        let metersMilesConversion = 0.000621371;
         elevations.forEach(function (datapoint) {
-          elevationsArray.push(datapoint.elevation);
-          elevationsLabels.push(String(datapoint.elevation))
+          elevationsArray.push(datapoint.elevation*metersFeetConversion);
+          elevationsResolutions.push(datapoint.resolution*metersMilesConversion);
         })
-        // console.log(elevationsArray)
-        // console.log(elevationsLabels)
+        elevationsResolutions.forEach(function (resolution, index) {
+            if (index % 4 === 0){
+              resolution = resolution * elevationsLabels.length
+              elevationsLabels.push(String(resolution.toFixed(2) + ' mi.'))
+            } else {
+              elevationsLabels.push("");
+            }
+        })
         var ctx = document.getElementById('myChart');
         var data = {
             labels: elevationsLabels,
             datasets: [
                 {
                     label: "Elevation",
-                    fillColor: "#F0BC74",
-                    strokeColor: "#F08C00",
-                    pointColor: "#F08C00",
-                    pointStrokeColor: "#fff",
-                    pointHighlightFill: "#fff",
+                    fillColor: "#71BC2B",
+                    strokeColor: "#71BC2B",
+                    pointColor: "#71BC2B",
+                    pointStrokeColor: "#71BC2B",
+                    pointHighlightFill: "#71BC2B",
                     pointHighlightStroke: "#F08C00",
                     data: elevationsArray
                 }
@@ -246,8 +255,6 @@ function TrailsService ($http, $cookies, NgMap) {
         });
       }
   }
-
-
 
   function updateTrail(newTrail, id) {
       return $http.patch(`${SERVER}trails/${id}`, newTrail);
