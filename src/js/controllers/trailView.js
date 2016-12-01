@@ -23,8 +23,9 @@ function TrailViewController (TrailsService, $stateParams) {
         resp.data.waypoints.forEach(function (waypoint) {
           TrailsService.loadMarker(vm.map, vm.markers, waypoint, false)
         });
-        TrailsService.drawLine(vm.map, vm.markers)
+        TrailsService.drawLine(vm.map, vm.markers);
         TrailsService.getElevation(vm.markers);
+        TrailsService.initMap(vm.map, vm.markers);
         vm.trailTitle = resp.data.trailInfo.title;
       }, (reject) => {
           console.log(reject)

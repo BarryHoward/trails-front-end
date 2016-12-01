@@ -10,7 +10,7 @@ function TrailUpdateController (TrailsService, $stateParams) {
   vm.deleteTrail = deleteTrail;
   vm.TrailsService = TrailsService;
 
-  
+
   function init () {
     let trail_id = $stateParams.id
     vm.markers = [];
@@ -28,7 +28,7 @@ function TrailUpdateController (TrailsService, $stateParams) {
 
   init();
 
-  
+
   function getTrail(id){
     TrailsService.getTrail(id).then(
       (resp) => {
@@ -37,6 +37,7 @@ function TrailUpdateController (TrailsService, $stateParams) {
         });
         TrailsService.drawLine(vm.map, vm.markers)
         TrailsService.getElevation(vm.markers);
+        TrailsService.initMap(vm.map, vm.markers);
         vm.trailTitle = resp.data.trailInfo.title;
       }, (reject) => {
           console.log(reject)

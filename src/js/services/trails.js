@@ -12,6 +12,7 @@ function TrailsService ($http, $cookies, NgMap) {
   vm.deleteTrail = deleteTrail;
   vm.newTrail = newTrail;
   vm.getElevation = getElevation;
+  vm.initMap = initMap;
 
   function getMap(id){
      return NgMap.getMap(id)
@@ -87,9 +88,11 @@ function TrailsService ($http, $cookies, NgMap) {
       }
       dragListener(marker, markers, map)
       deleteListener(marker, markers, map)
-      vm.drawLine(map, markers);
       updateDist(newIndex, markers);
-      vm.getElevation(markers);
+      vm.drawLine(map, markers);
+      if(markers.length > 1) {
+        vm.getElevation(markers);
+      }
     }
   }
 
@@ -157,13 +160,13 @@ function TrailsService ($http, $cookies, NgMap) {
         prevDistance = markers[index+1].totalDistance - markers[index-1].totalDistance;
         prevToNew =  google.maps.geometry.spherical.computeDistanceBetween (markers[index-1].position, markers[index].position);
         markers[index].totalDistance = markers[index-1].totalDistance + prevToNew;
-      } 
+      }
 
       // update other values
       var newToNext =  google.maps.geometry.spherical.computeDistanceBetween (markers[index].position, markers[index+1].position);
       var newDistance = prevToNew + newToNext;
       var distanceChange = newDistance - prevDistance;
-      
+
       for (var i=index+1; i<markers.length; i++){
           markers[i].totalDistance += distanceChange;
       }
@@ -200,7 +203,7 @@ function TrailsService ($http, $cookies, NgMap) {
 
     addLine.setMap(map);
     vm.line = addLine;
-    
+
   }
 
   function getElevation(markers){
@@ -270,6 +273,15 @@ function TrailsService ($http, $cookies, NgMap) {
       }, (reject) => {
         console.log(reject)
       });
+  }
+
+  function initMap(map, markers) {
+    var latlngbounds = new google.maps.LatLngBounds();
+    markers.forEach(function (marker) {
+      latlngbounds.extend(marker.position)
+      map.fitBounds(latlngbounds);
+    })
+    console.log(markers[0].position, markers)
   }
 
 };
