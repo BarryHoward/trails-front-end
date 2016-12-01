@@ -54,6 +54,7 @@ function TrailUpdateController (TrailsService, $stateParams) {
       let waypoint = {};
       waypoint.lat = marker.lat;
       waypoint.lng = marker.lng;
+      waypoint.totalDistance = marker.totalDistance;
       newTrail.waypoints.push(waypoint);
     });
     newTrail.title = vm.trailTitle;

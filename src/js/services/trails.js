@@ -265,6 +265,7 @@ function TrailsService ($http, $cookies, NgMap) {
   }
 
   function newTrail(newTrail){
+    console.log(newTrail)
       $http.post(`${SERVER}trails`, newTrail).then((resp) => {
         console.log(resp.data)
       }, (reject) => {
