@@ -136,30 +136,34 @@ function TrailsService ($http, $cookies, NgMap) {
 
     function updateDist (index, markers){
 
+      var prevDistance;
+      var prevToNew;
       // add to front
       if (index === 0){
         markers[0].totalDistance = 0;
+        prevDistance = 0;
+        prevToNew = 0;
+
+        // if only marker, leave function
         if (markers.length === 1){
           return;
         }
-      }
-
-      // add to back
-      if (index === markers.length-1){
+      } else if (index === markers.length-1){
         var path = vm.line.getPath().getArray().slice(index-1, index+1);
         markers[index].totalDistance = markers[index-1].totalDistance + google.maps.geometry.spherical.computeLength(path)
         return;
-      }
+      } else {
+        // add to mid
+        prevDistance = markers[index+1].totalDistance - markers[index-1].totalDistance;
+        prevToNew =  google.maps.geometry.spherical.computeDistanceBetween (markers[index-1].position, markers[index].position);
+        markers[index].totalDistance = markers[index-1].totalDistance + prevToNew;
+      } 
 
-      // add to mid/update others
-      var prevDistance = markers[index+1].totalDistance - markers[index-1].totalDistance;
-      var d01 =  google.maps.geometry.spherical.computeDistanceBetween (markers[index-1].position, markers[index].position);
-      var d12 =  google.maps.geometry.spherical.computeDistanceBetween (markers[index].position, markers[index+1].position);
-      var newDistance = d01 + d12;
-
+      // update other values
+      var newToNext =  google.maps.geometry.spherical.computeDistanceBetween (markers[index].position, markers[index+1].position);
+      var newDistance = prevToNew + newToNext;
       var distanceChange = newDistance - prevDistance;
-      console.log(distanceChange)
-      markers[index].totalDistance = markers[index-1].totalDistance + d01;
+      
       for (var i=index+1; i<markers.length; i++){
           markers[i].totalDistance += distanceChange;
       }
