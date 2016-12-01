@@ -12,6 +12,7 @@ function TrailsService ($http, $cookies, NgMap) {
   vm.deleteTrail = deleteTrail;
   vm.newTrail = newTrail;
   vm.getElevation = getElevation;
+  vm.initMap = initMap;
 
   function getMap(id){
      return NgMap.getMap(id)
@@ -22,6 +23,7 @@ function TrailsService ($http, $cookies, NgMap) {
   }
 
   function loadMarker(map, markers, waypoint, draggable){
+    console.log("waypoint", waypoint)
     var myLatlng = new google.maps.LatLng(waypoint.lat, waypoint.lng)
     var marker = new google.maps.Marker({
         map: map,
@@ -29,7 +31,8 @@ function TrailsService ($http, $cookies, NgMap) {
         animation: google.maps.Animation.DROP,
         position: myLatlng,
         lat: myLatlng.lat(),
-        lng: myLatlng.lng()
+        lng: myLatlng.lng(),
+        totalDistance: waypoint.totalDistance
     });
     markers.push(marker);
     if (draggable){
@@ -87,9 +90,11 @@ function TrailsService ($http, $cookies, NgMap) {
       }
       dragListener(marker, markers, map)
       deleteListener(marker, markers, map)
-      vm.drawLine(map, markers);
       updateDist(newIndex, markers);
-      vm.getElevation(markers);
+      vm.drawLine(map, markers);
+      if(markers.length !== 1) {
+        vm.getElevation(markers);
+      }
     }
   }
 
@@ -157,13 +162,13 @@ function TrailsService ($http, $cookies, NgMap) {
         prevDistance = markers[index+1].totalDistance - markers[index-1].totalDistance;
         prevToNew =  google.maps.geometry.spherical.computeDistanceBetween (markers[index-1].position, markers[index].position);
         markers[index].totalDistance = markers[index-1].totalDistance + prevToNew;
-      } 
+      }
 
       // update other values
       var newToNext =  google.maps.geometry.spherical.computeDistanceBetween (markers[index].position, markers[index+1].position);
       var newDistance = prevToNew + newToNext;
       var distanceChange = newDistance - prevDistance;
-      
+
       for (var i=index+1; i<markers.length; i++){
           markers[i].totalDistance += distanceChange;
       }
@@ -200,59 +205,156 @@ function TrailsService ($http, $cookies, NgMap) {
 
     addLine.setMap(map);
     vm.line = addLine;
-    
+
   }
 
   function getElevation(markers){
+    // console.log("elevation")
      var elevator = new google.maps.ElevationService;
      var elevationsArray = [];
      var elevationsLabels = [];
      var elevationsResolutions = [];
+     var chartWaypoints = [];
+     var data1 = [];
+     var data2 = [];
      elevator.getElevationAlongPath({
         'path': markers,
         'samples': 50
-      }, plotElevation);
+      }, elevationData);
 
-      function plotElevation(elevations, status){
-        console.log(elevations, status)
+      //build position array
+      markers.forEach(function (marker) {
+        chartWaypoints.push(marker.position)
+        // console.log(chartWaypoints)
+      })
+      //build elevation array from positions
+      elevator.getElevationForLocations({
+        'locations': chartWaypoints
+      }, waypointData)
+
+      window.setTimeout(chartGraph, 2000);
+
+
+      function waypointData (waypointElevations, status) {
+        // console.log(waypointElevations);
+        // console.log(status)
         let metersFeetConversion = 3.28084;
         let metersMilesConversion = 0.000621371;
-        elevations.forEach(function (datapoint) {
-          elevationsArray.push(datapoint.elevation*metersFeetConversion);
-          elevationsResolutions.push(datapoint.resolution*metersMilesConversion);
-        })
-        elevationsResolutions.forEach(function (resolution, index) {
-            if (index % 4 === 0){
-              resolution = resolution * elevationsLabels.length
-              elevationsLabels.push(String(resolution.toFixed(2) + ' mi.'))
-            } else {
-              elevationsLabels.push("");
-            }
-        })
+        for (var i=0; i<markers.length; i++){
+          data2[i] = {x: markers[i].totalDistance*metersMilesConversion,
+                      y: waypointElevations[i].elevation*metersFeetConversion}
+        }
+      }
+
+      function elevationData(elevations, status){
+        // console.log(elevations, status)
+        // console.log('elevationsArray ', elevationsArray)
+
+        let metersFeetConversion = 3.28084;
+        let metersMilesConversion = 0.000621371;
+        data1[0]={x: 0, y: elevations[0].elevation*metersFeetConversion};
+
+        for (var i=1; i<elevations.length; i++){
+          data1[i] = {x: data1[i-1].x+ elevations[i].resolution*metersMilesConversion,
+                      y: elevations[i].elevation*metersFeetConversion}
+        }
+
+        console.log("data1", data1)
+      }
+
+        // elevations.forEach(function (datapoint) {
+        //   elevationsArray.push(datapoint.elevation*metersFeetConversion);
+        //   elevationsResolutions.push(datapoint.resolution*metersMilesConversion);
+        // })
+        // elevationsResolutions.forEach(function (resolution, index) {
+        //     if (index % 4 === 0){
+        //       resolution = resolution * elevationsLabels.length
+        //       elevationsLabels.push(String(resolution.toFixed(2) + ' mi.'))
+        //     } else {
+        //       elevationsLabels.push("");
+        //     }
+        // })
+
+        function chartGraph(){
         var ctx = document.getElementById('myChart');
-        var data = {
-            labels: elevationsLabels,
-            datasets: [
-                {
-                    label: "Elevation",
-                    fillColor: "#71BC2B",
-                    strokeColor: "#71BC2B",
-                    pointColor: "#71BC2B",
-                    pointStrokeColor: "#71BC2B",
-                    pointHighlightFill: "#71BC2B",
-                    pointHighlightStroke: "#F08C00",
-                    data: elevationsArray
-                }
+        // console.log(elevationsArray)
+
+        // console.log("data1", data1, "data2", data2)
+        var datas = {
+            // labels: elevationsLabels,
+            datasets: [{
+                label: 'Elevation',
+                data: data1
+              }, {
+                label: 'waypoint',
+                data: data2
+              }
             ]
-        };
-        var options = {
-            scaleShowVerticalLines: false
-        };
+          }
+          var options = {
+              scales: {
+                  xAxes: [{
+                      type: 'linear',
+                      position: 'bottom'
+                  }]
+              }
+          }
+
+
+                // {
+                //     label: "Elevation",
+                //     fillColor: "#71BC2B",
+                //     strokeColor: "#71BC2B",
+                //     pointColor: "#71BC2B",
+                //     pointStrokeColor: "#71BC2B",
+                //     pointHighlightFill: "#71BC2B",
+                //     pointHighlightStroke: "#F08C00",
+                //     data: elevationsArray
+                // },
+                // {
+                //     label: "Waypoints",
+                //     fillColor: "#71BC2B",
+                //     strokeColor: "#71BC2B",
+                //     pointColor: "#71BC2B",
+                //     pointStrokeColor: "#71BC2B",
+                //     pointHighlightFill: "#71BC2B",
+                //     pointHighlightStroke: "#F08C00",
+                //     data:elevationsArray
+                // }
+            // ]
+
+        console.log(datas.datasets)
+
         var myLineChart = new Chart(ctx, {
             type: 'line',
-            data: data,
+            data: datas,
             options: options
         });
+
+
+        var data3 = [{
+            x: -10,
+            y: 0
+        }, {
+            x: 0,
+            y: 10
+        }, {
+            x: 10,
+            y: 5
+        }]
+        console.log("data1", data1, "data2", data2)
+
+
+        // var scatterChart = new Chart(ctx, {
+        //     type: 'line',
+        //     data: {
+        //         datasets: [{
+        //             label: 'Scatter Dataset',
+        //             data: data1
+        //         }]
+        //     },
+        //     options: options
+        // });
       }
   }
 
@@ -271,6 +373,15 @@ function TrailsService ($http, $cookies, NgMap) {
       }, (reject) => {
         console.log(reject)
       });
+  }
+
+  function initMap(map, markers) {
+    var latlngbounds = new google.maps.LatLngBounds();
+    markers.forEach(function (marker) {
+      latlngbounds.extend(marker.position)
+      map.fitBounds(latlngbounds);
+    })
+    console.log(markers[0].position, markers)
   }
 
 };
