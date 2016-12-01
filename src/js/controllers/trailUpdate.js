@@ -36,6 +36,7 @@ function TrailUpdateController (TrailsService, $stateParams) {
           TrailsService.loadMarker(vm.map, vm.markers, waypoint, true)
         });
         TrailsService.drawLine(vm.map, vm.markers)
+        TrailsService.getElevation(vm.markers);
         vm.trailTitle = resp.data.trailInfo.title;
       }, (reject) => {
           console.log(reject)
