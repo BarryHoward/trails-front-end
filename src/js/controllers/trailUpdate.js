@@ -39,6 +39,7 @@ function TrailUpdateController (TrailsService, $stateParams) {
         TrailsService.getElevation(vm.markers);
         TrailsService.initMap(vm.map, vm.markers);
         vm.trailTitle = resp.data.trailInfo.title;
+        console.log("markers", vm.markers)
       }, (reject) => {
           console.log(reject)
       });
