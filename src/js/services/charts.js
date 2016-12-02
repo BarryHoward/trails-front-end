@@ -100,7 +100,10 @@ function ChartsService ($http, $cookies) {
 		                beginAtZero: true
 		              }
 		          }]
-		      }
+		      },
+					hover: {
+						intersect: false
+					}
 		  }
 
 		var myLineChart = new Chart(ctx, {
