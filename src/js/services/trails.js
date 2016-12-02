@@ -154,8 +154,9 @@ function TrailsService ($http, $cookies, NgMap) {
           return;
         }
       } else if (index === markers.length-1){
-        var path = vm.line.getPath().getArray().slice(index-1, index+1);
-        markers[index].totalDistance = markers[index-1].totalDistance + google.maps.geometry.spherical.computeLength(path)
+        var path = vm.line.getPath().getArray().slice(index-2);
+        var distAdded = markers[index-1].totalDistance + google.maps.geometry.spherical.computeLength(path)
+        markers[index].totalDistance = distAdded;
         return;
       } else {
         // add to mid
@@ -218,7 +219,7 @@ function TrailsService ($http, $cookies, NgMap) {
      var data1 = [];
      var data2 = [];
      vm.pathLength = markers[markers.length-1].totalDistance;
-     console.log(markers)
+     // console.log(markers)
      elevator.getElevationAlongPath({
         'path': markers,
         'samples': 200
@@ -302,7 +303,8 @@ function TrailsService ($http, $cookies, NgMap) {
                 data: data2,
                 fill: false,
                 borderColor: 'rgba(255,255,255,0)',
-                pointBorderColor: 'rgba(255, 0, 0, 1)'
+                pointBorderColor: 'rgba(255, 0, 0, 1)',
+                pointBackgroundColor: 'rgba(255, 0, 0, 1)'
               }
             ]
           }
