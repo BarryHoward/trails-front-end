@@ -10,6 +10,7 @@ function TrailViewController (TrailsService, $stateParams) {
 
     TrailsService.getMap(mapId).then(function (map) {
       vm.map = map;
+      vm.map.setMapTypeId('terrain');
       console.log(vm.map)
       vm.getTrail(trail_id);
     })

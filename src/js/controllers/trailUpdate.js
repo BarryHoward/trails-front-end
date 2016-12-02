@@ -21,7 +21,7 @@ function TrailUpdateController (TrailsService, $stateParams) {
 
     TrailsService.getMap(mapId).then(function (map) {
       vm.map = map;
-
+      vm.map.setMapTypeId('terrain');
       vm.getTrail(trail_id);
     })
   }

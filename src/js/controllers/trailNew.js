@@ -17,6 +17,7 @@ function TrailNewController (TrailsService) {
     vm.TrailsService.insert = "backInsert";
     TrailsService.getMap(mapId).then(function (map) {
       vm.map = map;
+      vm.map.setMapTypeId('terrain');
       console.log(vm.map)
     })
     var infoWindow = new google.maps.InfoWindow({map: vm.map});
@@ -27,7 +28,6 @@ function TrailNewController (TrailsService) {
           lat: position.coords.latitude,
           lng: position.coords.longitude
         };
-
         infoWindow.setPosition(pos);
         vm.map.setCenter(pos);
       }, function() {
