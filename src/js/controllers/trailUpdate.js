@@ -16,7 +16,7 @@ function TrailUpdateController (TrailsService, $stateParams) {
     vm.markers = [];
     vm.status = "Update a Trail!"
     vm.TrailsService.delete = false;
-    vm.TrailsService.insert = "midInsert";
+    vm.TrailsService.insert = "backInsert";
 
 
     TrailsService.getMap(mapId).then(function (map) {

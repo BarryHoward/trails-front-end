@@ -300,7 +300,8 @@ function TrailsService ($http, $cookies, NgMap) {
                 data: routeElevations,
                 fill: true,
                 pointBorderColor: 'rgba(0, 0, 0, 0)',
-                pointBackgroundColor: 'rgba(0, 0, 0, 0)'
+                pointBackgroundColor: 'rgba(0, 0, 0, 0)',
+                backgroundColor : 'rgba(155,122,61, .8)'
 
               }, {
                 type: 'line',
@@ -317,7 +318,12 @@ function TrailsService ($http, $cookies, NgMap) {
               scales: {
                   xAxes: [{
                       type: 'linear',
-                      position: 'bottom'
+                      position: 'bottom',
+                      ticks: {
+                        min: 0,
+                        // max: 3,
+                        beginAtZero: true
+                      }
                   }]
               }
           }
