@@ -32,6 +32,7 @@ function TrailUpdateController (TrailsService, $stateParams) {
   function getTrail(id){
     TrailsService.getTrail(id).then(
       (resp) => {
+        console.log(resp)
         resp.data.waypoints.forEach(function (waypoint) {
           TrailsService.loadMarker(vm.map, vm.markers, waypoint, true)
         });

@@ -23,7 +23,6 @@ function TrailsService ($http, $cookies, NgMap) {
   }
 
   function loadMarker(map, markers, waypoint, draggable){
-    // console.log("waypoint", waypoint)
     var myLatlng = new google.maps.LatLng(waypoint.lat, waypoint.lng)
     var marker = new google.maps.Marker({
         map: map,
@@ -40,6 +39,8 @@ function TrailsService ($http, $cookies, NgMap) {
       deleteListener(marker, markers, map)
     }
   }
+
+  // Listeners ---------------------------------------------------------
 
   function dragListener (marker, markers, map){
       google.maps.event.addListener(marker, 'dragend', function (event){
@@ -64,6 +65,8 @@ function TrailsService ($http, $cookies, NgMap) {
         }
     })
   }
+
+  // --------------------------------------------------------------------
 
 
   //  Place Marker -----------------------------------------------------
@@ -98,111 +101,99 @@ function TrailsService ($http, $cookies, NgMap) {
     }
   }
 
-    function midInsert(markers, location, marker){
-        let dist = [];
-        for (var i=0; i<markers.length; i++){
-          dist[i] = google.maps.geometry.spherical.computeDistanceBetween(location.latLng, markers[i].position)
-        }
-        let minIndex = dist.reduce((iMax, x, i, arr) => x < arr[iMax] ? i : iMax, 0);
-        var insertIndex;
-        if (minIndex === 0){
-          markers.splice(1, 0, marker);
-          insertIndex = 1;
-          return insertIndex;
-        } else if (minIndex === markers.length-1){
-          insertIndex = markers.length-1;
-          markers.splice(markers.length-1, 0, marker)
+  function midInsert(markers, location, marker){
+      let dist = [];
+      for (var i=0; i<markers.length; i++){
+        dist[i] = google.maps.geometry.spherical.computeDistanceBetween(location.latLng, markers[i].position)
+      }
+      let minIndex = dist.reduce((iMax, x, i, arr) => x < arr[iMax] ? i : iMax, 0);
+      var insertIndex;
+      if (minIndex === 0){
+        markers.splice(1, 0, marker);
+        insertIndex = 1;
+        return insertIndex;
+      } else if (minIndex === markers.length-1){
+        insertIndex = markers.length-1;
+        markers.splice(markers.length-1, 0, marker)
 
-          return insertIndex;
-        } else {
-          let markBefore = markers[minIndex-1];
-          let markMin = markers[minIndex];
-          let markAfter = markers[minIndex +1];
-
-          let beforeV = {y: markBefore.lat - markMin.lat, x: markBefore.lng - markMin.lng}
-          let afterV = {y: markAfter.lat - markMin.lat, x: markAfter.lng - markMin.lng}
-          let newV = {y: marker.lat - markMin.lat, x: marker.lng - markMin.lng}
-
-          let beforeA = Math.asin(beforeV.y/(Math.sqrt(Math.pow(beforeV.x, 2)+ Math.pow(beforeV.y, 2))));
-          let afterA = Math.asin(afterV.y/(Math.sqrt(Math.pow(afterV.x, 2)+ Math.pow(afterV.y, 2))));
-          let newA = Math.asin(newV.y/(Math.sqrt(Math.pow(newV.x, 2)+ Math.pow(newV.y, 2))));
-          if (beforeV.x<0){
-              beforeA = Math.PI - beforeA;
-          }
-          if (afterV.x<0){
-              afterA = Math.PI - afterA;
-          }
-          if (newV.x<0){
-              newA = Math.PI - newA;
-          }          
-
-          let beforeDif = Math.min((2 * Math.PI) - Math.abs(beforeA - newA), Math.abs(beforeA - newA))
-          let afterDif = Math.min((2 * Math.PI) - Math.abs(afterA - newA), Math.abs(afterA - newA))
-
-          // console.log("MarkBefore", {lat: markBefore.lat, ling: markBefore.lng},  "MarkAfter", {lat: markAfter.lat, lng: markAfter.lng}, "MarkMin", {lat: markMin.lat, ling:markMin.lng})
-          // console.log("beforeV: ", beforeV, "afterV: ", afterV, "newV: ", newV)
-          console.log("beforeA: ", beforeA, "afterA: ", afterA, "newA: ", newA)
-          // console.log(beforeAngle, newAngle, afterAngle)
-          // console.log(beforeDif, afterDif)
-
-          if (beforeDif<afterDif){
-            insertIndex = minIndex;
-          } else {
-            insertIndex = minIndex+1;
-          }
-           markers.splice(insertIndex, 0, marker);
-           return insertIndex;
-        }
-    }
-
-    function updateDist (index, markers){
-
-      var prevDistance;
-      var prevToNew;
-      // add to front
-      if (index === 0){
-        markers[0].totalDistance = 0;
-        prevDistance = 0;
-        prevToNew = 0;
-
-        // if only marker, leave function
-        if (markers.length === 1){
-          return;
-        }
-      } else if (index === markers.length-1){
-        var path = vm.line.getPath().getArray().slice(index-2);
-        var distAdded = markers[index-1].totalDistance + google.maps.geometry.spherical.computeLength(path)
-        markers[index].totalDistance = distAdded;
-        return;
+        return insertIndex;
       } else {
-        // add to mid
-        prevDistance = markers[index+1].totalDistance - markers[index-1].totalDistance;
-        prevToNew =  google.maps.geometry.spherical.computeDistanceBetween (markers[index-1].position, markers[index].position);
-        markers[index].totalDistance = markers[index-1].totalDistance + prevToNew;
+        let markBefore = markers[minIndex-1];
+        let markMin = markers[minIndex];
+        let markAfter = markers[minIndex +1];
+
+        let beforeV = {y: markBefore.lat - markMin.lat, x: markBefore.lng - markMin.lng}
+        let afterV = {y: markAfter.lat - markMin.lat, x: markAfter.lng - markMin.lng}
+        let newV = {y: marker.lat - markMin.lat, x: marker.lng - markMin.lng}
+
+        let beforeA = Math.asin(beforeV.y/(Math.sqrt(Math.pow(beforeV.x, 2)+ Math.pow(beforeV.y, 2))));
+        let afterA = Math.asin(afterV.y/(Math.sqrt(Math.pow(afterV.x, 2)+ Math.pow(afterV.y, 2))));
+        let newA = Math.asin(newV.y/(Math.sqrt(Math.pow(newV.x, 2)+ Math.pow(newV.y, 2))));
+        if (beforeV.x<0){
+            beforeA = Math.PI - beforeA;
+        }
+        if (afterV.x<0){
+            afterA = Math.PI - afterA;
+        }
+        if (newV.x<0){
+            newA = Math.PI - newA;
+        }          
+
+        let beforeDif = Math.min((2 * Math.PI) - Math.abs(beforeA - newA), Math.abs(beforeA - newA))
+        let afterDif = Math.min((2 * Math.PI) - Math.abs(afterA - newA), Math.abs(afterA - newA))
+
+        if (beforeDif<afterDif){
+          insertIndex = minIndex;
+        } else {
+          insertIndex = minIndex+1;
+        }
+         markers.splice(insertIndex, 0, marker);
+         return insertIndex;
       }
+  }
 
-      // update other values
-      var newToNext =  google.maps.geometry.spherical.computeDistanceBetween (markers[index].position, markers[index+1].position);
-      var newDistance = prevToNew + newToNext;
-      var distanceChange = newDistance - prevDistance;
+  function updateDist (index, markers){
+    var prevDistance;
+    var prevToNew;
+    // add to front
+    if (index === 0){
+      markers[0].totalDistance = 0;
+      prevDistance = 0;
+      prevToNew = 0;
 
-      for (var i=index+1; i<markers.length; i++){
-          markers[i].totalDistance += distanceChange;
+      // if only marker, leave function
+      if (markers.length === 1){
+        return;
       }
-
-      for (var j=0; j<markers.length; j++){
-        // console.log(j, markers[j].totalDistance)
-      }
-
-      // for (var i=index; i<markers.length; i++){
-      //   console.log(i)
-      //   var curMark = markers[i];
-      //   var path = vm.line.getPath().getArray().slice(0, i+1);
-      //   curMark.totalDistance = google.maps.geometry.spherical.computeLength(path)
-      // }
-      // console.log(markers)
-
+    } else if (index === markers.length-1){
+      // var path = vm.line.getPath().getArray().slice(index-2);
+      var distAdded = markers[index-1].totalDistance + google.maps.geometry.spherical.computeDistanceBetween(markers[index-1].position, markers[index].position)
+      markers[index].totalDistance = distAdded;
+      return;
+    } else {
+      // add to mid
+      prevDistance = markers[index+1].totalDistance - markers[index-1].totalDistance;
+      prevToNew =  google.maps.geometry.spherical.computeDistanceBetween (markers[index-1].position, markers[index].position);
+      markers[index].totalDistance = markers[index-1].totalDistance + prevToNew;
     }
+
+    // update other values
+    var newToNext =  google.maps.geometry.spherical.computeDistanceBetween (markers[index].position, markers[index+1].position);
+    var newDistance = prevToNew + newToNext;
+    var distanceChange = newDistance - prevDistance;
+
+    for (var i=index+1; i<markers.length; i++){
+        markers[i].totalDistance += distanceChange;
+    }
+
+    // for (var i=index; i<markers.length; i++){
+    //   console.log(i)
+    //   var curMark = markers[i];
+    //   var path = vm.line.getPath().getArray().slice(0, i+1);
+    //   curMark.totalDistance = google.maps.geometry.spherical.computeLength(path)
+    // }
+    // console.log(markers)
+  }
 
 //  Place Marker -----------------------------------------------------
 
@@ -222,11 +213,11 @@ function TrailsService ($http, $cookies, NgMap) {
 
     addLine.setMap(map);
     vm.line = addLine;
-
   }
 
   function getElevation(markers){
-    // console.log("elevation")
+    const metersFeetConversion = 3.28084;
+    const metersMilesConversion = 0.000621371;
      var elevator = new google.maps.ElevationService;
      var elevationsArray = [];
      var elevationsLabels = [];
@@ -234,89 +225,87 @@ function TrailsService ($http, $cookies, NgMap) {
      var chartWaypoints = [];
      var data1 = [];
      var data2 = [];
+     var routeElevations = [];
+     var waypointElevations = [];
      vm.pathLength = markers[markers.length-1].totalDistance;
-     // console.log(markers)
-     elevator.getElevationAlongPath({
-        'path': markers,
-        'samples': 200
-      }, elevationData);
 
       //build position array
-      markers.forEach(function (marker) {
-        chartWaypoints.push(marker.position)
-        // console.log(chartWaypoints)
+    markers.forEach(function (marker) {
+      chartWaypoints.push(marker.position)
+    })
+
+    getRouteElevations().then(function (routeElevations) {
+      getWaypointElevations().then(function (waypointElevations) {
+        createChart(routeElevations, waypointElevations);
       })
-      //build elevation array from positions
-      elevator.getElevationForLocations({
-        'locations': chartWaypoints
-      }, waypointData)
+    });
 
-      window.setTimeout(chartGraph, 1000);
+    function getRouteElevations(){
+      return new Promise(function (resolve, reject) {
+        elevator.getElevationAlongPath({
+          'path': markers,
+          'samples': 200
+        }, function (elevations, status){
+            var data = [];
+            data[0]={x: 0, y: elevations[0].elevation*metersFeetConversion};
+            var resolution = vm.pathLength/elevations.length* metersMilesConversion;
+            for (var i=1; i<elevations.length; i++){
+              data[i] = {x: resolution * i,
+                          y: elevations[i].elevation*metersFeetConversion}
+            }
+          resolve(data);
+        });
+      })
+    }
 
-
-      function waypointData (waypointElevations, status) {
-        // console.log(waypointElevations);
-        // console.log(status)
-        let metersFeetConversion = 3.28084;
-        let metersMilesConversion = 0.000621371;
-        for (var i=0; i<markers.length; i++){
-          data2[i] = {x: markers[i].totalDistance*metersMilesConversion,
-                      y: waypointElevations[i].elevation*metersFeetConversion}
-        }
-        // pathLength = data2[markers.length-1].x;
-      }
-
-      function elevationData(elevations, status){
-        // console.log(elevations, status)
-        // console.log('elevationsArray ', elevationsArray)
-
-        let metersFeetConversion = 3.28084;
-        let metersMilesConversion = 0.000621371;
-        data1[0]={x: 0, y: elevations[0].elevation*metersFeetConversion};
-
-        // console.log("elevations", elevations);
-        // console.log("elevations.length", elevations.length, "pathlength", pathlength)
-
-        var resolution = vm.pathLength/elevations.length* metersMilesConversion;
-
-        for (var i=1; i<elevations.length; i++){
-          data1[i] = {x: resolution * i,
+    function getWaypointElevations(){
+      return new Promise(function (resolve, reject) {
+        elevator.getElevationForLocations({
+        'locations': chartWaypoints,
+      }, function (elevations, status){
+          var data = [];
+          for (var i=0; i<markers.length; i++){
+          data[i] = {x: markers[i].totalDistance*metersMilesConversion,
                       y: elevations[i].elevation*metersFeetConversion}
         }
+          resolve(data);
+      });
+     })
+    }
 
-        // console.log("data1", data1)
-      }
 
-        // elevations.forEach(function (datapoint) {
-        //   elevationsArray.push(datapoint.elevation*metersFeetConversion);
-        //   elevationsResolutions.push(datapoint.resolution*metersMilesConversion);
-        // })
-        // elevationsResolutions.forEach(function (resolution, index) {
-        //     if (index % 4 === 0){
-        //       resolution = resolution * elevationsLabels.length
-        //       elevationsLabels.push(String(resolution.toFixed(2) + ' mi.'))
-        //     } else {
-        //       elevationsLabels.push("");
-        //     }
-        // })
+      // function waypointData (waypointElevations, status) {
+      //   for (var i=0; i<markers.length; i++){
+      //     data2[i] = {x: markers[i].totalDistance*metersMilesConversion,
+      //                 y: waypointElevations[i].elevation*metersFeetConversion}
+      //   }
+      // }
 
-        function chartGraph(){
+      // function elevationData(elevations, status){
+      //   data1[0]={x: 0, y: elevations[0].elevation*metersFeetConversion};
+      //   var resolution = vm.pathLength/elevations.length* metersMilesConversion;
+      //   for (var i=1; i<elevations.length; i++){
+      //     data1[i] = {x: resolution * i,
+      //                 y: elevations[i].elevation*metersFeetConversion}
+      //   }
+      // }
+
+
+      function createChart(routeElevations, waypointElevations){
         var ctx = document.getElementById('myChart');
-        // console.log(elevationsArray)
-
-        // console.log("data1", data1, "data2", data2)
         var data = {
-            // labels: elevationsLabels,
             datasets: [{
                 type: 'line',
                 label: 'Elevation',
-                data: data1,
+                data: routeElevations,
                 fill: true,
+                pointBorderColor: 'rgba(0, 0, 0, 0)',
+                pointBackgroundColor: 'rgba(0, 0, 0, 0)'
 
               }, {
                 type: 'line',
                 label: 'Waypoints',
-                data: data2,
+                data: waypointElevations,
                 fill: false,
                 borderColor: 'rgba(255,255,255,0)',
                 pointBorderColor: 'rgba(255, 0, 0, 1)',
@@ -324,13 +313,6 @@ function TrailsService ($http, $cookies, NgMap) {
               }
             ]
           }
-          // var dataset2 = {
-          //   // labels: elevationsLabels,
-          //   datasets: [{
-          //       label: 'Waypoints',
-          //       data: data2
-          //     }]
-          // }
           var options = {
               scales: {
                   xAxes: [{
@@ -340,67 +322,12 @@ function TrailsService ($http, $cookies, NgMap) {
               }
           }
 
-
-                // {
-                //     label: "Elevation",
-                //     fillColor: "#71BC2B",
-                //     strokeColor: "#71BC2B",
-                //     pointColor: "#71BC2B",
-                //     pointStrokeColor: "#71BC2B",
-                //     pointHighlightFill: "#71BC2B",
-                //     pointHighlightStroke: "#F08C00",
-                //     data: elevationsArray
-                // },
-                // {
-                //     label: "Waypoints",
-                //     fillColor: "#71BC2B",
-                //     strokeColor: "#71BC2B",
-                //     pointColor: "#71BC2B",
-                //     pointStrokeColor: "#71BC2B",
-                //     pointHighlightFill: "#71BC2B",
-                //     pointHighlightStroke: "#F08C00",
-                //     data:elevationsArray
-                // }
-            // ]
-
-        // console.log(datas.datasets)
-
         var myLineChart = new Chart(ctx, {
             type: 'bar',
             data: data,
             options: options
         });
 
-        // var myPointChart = new Chart(ctx, {
-        //     type: 'line',
-        //     data: dataset2,
-        //     options: options
-        // });
-
-
-        var data3 = [{
-            x: -10,
-            y: 0
-        }, {
-            x: 0,
-            y: 10
-        }, {
-            x: 10,
-            y: 5
-        }]
-        // console.log("data1", data1, "data2", data2)
-
-
-        // var scatterChart = new Chart(ctx, {
-        //     type: 'line',
-        //     data: {
-        //         datasets: [{
-        //             label: 'Scatter Dataset',
-        //             data: data1
-        //         }]
-        //     },
-        //     options: options
-        // });
       }
   }
 
@@ -427,7 +354,6 @@ function TrailsService ($http, $cookies, NgMap) {
       latlngbounds.extend(marker.position)
       map.fitBounds(latlngbounds);
     })
-    // console.log(markers[0].position, markers)
   }
 
 };
