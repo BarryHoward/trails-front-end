@@ -23,7 +23,7 @@ function TrailsService ($http, $cookies, NgMap) {
   }
 
   function loadMarker(map, markers, waypoint, draggable){
-    console.log("waypoint", waypoint)
+    // console.log("waypoint", waypoint)
     var myLatlng = new google.maps.LatLng(waypoint.lat, waypoint.lng)
     var marker = new google.maps.Marker({
         map: map,
@@ -217,9 +217,11 @@ function TrailsService ($http, $cookies, NgMap) {
      var chartWaypoints = [];
      var data1 = [];
      var data2 = [];
+     vm.pathLength = markers[markers.length-1].totalDistance;
+     console.log(markers)
      elevator.getElevationAlongPath({
         'path': markers,
-        'samples': 50
+        'samples': 200
       }, elevationData);
 
       //build position array
@@ -232,7 +234,7 @@ function TrailsService ($http, $cookies, NgMap) {
         'locations': chartWaypoints
       }, waypointData)
 
-      window.setTimeout(chartGraph, 2000);
+      window.setTimeout(chartGraph, 1000);
 
 
       function waypointData (waypointElevations, status) {
@@ -244,6 +246,7 @@ function TrailsService ($http, $cookies, NgMap) {
           data2[i] = {x: markers[i].totalDistance*metersMilesConversion,
                       y: waypointElevations[i].elevation*metersFeetConversion}
         }
+        // pathLength = data2[markers.length-1].x;
       }
 
       function elevationData(elevations, status){
@@ -254,8 +257,13 @@ function TrailsService ($http, $cookies, NgMap) {
         let metersMilesConversion = 0.000621371;
         data1[0]={x: 0, y: elevations[0].elevation*metersFeetConversion};
 
+        // console.log("elevations", elevations);
+        // console.log("elevations.length", elevations.length, "pathlength", pathlength)
+
+        var resolution = vm.pathLength/elevations.length* metersMilesConversion;
+
         for (var i=1; i<elevations.length; i++){
-          data1[i] = {x: data1[i-1].x+ elevations[i].resolution*metersMilesConversion,
+          data1[i] = {x: resolution * i,
                       y: elevations[i].elevation*metersFeetConversion}
         }
 
@@ -280,17 +288,31 @@ function TrailsService ($http, $cookies, NgMap) {
         // console.log(elevationsArray)
 
         // console.log("data1", data1, "data2", data2)
-        var datas = {
+        var data = {
             // labels: elevationsLabels,
             datasets: [{
+                type: 'line',
                 label: 'Elevation',
-                data: data1
+                data: data1,
+                fill: true,
+
               }, {
-                label: 'waypoint',
-                data: data2
+                type: 'line',
+                label: 'Waypoints',
+                data: data2,
+                fill: false,
+                borderColor: 'rgba(255,255,255,0)',
+                pointBorderColor: 'rgba(255, 0, 0, 1)'
               }
             ]
           }
+          // var dataset2 = {
+          //   // labels: elevationsLabels,
+          //   datasets: [{
+          //       label: 'Waypoints',
+          //       data: data2
+          //     }]
+          // }
           var options = {
               scales: {
                   xAxes: [{
@@ -323,13 +345,19 @@ function TrailsService ($http, $cookies, NgMap) {
                 // }
             // ]
 
-        console.log(datas.datasets)
+        // console.log(datas.datasets)
 
         var myLineChart = new Chart(ctx, {
-            type: 'line',
-            data: datas,
+            type: 'bar',
+            data: data,
             options: options
         });
+
+        // var myPointChart = new Chart(ctx, {
+        //     type: 'line',
+        //     data: dataset2,
+        //     options: options
+        // });
 
 
         var data3 = [{
@@ -381,7 +409,7 @@ function TrailsService ($http, $cookies, NgMap) {
       latlngbounds.extend(marker.position)
       map.fitBounds(latlngbounds);
     })
-    console.log(markers[0].position, markers)
+    // console.log(markers[0].position, markers)
   }
 
 };
