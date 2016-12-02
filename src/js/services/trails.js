@@ -12,6 +12,7 @@ function TrailsService ($http, $cookies, NgMap) {
   vm.deleteTrail = deleteTrail;
   vm.newTrail = newTrail;
   vm.getElevation = getElevation;
+  vm.initMap = initMap;
 
   function getMap(id){
      return NgMap.getMap(id)
@@ -22,6 +23,7 @@ function TrailsService ($http, $cookies, NgMap) {
   }
 
   function loadMarker(map, markers, waypoint, draggable){
+    // console.log("waypoint", waypoint)
     var myLatlng = new google.maps.LatLng(waypoint.lat, waypoint.lng)
     var marker = new google.maps.Marker({
         map: map,
@@ -29,7 +31,8 @@ function TrailsService ($http, $cookies, NgMap) {
         animation: google.maps.Animation.DROP,
         position: myLatlng,
         lat: myLatlng.lat(),
-        lng: myLatlng.lng()
+        lng: myLatlng.lng(),
+        totalDistance: waypoint.totalDistance
     });
     markers.push(marker);
     if (draggable){
@@ -76,20 +79,22 @@ function TrailsService ($http, $cookies, NgMap) {
           lng: location.latLng.lng(),
       });
 
-      if (vm.insert === "midInsert"){
+      if (vm.insert === "midInsert" && markers.length>0){
         var newIndex = midInsert(markers, location, marker)
       } else if (vm.insert === "frontInsert") {
         markers.unshift(marker);
         var newIndex = 0;
-      } else if (vm.insert === "backInsert") {
+      } else {
         markers.push(marker);
         var newIndex = markers.length-1;
       }
       dragListener(marker, markers, map)
       deleteListener(marker, markers, map)
-      vm.drawLine(map, markers);
       updateDist(newIndex, markers);
-      vm.getElevation(markers);
+      vm.drawLine(map, markers);
+      if(markers.length !== 1) {
+        vm.getElevation(markers);
+      }
     }
   }
 
@@ -114,13 +119,29 @@ function TrailsService ($http, $cookies, NgMap) {
           let markMin = markers[minIndex];
           let markAfter = markers[minIndex +1];
 
-          let beforeAngle = Math.asin((markBefore.lng - markMin.lng)/Math.sqrt(Math.pow((markBefore.lng-markMin.lng),2)+Math.pow((markBefore.lat-markMin.lat),2)));
-          let afterAngle = Math.asin((markAfter.lng - markMin.lng)/Math.sqrt(Math.pow((markAfter.lng-markMin.lng),2)+Math.pow((markAfter.lat-markMin.lat),2)));
-          let newAngle = Math.asin((marker.lng - markMin.lng)/Math.sqrt(Math.pow((marker.lng-markMin.lng),2)+Math.pow((marker.lat-markMin.lat),2)));
+          let beforeV = {y: markBefore.lat - markMin.lat, x: markBefore.lng - markMin.lng}
+          let afterV = {y: markAfter.lat - markMin.lat, x: markAfter.lng - markMin.lng}
+          let newV = {y: marker.lat - markMin.lat, x: marker.lng - markMin.lng}
 
-          let beforeDif = Math.PI - Math.abs(Math.PI - Math.abs(beforeAngle - newAngle));
-          let afterDif = Math.PI - Math.abs(Math.PI - Math.abs(afterAngle - newAngle));
+          let beforeA = Math.asin(beforeV.y/(Math.sqrt(Math.pow(beforeV.x, 2)+ Math.pow(beforeV.y, 2))));
+          let afterA = Math.asin(afterV.y/(Math.sqrt(Math.pow(afterV.x, 2)+ Math.pow(afterV.y, 2))));
+          let newA = Math.asin(newV.y/(Math.sqrt(Math.pow(newV.x, 2)+ Math.pow(newV.y, 2))));
+          if (beforeV.x<0){
+              beforeA = Math.PI - beforeA;
+          }
+          if (afterV.x<0){
+              afterA = Math.PI - afterA;
+          }
+          if (newV.x<0){
+              newA = Math.PI - newA;
+          }          
 
+          let beforeDif = Math.min((2 * Math.PI) - Math.abs(beforeA - newA), Math.abs(beforeA - newA))
+          let afterDif = Math.min((2 * Math.PI) - Math.abs(afterA - newA), Math.abs(afterA - newA))
+
+          // console.log("MarkBefore", {lat: markBefore.lat, ling: markBefore.lng},  "MarkAfter", {lat: markAfter.lat, lng: markAfter.lng}, "MarkMin", {lat: markMin.lat, ling:markMin.lng})
+          // console.log("beforeV: ", beforeV, "afterV: ", afterV, "newV: ", newV)
+          console.log("beforeA: ", beforeA, "afterA: ", afterA, "newA: ", newA)
           // console.log(beforeAngle, newAngle, afterAngle)
           // console.log(beforeDif, afterDif)
 
@@ -149,27 +170,28 @@ function TrailsService ($http, $cookies, NgMap) {
           return;
         }
       } else if (index === markers.length-1){
-        var path = vm.line.getPath().getArray().slice(index-1, index+1);
-        markers[index].totalDistance = markers[index-1].totalDistance + google.maps.geometry.spherical.computeLength(path)
+        var path = vm.line.getPath().getArray().slice(index-2);
+        var distAdded = markers[index-1].totalDistance + google.maps.geometry.spherical.computeLength(path)
+        markers[index].totalDistance = distAdded;
         return;
       } else {
         // add to mid
         prevDistance = markers[index+1].totalDistance - markers[index-1].totalDistance;
         prevToNew =  google.maps.geometry.spherical.computeDistanceBetween (markers[index-1].position, markers[index].position);
         markers[index].totalDistance = markers[index-1].totalDistance + prevToNew;
-      } 
+      }
 
       // update other values
       var newToNext =  google.maps.geometry.spherical.computeDistanceBetween (markers[index].position, markers[index+1].position);
       var newDistance = prevToNew + newToNext;
       var distanceChange = newDistance - prevDistance;
-      
+
       for (var i=index+1; i<markers.length; i++){
           markers[i].totalDistance += distanceChange;
       }
 
       for (var j=0; j<markers.length; j++){
-        console.log(j, markers[j].totalDistance)
+        // console.log(j, markers[j].totalDistance)
       }
 
       // for (var i=index; i<markers.length; i++){
@@ -200,59 +222,185 @@ function TrailsService ($http, $cookies, NgMap) {
 
     addLine.setMap(map);
     vm.line = addLine;
-    
+
   }
 
   function getElevation(markers){
+    // console.log("elevation")
      var elevator = new google.maps.ElevationService;
      var elevationsArray = [];
      var elevationsLabels = [];
      var elevationsResolutions = [];
+     var chartWaypoints = [];
+     var data1 = [];
+     var data2 = [];
+     vm.pathLength = markers[markers.length-1].totalDistance;
+     // console.log(markers)
      elevator.getElevationAlongPath({
         'path': markers,
-        'samples': 50
-      }, plotElevation);
+        'samples': 200
+      }, elevationData);
 
-      function plotElevation(elevations, status){
-        console.log(elevations, status)
+      //build position array
+      markers.forEach(function (marker) {
+        chartWaypoints.push(marker.position)
+        // console.log(chartWaypoints)
+      })
+      //build elevation array from positions
+      elevator.getElevationForLocations({
+        'locations': chartWaypoints
+      }, waypointData)
+
+      window.setTimeout(chartGraph, 1000);
+
+
+      function waypointData (waypointElevations, status) {
+        // console.log(waypointElevations);
+        // console.log(status)
         let metersFeetConversion = 3.28084;
         let metersMilesConversion = 0.000621371;
-        elevations.forEach(function (datapoint) {
-          elevationsArray.push(datapoint.elevation*metersFeetConversion);
-          elevationsResolutions.push(datapoint.resolution*metersMilesConversion);
-        })
-        elevationsResolutions.forEach(function (resolution, index) {
-            if (index % 4 === 0){
-              resolution = resolution * elevationsLabels.length
-              elevationsLabels.push(String(resolution.toFixed(2) + ' mi.'))
-            } else {
-              elevationsLabels.push("");
-            }
-        })
+        for (var i=0; i<markers.length; i++){
+          data2[i] = {x: markers[i].totalDistance*metersMilesConversion,
+                      y: waypointElevations[i].elevation*metersFeetConversion}
+        }
+        // pathLength = data2[markers.length-1].x;
+      }
+
+      function elevationData(elevations, status){
+        // console.log(elevations, status)
+        // console.log('elevationsArray ', elevationsArray)
+
+        let metersFeetConversion = 3.28084;
+        let metersMilesConversion = 0.000621371;
+        data1[0]={x: 0, y: elevations[0].elevation*metersFeetConversion};
+
+        // console.log("elevations", elevations);
+        // console.log("elevations.length", elevations.length, "pathlength", pathlength)
+
+        var resolution = vm.pathLength/elevations.length* metersMilesConversion;
+
+        for (var i=1; i<elevations.length; i++){
+          data1[i] = {x: resolution * i,
+                      y: elevations[i].elevation*metersFeetConversion}
+        }
+
+        // console.log("data1", data1)
+      }
+
+        // elevations.forEach(function (datapoint) {
+        //   elevationsArray.push(datapoint.elevation*metersFeetConversion);
+        //   elevationsResolutions.push(datapoint.resolution*metersMilesConversion);
+        // })
+        // elevationsResolutions.forEach(function (resolution, index) {
+        //     if (index % 4 === 0){
+        //       resolution = resolution * elevationsLabels.length
+        //       elevationsLabels.push(String(resolution.toFixed(2) + ' mi.'))
+        //     } else {
+        //       elevationsLabels.push("");
+        //     }
+        // })
+
+        function chartGraph(){
         var ctx = document.getElementById('myChart');
+        // console.log(elevationsArray)
+
+        // console.log("data1", data1, "data2", data2)
         var data = {
-            labels: elevationsLabels,
-            datasets: [
-                {
-                    label: "Elevation",
-                    fillColor: "#71BC2B",
-                    strokeColor: "#71BC2B",
-                    pointColor: "#71BC2B",
-                    pointStrokeColor: "#71BC2B",
-                    pointHighlightFill: "#71BC2B",
-                    pointHighlightStroke: "#F08C00",
-                    data: elevationsArray
-                }
+            // labels: elevationsLabels,
+            datasets: [{
+                type: 'line',
+                label: 'Elevation',
+                data: data1,
+                fill: true,
+
+              }, {
+                type: 'line',
+                label: 'Waypoints',
+                data: data2,
+                fill: false,
+                borderColor: 'rgba(255,255,255,0)',
+                pointBorderColor: 'rgba(255, 0, 0, 1)',
+                pointBackgroundColor: 'rgba(255, 0, 0, 1)'
+              }
             ]
-        };
-        var options = {
-            scaleShowVerticalLines: false
-        };
+          }
+          // var dataset2 = {
+          //   // labels: elevationsLabels,
+          //   datasets: [{
+          //       label: 'Waypoints',
+          //       data: data2
+          //     }]
+          // }
+          var options = {
+              scales: {
+                  xAxes: [{
+                      type: 'linear',
+                      position: 'bottom'
+                  }]
+              }
+          }
+
+
+                // {
+                //     label: "Elevation",
+                //     fillColor: "#71BC2B",
+                //     strokeColor: "#71BC2B",
+                //     pointColor: "#71BC2B",
+                //     pointStrokeColor: "#71BC2B",
+                //     pointHighlightFill: "#71BC2B",
+                //     pointHighlightStroke: "#F08C00",
+                //     data: elevationsArray
+                // },
+                // {
+                //     label: "Waypoints",
+                //     fillColor: "#71BC2B",
+                //     strokeColor: "#71BC2B",
+                //     pointColor: "#71BC2B",
+                //     pointStrokeColor: "#71BC2B",
+                //     pointHighlightFill: "#71BC2B",
+                //     pointHighlightStroke: "#F08C00",
+                //     data:elevationsArray
+                // }
+            // ]
+
+        // console.log(datas.datasets)
+
         var myLineChart = new Chart(ctx, {
-            type: 'line',
+            type: 'bar',
             data: data,
             options: options
         });
+
+        // var myPointChart = new Chart(ctx, {
+        //     type: 'line',
+        //     data: dataset2,
+        //     options: options
+        // });
+
+
+        var data3 = [{
+            x: -10,
+            y: 0
+        }, {
+            x: 0,
+            y: 10
+        }, {
+            x: 10,
+            y: 5
+        }]
+        // console.log("data1", data1, "data2", data2)
+
+
+        // var scatterChart = new Chart(ctx, {
+        //     type: 'line',
+        //     data: {
+        //         datasets: [{
+        //             label: 'Scatter Dataset',
+        //             data: data1
+        //         }]
+        //     },
+        //     options: options
+        // });
       }
   }
 
@@ -265,11 +413,21 @@ function TrailsService ($http, $cookies, NgMap) {
   }
 
   function newTrail(newTrail){
+    console.log(newTrail)
       $http.post(`${SERVER}trails`, newTrail).then((resp) => {
         console.log(resp.data)
       }, (reject) => {
         console.log(reject)
       });
+  }
+
+  function initMap(map, markers) {
+    var latlngbounds = new google.maps.LatLngBounds();
+    markers.forEach(function (marker) {
+      latlngbounds.extend(marker.position)
+      map.fitBounds(latlngbounds);
+    })
+    // console.log(markers[0].position, markers)
   }
 
 };
