@@ -24,6 +24,7 @@ function TrailUpdateController (MapsService, $stateParams, $scope) {
         vm.markers = MapInfo.markers;
         vm.trailTitle = MapInfo.title;
         vm.map = map;
+        vm.map.setMapTypeId('terrain');
         $scope.$apply();
       });
     })

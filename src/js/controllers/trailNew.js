@@ -18,6 +18,7 @@ function TrailNewController (MapsService, $scope) {
     vm.MapsService.insert = "backInsert";
     MapsService.getMap(mapId).then(function (map) {
       vm.map = map;
+      vm.map.setMapTypeId('terrain');
     })
     var infoWindow = new google.maps.InfoWindow({map: vm.map});
     vm.someFunction(infoWindow);
