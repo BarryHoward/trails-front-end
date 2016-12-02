@@ -1,6 +1,6 @@
 const mapId = "trailNewMap"
 
-function TrailNewController (TrailsService) {
+function TrailNewController (TrailsService, $scope) {
 
   let vm = this;
 
@@ -8,6 +8,7 @@ function TrailNewController (TrailsService) {
   vm.addNewTrail = addNewTrail;
   vm.TrailsService = TrailsService;
   vm.geocodeAddress = geocodeAddress;
+  vm.someFunction = someFunction;
 
   const Geocoder = new google.maps.Geocoder();
 
@@ -17,11 +18,31 @@ function TrailNewController (TrailsService) {
     vm.TrailsService.insert = "backInsert";
     TrailsService.getMap(mapId).then(function (map) {
       vm.map = map;
-      console.log(vm.map)
     })
     var infoWindow = new google.maps.InfoWindow({map: vm.map});
+    vm.someFunction(infoWindow);
+  }
 
-    if (navigator.geolocation) {
+  init();
+
+  function addNewTrail(){
+    vm.status = "Saving Trail...";
+    TrailsService.newTrail(vm.markers, vm.trailTitle)
+      .then(function (resp) {
+        vm.status = "Trail Saved";
+        $scope.$apply();
+      })
+  }
+
+  function placeMarker(event){
+    TrailsService.placeMarker(vm.markers, vm.map, event);
+  }
+
+// Jack's weird centering shit -----------------------------------
+
+
+  function someFunction(infoWindow){
+        if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function(position) {
         var pos = {
           lat: position.coords.latitude,
@@ -38,11 +59,7 @@ function TrailNewController (TrailsService) {
     }
   }
 
-  init();
-
   function geocodeAddress() {
-    console.log(vm.address);
-    console.log(vm.map)
     Geocoder.geocode({'address': vm.address}, function(results, status) {
           if (status === 'OK') {
             vm.map.setCenter(results[0].geometry.location);
@@ -53,26 +70,6 @@ function TrailNewController (TrailsService) {
         });
   }
 
-  function placeMarker(event){
-    TrailsService.placeMarker(vm.markers, vm.map, event);
-  }
-
-
-  function addNewTrail(trailData) {
-    let newTrail = {};
-    newTrail.waypoints = [];
-    vm.markers.forEach(function (marker) {
-      let waypoint = {};
-      waypoint.lat = marker.lat;
-      waypoint.lng = marker.lng;
-      waypoint.totalDistance = marker.totalDistance;
-      newTrail.waypoints.push(waypoint);
-    });
-    newTrail.title = vm.trailTitle;
-
-    TrailsService.newTrail(newTrail);
-  }
-
   function handleLocationError(browserHasGeolocation, infoWindow, pos) {
         infoWindow.setPosition(pos);
         infoWindow.setContent(browserHasGeolocation ?
@@ -80,7 +77,9 @@ function TrailNewController (TrailsService) {
                               'Error: Your browser doesn\'t support geolocation.');
       }
 
+// -----------------------------------------
+
 }
 
-TrailNewController.$inject = ['TrailsService'];
+TrailNewController.$inject = ['TrailsService', '$scope'];
 export { TrailNewController }

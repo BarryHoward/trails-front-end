@@ -1,5 +1,7 @@
 <h2>Hello from New Trail Template!</h2>
 
+<h2>{{trailNew.status}}</h2>
+
 <h1 class="title">Add a New Trail</h1>
 
   <form name="new-trail" ng-submit="trailNew.addNewTrail(trail)">
@@ -29,7 +31,7 @@
     <button class="geocode" ng-click="trailNew.geocodeAddress()" type="button">Geocode</button>
   </form>
 
-<ng-map id="trailNewMap" on-click="trailNew.placeMarker($event)" center="[40.74, -74.18]">
+<ng-map id="trailNewMap" on-click="trailNew.placeMarker($event)">
 	<!-- <marker position="[40.74, -74.18]"></marker> -->
 </ng-map>
 <br>

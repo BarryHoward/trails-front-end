@@ -1,6 +1,4 @@
-function TrailsService ($http, $cookies, NgMap) {
-
-  const SERVER = "https://trails-back-end.herokuapp.com/"
+function TrailsService (HttpService, $cookies, NgMap, ChartsService) {
 
   let vm = this;
   vm.drawLine = drawLine;
@@ -11,15 +9,30 @@ function TrailsService ($http, $cookies, NgMap) {
   vm.updateTrail = updateTrail;
   vm.deleteTrail = deleteTrail;
   vm.newTrail = newTrail;
-  vm.getElevation = getElevation;
   vm.initMap = initMap;
+
 
   function getMap(id){
      return NgMap.getMap(id)
   }
 
-  function getTrail(trail_id){
-    return $http.get(`${SERVER}trails/${trail_id}`)
+  function getTrail(id, map){
+    return new Promise(function (resolve, reject) {
+    HttpService.getTrail(id).then(
+      (resp) => {
+        var markers = [];
+        resp.data.waypoints.forEach(function (waypoint) {
+          vm.loadMarker(map, markers, waypoint, true)
+        });
+        vm.drawLine(map, markers)
+        vm.initMap(map, markers);
+        ChartsService.chart(markers);
+        var Trail = {markers: markers, title: resp.data.trailInfo.title}
+        resolve(Trail);
+      }, (reject) => {
+          console.log(reject)
+      });
+    })
   }
 
   function loadMarker(map, markers, waypoint, draggable){
@@ -46,9 +59,8 @@ function TrailsService ($http, $cookies, NgMap) {
       google.maps.event.addListener(marker, 'dragend', function (event){
         marker.lat = marker.getPosition().lat();
         marker.lng = marker.getPosition().lng();
-        var index = markers.indexOf(marker);
         vm.drawLine(map, markers);
-        updateDist(index, markers);
+        updateDist(markers);
     })
   }
 
@@ -61,7 +73,7 @@ function TrailsService ($http, $cookies, NgMap) {
           }
           marker.setMap(null);
           vm.drawLine(map, markers);
-          updateDist(index, markers);
+          updateDist(markers);
         }
     })
   }
@@ -83,20 +95,18 @@ function TrailsService ($http, $cookies, NgMap) {
       });
 
       if (vm.insert === "midInsert" && markers.length>0){
-        var newIndex = midInsert(markers, location, marker)
+        midInsert(markers, location, marker)
       } else if (vm.insert === "frontInsert") {
         markers.unshift(marker);
-        var newIndex = 0;
       } else {
         markers.push(marker);
-        var newIndex = markers.length-1;
       }
       dragListener(marker, markers, map)
       deleteListener(marker, markers, map)
-      updateDist(newIndex, markers);
+      updateDist(markers);
       vm.drawLine(map, markers);
       if(markers.length !== 1) {
-        vm.getElevation(markers);
+        ChartsService.chart(markers);
       }
     }
   }
@@ -152,52 +162,20 @@ function TrailsService ($http, $cookies, NgMap) {
       }
   }
 
-  function updateDist (index, markers){
-    var prevDistance;
-    var prevToNew;
-    // add to front
-    if (index === 0){
-      markers[0].totalDistance = 0;
-      prevDistance = 0;
-      prevToNew = 0;
+  function updateDist (markers){
 
-      // if only marker, leave function
-      if (markers.length === 1){
-        return;
+    for (var i=0; i<markers.length; i++){
+      if (i===0){
+        markers[i].totalDistance =0;
+      } else {
+        var distAdded = google.maps.geometry.spherical.computeDistanceBetween(markers[i-1].position, markers[i].position)
+        markers[i].totalDistance = markers[i-1].totalDistance + distAdded;
+        console.log(markers[i].totalDistance)
       }
-    } else if (index === markers.length-1){
-      // var path = vm.line.getPath().getArray().slice(index-2);
-      var distAdded = markers[index-1].totalDistance + google.maps.geometry.spherical.computeDistanceBetween(markers[index-1].position, markers[index].position)
-      markers[index].totalDistance = distAdded;
-      return;
-    } else {
-      // add to mid
-      prevDistance = markers[index+1].totalDistance - markers[index-1].totalDistance;
-      prevToNew =  google.maps.geometry.spherical.computeDistanceBetween (markers[index-1].position, markers[index].position);
-      markers[index].totalDistance = markers[index-1].totalDistance + prevToNew;
     }
-
-    // update other values
-    var newToNext =  google.maps.geometry.spherical.computeDistanceBetween (markers[index].position, markers[index+1].position);
-    var newDistance = prevToNew + newToNext;
-    var distanceChange = newDistance - prevDistance;
-
-    for (var i=index+1; i<markers.length; i++){
-        markers[i].totalDistance += distanceChange;
-    }
-
-    // for (var i=index; i<markers.length; i++){
-    //   console.log(i)
-    //   var curMark = markers[i];
-    //   var path = vm.line.getPath().getArray().slice(0, i+1);
-    //   curMark.totalDistance = google.maps.geometry.spherical.computeLength(path)
-    // }
-    // console.log(markers)
   }
 
 //  Place Marker -----------------------------------------------------
-
-
 
   function drawLine(map, markers) {
     if (vm.line){
@@ -215,144 +193,57 @@ function TrailsService ($http, $cookies, NgMap) {
     vm.line = addLine;
   }
 
-  function getElevation(markers){
-    const metersFeetConversion = 3.28084;
-    const metersMilesConversion = 0.000621371;
-     var elevator = new google.maps.ElevationService;
-     var elevationsArray = [];
-     var elevationsLabels = [];
-     var elevationsResolutions = [];
-     var chartWaypoints = [];
-     var data1 = [];
-     var data2 = [];
-     var routeElevations = [];
-     var waypointElevations = [];
-     vm.pathLength = markers[markers.length-1].totalDistance;
-
-      //build position array
-    markers.forEach(function (marker) {
-      chartWaypoints.push(marker.position)
-    })
-
-    getRouteElevations().then(function (routeElevations) {
-      getWaypointElevations().then(function (waypointElevations) {
-        createChart(routeElevations, waypointElevations);
-      })
-    });
-
-    function getRouteElevations(){
-      return new Promise(function (resolve, reject) {
-        elevator.getElevationAlongPath({
-          'path': markers,
-          'samples': 200
-        }, function (elevations, status){
-            var data = [];
-            data[0]={x: 0, y: elevations[0].elevation*metersFeetConversion};
-            var resolution = vm.pathLength/elevations.length* metersMilesConversion;
-            for (var i=1; i<elevations.length; i++){
-              data[i] = {x: resolution * i,
-                          y: elevations[i].elevation*metersFeetConversion}
-            }
-          resolve(data);
-        });
-      })
-    }
-
-    function getWaypointElevations(){
-      return new Promise(function (resolve, reject) {
-        elevator.getElevationForLocations({
-        'locations': chartWaypoints,
-      }, function (elevations, status){
-          var data = [];
-          for (var i=0; i<markers.length; i++){
-          data[i] = {x: markers[i].totalDistance*metersMilesConversion,
-                      y: elevations[i].elevation*metersFeetConversion}
-        }
-          resolve(data);
-      });
-     })
-    }
-
-
-      // function waypointData (waypointElevations, status) {
-      //   for (var i=0; i<markers.length; i++){
-      //     data2[i] = {x: markers[i].totalDistance*metersMilesConversion,
-      //                 y: waypointElevations[i].elevation*metersFeetConversion}
-      //   }
-      // }
-
-      // function elevationData(elevations, status){
-      //   data1[0]={x: 0, y: elevations[0].elevation*metersFeetConversion};
-      //   var resolution = vm.pathLength/elevations.length* metersMilesConversion;
-      //   for (var i=1; i<elevations.length; i++){
-      //     data1[i] = {x: resolution * i,
-      //                 y: elevations[i].elevation*metersFeetConversion}
-      //   }
-      // }
-
-
-      function createChart(routeElevations, waypointElevations){
-        var ctx = document.getElementById('myChart');
-        var data = {
-            datasets: [{
-                type: 'line',
-                label: 'Elevation',
-                data: routeElevations,
-                fill: true,
-                pointBorderColor: 'rgba(0, 0, 0, 0)',
-                pointBackgroundColor: 'rgba(0, 0, 0, 0)',
-                backgroundColor : 'rgba(155,122,61, .8)'
-
-              }, {
-                type: 'line',
-                label: 'Waypoints',
-                data: waypointElevations,
-                fill: false,
-                borderColor: 'rgba(255,255,255,0)',
-                pointBorderColor: 'rgba(255, 0, 0, 1)',
-                pointBackgroundColor: 'rgba(255, 0, 0, 1)'
-              }
-            ]
-          }
-          var options = {
-              scales: {
-                  xAxes: [{
-                      type: 'linear',
-                      position: 'bottom',
-                      ticks: {
-                        min: 0,
-                        // max: 3,
-                        beginAtZero: true
-                      }
-                  }]
-              }
-          }
-
-        var myLineChart = new Chart(ctx, {
-            type: 'bar',
-            data: data,
-            options: options
-        });
-
-      }
-  }
-
-  function updateTrail(newTrail, id) {
-      return $http.patch(`${SERVER}trails/${id}`, newTrail);
-  }
   function deleteTrail(id){
-    console.log("delete")
-    return $http.delete(`${SERVER}trails/${id}`);
+    return HttpService.deleteTrail(id);
   }
 
-  function newTrail(newTrail){
-    console.log(newTrail)
-      $http.post(`${SERVER}trails`, newTrail).then((resp) => {
-        console.log(resp.data)
-      }, (reject) => {
-        console.log(reject)
+  // --- Button Section -------
+
+  function newTrail (markers, trailTitle){
+    return new Promise(function (resolve, reject) {
+      let newTrail = {};
+      newTrail.waypoints = [];
+      markers.forEach(function (marker) {
+        let waypoint = {};
+        waypoint.lat = marker.lat;
+        waypoint.lng = marker.lng;
+        waypoint.totalDistance = marker.totalDistance;
+        newTrail.waypoints.push(waypoint);
       });
+      newTrail.title = trailTitle;
+      HttpService.newTrail(newTrail).then((resp) => {
+          console.log(resp.data)
+          resolve();
+        }, (reject) => {
+          console.log(reject)
+        });
+    })
   }
+
+  function updateTrail (markers, trailTitle, id){
+    return new Promise(function (resolve, reject) {
+      let newTrail = {};
+      newTrail.waypoints = [];
+      markers.forEach(function (marker) {
+        let waypoint = {};
+        waypoint.lat = marker.lat;
+        waypoint.lng = marker.lng;
+        waypoint.totalDistance = marker.totalDistance;
+        newTrail.waypoints.push(waypoint);
+      });
+      newTrail.title = trailTitle;
+      HttpService.updateTrail(newTrail, id).then((resp) => {
+          console.log(resp.data)
+          resolve();
+        }, (reject) => {
+          console.log(reject)
+        });
+    })
+  }
+
+  // -----------------------
+
+  // -- Jack's section ------
 
   function initMap(map, markers) {
     var latlngbounds = new google.maps.LatLngBounds();
@@ -362,7 +253,8 @@ function TrailsService ($http, $cookies, NgMap) {
     })
   }
 
+  // ---------------------------
 };
 
-TrailsService.$inject = ['$http', '$cookies', 'NgMap'];
+TrailsService.$inject = ['HttpService', '$cookies', 'NgMap', 'ChartsService'];
 export { TrailsService };

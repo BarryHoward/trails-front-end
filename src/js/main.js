@@ -17,7 +17,8 @@ import {TrailViewController} from "./controllers/trailView";
 
 import {UsersService} from "./services/users";
 import {TrailsService} from "./services/trails";
-
+import {ChartsService} from "./services/charts";  
+import {HttpService} from "./services/http";        
 
 
 angular.module('app', ['ngMap', 'ui.router', 'ngCookies', 'chart.js'])
@@ -32,3 +33,5 @@ angular.module('app', ['ngMap', 'ui.router', 'ngCookies', 'chart.js'])
 
 	.service('UsersService', UsersService)
 	.service('TrailsService', TrailsService)
+	.service('ChartsService', ChartsService)
+	.service('HttpService', HttpService)
