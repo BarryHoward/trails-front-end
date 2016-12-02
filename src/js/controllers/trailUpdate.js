@@ -1,84 +1,59 @@
 
 const mapId = "trailUpdateMap"
 
-function TrailUpdateController (TrailsService, $stateParams) {
+function TrailUpdateController (MapsService, $stateParams, $scope) {
   let vm = this;
+  const draggable = true;
 
-  vm.getTrail = getTrail;
   vm.placeMarker = placeMarker;
   vm.updateTrail = updateTrail;
   vm.deleteTrail = deleteTrail;
-  vm.TrailsService = TrailsService;
+  vm.MapsService = MapsService;
 
 
   function init () {
     let trail_id = $stateParams.id
     vm.markers = [];
     vm.status = "Update a Trail!"
-    vm.TrailsService.delete = false;
-    vm.TrailsService.insert = "midInsert";
+    vm.trailTitle = "Trail Title"
+    vm.MapsService.delete = false;
+    vm.MapsService.insert = "backInsert";
 
-
-    TrailsService.getMap(mapId).then(function (map) {
-      vm.map = map;
-
-      vm.getTrail(trail_id);
+    MapsService.getMap(mapId).then(function (map) {
+      MapsService.getTrail(trail_id, map, draggable).then(function (MapInfo){
+        vm.markers = MapInfo.markers;
+        vm.trailTitle = MapInfo.title;
+        vm.map = map;
+        $scope.$apply();
+      });
     })
   }
 
   init();
 
-
-  function getTrail(id){
-    TrailsService.getTrail(id).then(
-      (resp) => {
-        resp.data.waypoints.forEach(function (waypoint) {
-          TrailsService.loadMarker(vm.map, vm.markers, waypoint, true)
-        });
-        TrailsService.drawLine(vm.map, vm.markers)
-        TrailsService.getElevation(vm.markers);
-        TrailsService.initMap(vm.map, vm.markers);
-        vm.trailTitle = resp.data.trailInfo.title;
-        console.log("markers", vm.markers)
-      }, (reject) => {
-          console.log(reject)
-      });
-  }
-
   function placeMarker(event){
-    TrailsService.placeMarker(vm.markers, vm.map, event);
+    MapsService.placeMarker(vm.markers, vm.map, event);
   }
 
+  
   function updateTrail(){
-    let newTrail = {};
-    newTrail.waypoints = [];
-    vm.markers.forEach(function (marker) {
-      let waypoint = {};
-      waypoint.lat = marker.lat;
-      waypoint.lng = marker.lng;
-      waypoint.totalDistance = marker.totalDistance;
-      newTrail.waypoints.push(waypoint);
-    });
-    newTrail.title = vm.trailTitle;
-    TrailsService.updateTrail(newTrail, $stateParams.id).then((resp) => {
-        console.log(resp.data)
-        vm.status = "Trail Updated!"
-      }, (reject) => {
-        console.log(reject)
-      });
+    vm.status = "Trail Updating...";
+    MapsService.updateTrail(vm.markers, vm.trailTitle, $stateParams.id)
+      .then(function (resp) {
+        vm.status = "Update Completed";
+        $scope.$apply();
+      })
   }
 
   function deleteTrail(){
-    TrailsService.deleteTrail($stateParams.id).then((resp) => {
+    MapsService.deleteTrail($stateParams.id).then((resp) => {
       vm.status = "Trail Deleted!"
+      $scope.$apply();
     }, (reject) => {
         console.log(reject)
       });
   }
-
-
-
 }
 
-TrailUpdateController.$inject = ['TrailsService', '$stateParams'];
+TrailUpdateController.$inject = ['MapsService', '$stateParams', '$scope'];
 export {TrailUpdateController}
