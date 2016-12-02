@@ -9,7 +9,8 @@ import 'angular-chart.js';
 import {RootController} from "./controllers/root";
 import {HomeController} from "./controllers/home";
 import {TopTrailsController} from "./controllers/topTrails";
-import {LoginController} from './controllers/login'
+import {LoginController} from './controllers/login';
+import {RegistrationController} from './controllers/register';
 
 import {TrailController} from "./controllers/trail";
 import {TrailNewController} from "./controllers/trailNew";
@@ -31,6 +32,7 @@ angular.module('app', ['ngMap', 'ui.router', 'ngCookies', 'chart.js'])
 	.controller('TrailViewController', TrailViewController)
 	.controller('TopTrailsController', TopTrailsController)
 	.controller('LoginController', LoginController)
+	.controller('RegistrationController', RegistrationController)
 
 	.service('UsersService', UsersService)
 	.service('TrailsService', TrailsService)
