@@ -1,0 +1,17 @@
+<h2>Register!</h2>
+
+<form class="registration" ng-submit="register.create(user)" method="post">
+  <label>Username</label>
+  <input type="text" name="username"
+    required ng-model="user.username">
+  <br>
+  <label>Password</label>
+  <input type="text" name="password"
+    required ng-model="user.password">
+  <br>
+  <label>Email Address</label>
+  <input type="text" name="email"
+    required ng-model="user.email">
+  <br>
+  <button type="button" name="registerButton" ng-click="register.create(user)">Register</button>
+</form>

@@ -48,7 +48,6 @@ function TrailNewController (MapsService, $scope) {
           lat: position.coords.latitude,
           lng: position.coords.longitude
         };
-
         infoWindow.setPosition(pos);
         vm.map.setCenter(pos);
       }, function() {
