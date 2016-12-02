@@ -1,6 +1,6 @@
 function UsersService ($http, $cookies) {
 
-  const SERVER = "https://beach-house-backend.herokuapp.com/";
+  const SERVER = "https://trails-back-end.herokuapp.com/";
 
 
   let vm = this;
@@ -10,9 +10,9 @@ function UsersService ($http, $cookies) {
   // vm.isAdmin = isAdmin;
   // vm.setOwner = setOwner;
   // vm.logout = logout;
-  // vm.getHeaders = getHeaders;
+  vm.getHeaders = getHeaders;
   // vm.getAllOwners = getAllOwners;
-  // vm.newOwner = newOwner;
+  vm.newUser = newUser;
   // vm.newComment = newComment;
   // vm.getAllComments = getAllComments;
 
@@ -53,23 +53,23 @@ function UsersService ($http, $cookies) {
   //   return $http.get(`${SERVER}comments`)
   // }
   //
-  // function getHeaders () {
-  //   let token = $cookies.get('access_token');
-  //   return {
-  //     Authorization: `Bearer ${token}`
-  //   };
-  // }
+  function getHeaders () {
+    let token = $cookies.get('access_token');
+    return {
+      Authorization: `Bearer ${token}`
+    };
+  }
   //
-  // function newUser (info){
-  //   let req = {
-  //     url: `${SERVER}owners`,
-  //     data: info,
-  //     method: 'POST',
-  //     headers: vm.getHeaders()
-  //   };
-  //   return $http(req)
-  // }
-  //
+  function newUser (info){
+    let req = {
+      url: `${SERVER}users`,
+      data: info,
+      method: 'POST',
+      headers: vm.getHeaders()
+    };
+    return $http(req)
+  }
+
   //   function newComment (info){
   //     let req = {
   //       url: `${SERVER}comments`,

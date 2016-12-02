@@ -7,7 +7,8 @@ function LoginController (UsersService, $state) {
     console.log(userInfo)
     UsersService.login(userInfo).then(
       (resp) => {
-        $state.go('home')
+        $state.go('root.home')
+        console.log(resp)
       },
       (errors) => {
         console.log(errors)
