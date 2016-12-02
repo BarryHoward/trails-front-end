@@ -1,4 +1,4 @@
-function TrailsService (HttpService, $cookies, NgMap, ChartsService) {
+function MapsService (HttpService, ChartsService, NgMap) {
 
   let vm = this;
   vm.drawLine = drawLine;
@@ -16,13 +16,13 @@ function TrailsService (HttpService, $cookies, NgMap, ChartsService) {
      return NgMap.getMap(id)
   }
 
-  function getTrail(id, map){
+  function getTrail(id, map, draggable){
     return new Promise(function (resolve, reject) {
     HttpService.getTrail(id).then(
       (resp) => {
         var markers = [];
         resp.data.waypoints.forEach(function (waypoint) {
-          vm.loadMarker(map, markers, waypoint, true)
+          vm.loadMarker(map, markers, waypoint, draggable)
         });
         vm.drawLine(map, markers)
         vm.initMap(map, markers);
@@ -33,6 +33,22 @@ function TrailsService (HttpService, $cookies, NgMap, ChartsService) {
           console.log(reject)
       });
     })
+  }
+
+  function drawLine(map, markers) {
+    if (vm.line){
+      vm.line.setMap(null);
+    }
+    var addLine = new google.maps.Polyline({
+        path: markers,
+        geodesic: true,
+        strokeColor: '#FF0000',
+        strokeOpacity: 1.0,
+        strokeWeight: 2
+      });
+
+    addLine.setMap(map);
+    vm.line = addLine;
   }
 
   function loadMarker(map, markers, waypoint, draggable){
@@ -170,32 +186,11 @@ function TrailsService (HttpService, $cookies, NgMap, ChartsService) {
       } else {
         var distAdded = google.maps.geometry.spherical.computeDistanceBetween(markers[i-1].position, markers[i].position)
         markers[i].totalDistance = markers[i-1].totalDistance + distAdded;
-        console.log(markers[i].totalDistance)
       }
     }
   }
 
 //  Place Marker -----------------------------------------------------
-
-  function drawLine(map, markers) {
-    if (vm.line){
-      vm.line.setMap(null);
-    }
-    var addLine = new google.maps.Polyline({
-        path: markers,
-        geodesic: true,
-        strokeColor: '#FF0000',
-        strokeOpacity: 1.0,
-        strokeWeight: 2
-      });
-
-    addLine.setMap(map);
-    vm.line = addLine;
-  }
-
-  function deleteTrail(id){
-    return HttpService.deleteTrail(id);
-  }
 
   // --- Button Section -------
 
@@ -212,7 +207,6 @@ function TrailsService (HttpService, $cookies, NgMap, ChartsService) {
       });
       newTrail.title = trailTitle;
       HttpService.newTrail(newTrail).then((resp) => {
-          console.log(resp.data)
           resolve();
         }, (reject) => {
           console.log(reject)
@@ -233,12 +227,15 @@ function TrailsService (HttpService, $cookies, NgMap, ChartsService) {
       });
       newTrail.title = trailTitle;
       HttpService.updateTrail(newTrail, id).then((resp) => {
-          console.log(resp.data)
           resolve();
         }, (reject) => {
           console.log(reject)
         });
     })
+  }
+
+  function deleteTrail(id){
+    return HttpService.deleteTrail(id);
   }
 
   // -----------------------
@@ -256,5 +253,5 @@ function TrailsService (HttpService, $cookies, NgMap, ChartsService) {
   // ---------------------------
 };
 
-TrailsService.$inject = ['HttpService', '$cookies', 'NgMap', 'ChartsService'];
-export { TrailsService };
+MapsService.$inject = ['HttpService', 'ChartsService', 'NgMap'];
+export { MapsService };

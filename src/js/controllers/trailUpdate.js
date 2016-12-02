@@ -1,26 +1,26 @@
 
 const mapId = "trailUpdateMap"
 
-function TrailUpdateController (TrailsService, $stateParams, $scope) {
+function TrailUpdateController (MapsService, $stateParams, $scope) {
   let vm = this;
+  const draggable = true;
 
   vm.placeMarker = placeMarker;
   vm.updateTrail = updateTrail;
   vm.deleteTrail = deleteTrail;
-  vm.TrailsService = TrailsService;
+  vm.MapsService = MapsService;
 
 
   function init () {
     let trail_id = $stateParams.id
     vm.markers = [];
     vm.status = "Update a Trail!"
-    vm.TrailsService.delete = false;
-    vm.TrailsService.insert = "backInsert";
+    vm.trailTitle = "Trail Title"
+    vm.MapsService.delete = false;
+    vm.MapsService.insert = "backInsert";
 
-    TrailsService.getMap(mapId).then(function (map) {
-      console.log("got map")
-
-      TrailsService.getTrail(trail_id, map).then(function (MapInfo){
+    MapsService.getMap(mapId).then(function (map) {
+      MapsService.getTrail(trail_id, map, draggable).then(function (MapInfo){
         vm.markers = MapInfo.markers;
         vm.trailTitle = MapInfo.title;
         vm.map = map;
@@ -32,13 +32,13 @@ function TrailUpdateController (TrailsService, $stateParams, $scope) {
   init();
 
   function placeMarker(event){
-    TrailsService.placeMarker(vm.markers, vm.map, event);
+    MapsService.placeMarker(vm.markers, vm.map, event);
   }
 
   
   function updateTrail(){
     vm.status = "Trail Updating...";
-    TrailsService.updateTrail(vm.markers, vm.trailTitle, $stateParams.id)
+    MapsService.updateTrail(vm.markers, vm.trailTitle, $stateParams.id)
       .then(function (resp) {
         vm.status = "Update Completed";
         $scope.$apply();
@@ -46,17 +46,14 @@ function TrailUpdateController (TrailsService, $stateParams, $scope) {
   }
 
   function deleteTrail(){
-    TrailsService.deleteTrail($stateParams.id).then((resp) => {
+    MapsService.deleteTrail($stateParams.id).then((resp) => {
       vm.status = "Trail Deleted!"
       $scope.$apply();
     }, (reject) => {
         console.log(reject)
       });
   }
-
-
-
 }
 
-TrailUpdateController.$inject = ['TrailsService', '$stateParams', '$scope'];
+TrailUpdateController.$inject = ['MapsService', '$stateParams', '$scope'];
 export {TrailUpdateController}

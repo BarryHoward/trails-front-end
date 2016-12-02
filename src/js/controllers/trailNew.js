@@ -1,12 +1,12 @@
 const mapId = "trailNewMap"
 
-function TrailNewController (TrailsService, $scope) {
+function TrailNewController (MapsService, $scope) {
 
   let vm = this;
 
   vm.placeMarker = placeMarker;
   vm.addNewTrail = addNewTrail;
-  vm.TrailsService = TrailsService;
+  vm.MapsService = MapsService;
   vm.geocodeAddress = geocodeAddress;
   vm.someFunction = someFunction;
 
@@ -14,9 +14,9 @@ function TrailNewController (TrailsService, $scope) {
 
   function init () {
     vm.markers = [];
-    vm.TrailsService.delete = false;
-    vm.TrailsService.insert = "backInsert";
-    TrailsService.getMap(mapId).then(function (map) {
+    vm.MapsService.delete = false;
+    vm.MapsService.insert = "backInsert";
+    MapsService.getMap(mapId).then(function (map) {
       vm.map = map;
     })
     var infoWindow = new google.maps.InfoWindow({map: vm.map});
@@ -27,7 +27,7 @@ function TrailNewController (TrailsService, $scope) {
 
   function addNewTrail(){
     vm.status = "Saving Trail...";
-    TrailsService.newTrail(vm.markers, vm.trailTitle)
+    MapsService.newTrail(vm.markers, vm.trailTitle)
       .then(function (resp) {
         vm.status = "Trail Saved";
         $scope.$apply();
@@ -35,7 +35,7 @@ function TrailNewController (TrailsService, $scope) {
   }
 
   function placeMarker(event){
-    TrailsService.placeMarker(vm.markers, vm.map, event);
+    MapsService.placeMarker(vm.markers, vm.map, event);
   }
 
 // Jack's weird centering shit -----------------------------------
@@ -81,5 +81,5 @@ function TrailNewController (TrailsService, $scope) {
 
 }
 
-TrailNewController.$inject = ['TrailsService', '$scope'];
+TrailNewController.$inject = ['MapsService', '$scope'];
 export { TrailNewController }

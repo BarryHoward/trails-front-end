@@ -1,37 +1,27 @@
 const mapId = "trailViewMap";
 
-function TrailViewController (TrailsService, $stateParams) {
+function TrailViewController (MapsService, $stateParams, $scope) {
   let vm = this;
-
-  vm.getTrail = getTrail;
-  function init () {
-    let trail_id = $stateParams.id
-    vm.markers = [];
-
-    TrailsService.getMap(mapId).then(function (map) {
-      vm.map = map;
-      console.log(vm.map)
-      vm.getTrail(trail_id);
-    })
-  }
+  const draggable = false;
 
   init();
 
-  function getTrail(id){
-    TrailsService.getTrail(id).then(
-      (resp) => {
-        resp.data.waypoints.forEach(function (waypoint) {
-          TrailsService.loadMarker(vm.map, vm.markers, waypoint, false)
-        });
-        TrailsService.drawLine(vm.map, vm.markers);
-        TrailsService.getElevation(vm.markers);
-        TrailsService.initMap(vm.map, vm.markers);
-        vm.trailTitle = resp.data.trailInfo.title;
-      }, (reject) => {
-          console.log(reject)
+  function init () {
+    let trail_id = $stateParams.id
+    vm.markers = [];
+    vm.status = "View a Trail!"
+
+    MapsService.getMap(mapId).then(function (map) {
+      MapsService.getTrail(trail_id, map, draggable).then(function (MapInfo){
+        vm.markers = MapInfo.markers;
+        vm.trailTitle = MapInfo.title;
+        vm.map = map;
+        $scope.$apply();
       });
+    })
   }
+
 }
 
-TrailViewController.$inject = ['TrailsService', '$stateParams'];
+TrailViewController.$inject = ['MapsService', '$stateParams', '$scope'];
 export {TrailViewController}
