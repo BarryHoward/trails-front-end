@@ -79,12 +79,12 @@ function TrailsService ($http, $cookies, NgMap) {
           lng: location.latLng.lng(),
       });
 
-      if (vm.insert === "midInsert"){
+      if (vm.insert === "midInsert" && markers.length>0){
         var newIndex = midInsert(markers, location, marker)
       } else if (vm.insert === "frontInsert") {
         markers.unshift(marker);
         var newIndex = 0;
-      } else if (vm.insert === "backInsert") {
+      } else {
         markers.push(marker);
         var newIndex = markers.length-1;
       }
@@ -119,13 +119,29 @@ function TrailsService ($http, $cookies, NgMap) {
           let markMin = markers[minIndex];
           let markAfter = markers[minIndex +1];
 
-          let beforeAngle = Math.asin((markBefore.lng - markMin.lng)/Math.sqrt(Math.pow((markBefore.lng-markMin.lng),2)+Math.pow((markBefore.lat-markMin.lat),2)));
-          let afterAngle = Math.asin((markAfter.lng - markMin.lng)/Math.sqrt(Math.pow((markAfter.lng-markMin.lng),2)+Math.pow((markAfter.lat-markMin.lat),2)));
-          let newAngle = Math.asin((marker.lng - markMin.lng)/Math.sqrt(Math.pow((marker.lng-markMin.lng),2)+Math.pow((marker.lat-markMin.lat),2)));
+          let beforeV = {y: markBefore.lat - markMin.lat, x: markBefore.lng - markMin.lng}
+          let afterV = {y: markAfter.lat - markMin.lat, x: markAfter.lng - markMin.lng}
+          let newV = {y: marker.lat - markMin.lat, x: marker.lng - markMin.lng}
 
-          let beforeDif = Math.PI - Math.abs(Math.PI - Math.abs(beforeAngle - newAngle));
-          let afterDif = Math.PI - Math.abs(Math.PI - Math.abs(afterAngle - newAngle));
+          let beforeA = Math.asin(beforeV.y/(Math.sqrt(Math.pow(beforeV.x, 2)+ Math.pow(beforeV.y, 2))));
+          let afterA = Math.asin(afterV.y/(Math.sqrt(Math.pow(afterV.x, 2)+ Math.pow(afterV.y, 2))));
+          let newA = Math.asin(newV.y/(Math.sqrt(Math.pow(newV.x, 2)+ Math.pow(newV.y, 2))));
+          if (beforeV.x<0){
+              beforeA = Math.PI - beforeA;
+          }
+          if (afterV.x<0){
+              afterA = Math.PI - afterA;
+          }
+          if (newV.x<0){
+              newA = Math.PI - newA;
+          }          
 
+          let beforeDif = Math.min((2 * Math.PI) - Math.abs(beforeA - newA), Math.abs(beforeA - newA))
+          let afterDif = Math.min((2 * Math.PI) - Math.abs(afterA - newA), Math.abs(afterA - newA))
+
+          // console.log("MarkBefore", {lat: markBefore.lat, ling: markBefore.lng},  "MarkAfter", {lat: markAfter.lat, lng: markAfter.lng}, "MarkMin", {lat: markMin.lat, ling:markMin.lng})
+          // console.log("beforeV: ", beforeV, "afterV: ", afterV, "newV: ", newV)
+          console.log("beforeA: ", beforeA, "afterA: ", afterA, "newA: ", newA)
           // console.log(beforeAngle, newAngle, afterAngle)
           // console.log(beforeDif, afterDif)
 
@@ -175,7 +191,7 @@ function TrailsService ($http, $cookies, NgMap) {
       }
 
       for (var j=0; j<markers.length; j++){
-        console.log(j, markers[j].totalDistance)
+        // console.log(j, markers[j].totalDistance)
       }
 
       // for (var i=index; i<markers.length; i++){
@@ -268,7 +284,7 @@ function TrailsService ($http, $cookies, NgMap) {
                       y: elevations[i].elevation*metersFeetConversion}
         }
 
-        console.log("data1", data1)
+        // console.log("data1", data1)
       }
 
         // elevations.forEach(function (datapoint) {
@@ -372,7 +388,7 @@ function TrailsService ($http, $cookies, NgMap) {
             x: 10,
             y: 5
         }]
-        console.log("data1", data1, "data2", data2)
+        // console.log("data1", data1, "data2", data2)
 
 
         // var scatterChart = new Chart(ctx, {
