@@ -1,13 +1,14 @@
 
 <h2>Login!</h2>
 
-<form class="login" ng-submit="login.login()" method="post">
+<form class="login" ng-submit="login.login(user)" method="post">
   <label>Username</label>
   <input type="text" name="username" value=""
-    ng-model="login.username">
-  <label for="">Password</label>
+    ng-model="user.username">
+  <label>Password</label>
   <input type="password" name="password" value=""
-    ng-model="login.password">
+    ng-model="user.password">
+  <button type="button" name="loginButton" ng-click="login.login(user)">Log in</button>
 </form>
 <p>
   <small>
