@@ -23,6 +23,11 @@ function routerConfig ($stateProvider , $urlRouterProvider) {
       templateUrl: 'templates/topTrails.tpl.html',
       controller: 'TopTrailsController as topTrails'
     })
+    .state('root.register', {
+      url: '/register',
+      templateUrl: 'templates/register.tpl.html',
+      controller: 'RegistrationController as register'
+    })
 
 // trails states ------------------------------
     .state('root.trails', {
