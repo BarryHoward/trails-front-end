@@ -9,6 +9,8 @@ function TrailUpdateController (MapsService, $stateParams, $scope) {
   vm.updateTrail = updateTrail;
   vm.deleteTrail = deleteTrail;
   vm.MapsService = MapsService;
+  vm.chartWidth = 600;
+  vm.chartHeight = 300;
 
 
   function init () {

@@ -83,6 +83,9 @@ function MapsService ($http, ChartsService, NgMap) {
         marker.lng = marker.getPosition().lng();
         vm.drawLine(map, markers);
         updateDist(markers);
+        if(markers.length !== 1) {
+          ChartsService.chart(markers);
+        }
     })
   }
 
@@ -96,6 +99,9 @@ function MapsService ($http, ChartsService, NgMap) {
           marker.setMap(null);
           vm.drawLine(map, markers);
           updateDist(markers);
+          if(markers.length !== 1) {
+            ChartsService.chart(markers);
+          }
         }
     })
   }
@@ -111,6 +117,7 @@ function MapsService ($http, ChartsService, NgMap) {
       var marker = new google.maps.Marker({
           position: location.latLng,
           map: map,
+          icon: "https://maps.google.com/mapfiles/kml/shapes/small_red",
           draggable: true,
           lat: location.latLng.lat(),
           lng: location.latLng.lng(),
