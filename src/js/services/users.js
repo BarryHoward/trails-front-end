@@ -6,79 +6,76 @@ function UsersService ($http, $cookies) {
   let vm = this;
 
   vm.login = login;
-  // vm.isLoggedIn = isLoggedIn;
-  // vm.isAdmin = isAdmin;
-  // vm.setOwner = setOwner;
-  // vm.logout = logout;
+  vm.isLoggedIn = isLoggedIn;
+  vm.setUser = setUser;
+  vm.logout = logout;
   vm.getHeaders = getHeaders;
-  // vm.getAllOwners = getAllOwners;
   vm.newUser = newUser;
-  // vm.newComment = newComment;
-  // vm.getAllComments = getAllComments;
+  vm.currentUser = currentUser
+
 
 
   function login (user) {
     return $http.post(`${SERVER}login`, user);
   }
 
-  // function isLoggedIn () {
-  //   return $cookies.get('username') ? true : false;
-  // }
-  //
-  // function isAdmin () {
-  //   return $cookies.get('admin') === 'true';
-  // }
-  //
-  // function logout () {
-  //   $cookies.remove('username');
-  //   $cookies.remove('access_token');
-  //   $cookies.remove('admin');
-  // }
-  //
-  // function setOwner (data) {
-  //   $cookies.put('username', data.username);
-  //   $cookies.put('access_token', data.access_token);
-  //   $cookies.put('admin', data.admin);
-  // }
-  //
-  // function getOwner (id) {
-  //   return $http.get(`${SERVER}/owners/${id}`)
-  // }
-  //
-  // function getAllOwners (){
-  //   return $http.get(`${SERVER}owners`)
-  // }
-  //
-  // function getAllComments (){
-  //   return $http.get(`${SERVER}comments`)
-  // }
-  //
+  function isLoggedIn () {
+    return $cookies.get('username') ? true : false;
+  }
+
   function getHeaders () {
     let token = $cookies.get('access_token');
     return {
       Authorization: `Bearer ${token}`
     };
   }
-  //
+
   function newUser (info){
-    let req = {
-      url: `${SERVER}users`,
-      data: info,
-      method: 'POST',
-      headers: vm.getHeaders()
-    };
-    return $http(req)
+    console.log(info)
+    return $http.post(`${SERVER}users`, info)
+  }
+  //
+  // function isAdmin () {
+  //   return $cookies.get('admin') === 'true';
+  // }
+  //
+  function logout () {
+    $cookies.remove('username');
+    $cookies.remove('access_token');
+    // $cookies.remove('admin');
+  }
+  //
+  function setUser (data) {
+    $cookies.put('username', data.username);
+    $cookies.put('access_token', data.access_token);
+    // $cookies.put('admin', data.admin);
   }
 
-  //   function newComment (info){
-  //     let req = {
-  //       url: `${SERVER}comments`,
-  //       data: info,
-  //       method: 'POST',
-  //       headers: vm.getHeaders()
-  //     };
-  //   return $http(req)
-  // }
+  function currentUser (){
+    return $cookies.get('username')
+  }
+  //
+  function getUser (id) {
+    return $http.get(`${SERVER}/users/${id}`)
+  }
+
+  function getAllTrails (){
+    return $http.get(`${SERVER}trails`)
+  }
+
+
+
+  // Backend not setup yet for these two! ----------------
+  function getCreatedTrails(id){
+    return $http.get(`${SERVER}/users/${id}/createdTrails`)
+  }
+
+  function getHikedTrails(id){
+    return $http.get(`${SERVER}/users/${id}/hikedTrails`)
+  }
+  // -------------------------------------------------------
+
+
 
 };
 
