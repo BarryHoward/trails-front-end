@@ -1,4 +1,6 @@
-function MapsService (HttpService, ChartsService, NgMap) {
+function MapsService ($http, ChartsService, NgMap) {
+
+  const SERVER = "https://trails-back-end.herokuapp.com/";
 
   let vm = this;
   vm.drawLine = drawLine;
@@ -6,11 +8,15 @@ function MapsService (HttpService, ChartsService, NgMap) {
   vm.loadMarker = loadMarker;
   vm.placeMarker = placeMarker;
   vm.getTrail = getTrail;
+  vm.getTrailList = getTrailList;
   vm.updateTrail = updateTrail;
   vm.deleteTrail = deleteTrail;
   vm.newTrail = newTrail;
   vm.initMap = initMap;
 
+  function getTrailList(){
+    return $http.get(`${SERVER}trails`)
+  }
 
   function getMap(id){
      return NgMap.getMap(id)
@@ -18,7 +24,7 @@ function MapsService (HttpService, ChartsService, NgMap) {
 
   function getTrail(id, map, draggable){
     return new Promise(function (resolve, reject) {
-    HttpService.getTrail(id).then(
+    $http.get(`${SERVER}trails/${id}`).then(
       (resp) => {
         var markers = [];
         resp.data.waypoints.forEach(function (waypoint) {
@@ -206,7 +212,7 @@ function MapsService (HttpService, ChartsService, NgMap) {
         newTrail.waypoints.push(waypoint);
       });
       newTrail.title = trailTitle;
-      HttpService.newTrail(newTrail).then((resp) => {
+      $http.post(`${SERVER}trails`, newTrail).then((resp) => {
           resolve();
         }, (reject) => {
           console.log(reject)
@@ -226,7 +232,7 @@ function MapsService (HttpService, ChartsService, NgMap) {
         newTrail.waypoints.push(waypoint);
       });
       newTrail.title = trailTitle;
-      HttpService.updateTrail(newTrail, id).then((resp) => {
+      $http.patch(`${SERVER}trails/${id}`, newTrail).then((resp) => {
           resolve();
         }, (reject) => {
           console.log(reject)
@@ -235,7 +241,7 @@ function MapsService (HttpService, ChartsService, NgMap) {
   }
 
   function deleteTrail(id){
-    return HttpService.deleteTrail(id);
+    return $http.delete(`${SERVER}trails/${id}`);
   }
 
   // -----------------------
@@ -253,5 +259,5 @@ function MapsService (HttpService, ChartsService, NgMap) {
   // ---------------------------
 };
 
-MapsService.$inject = ['HttpService', 'ChartsService', 'NgMap'];
+MapsService.$inject = ['$http', 'ChartsService', 'NgMap'];
 export { MapsService };

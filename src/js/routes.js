@@ -26,7 +26,7 @@ function routerConfig ($stateProvider , $urlRouterProvider) {
     .state('root.register', {
       url: '/register',
       templateUrl: 'templates/register.tpl.html',
-      controller: 'RegistrationController as register'
+      controller: 'RegisterController as register'
     })
 
 // trails states ------------------------------

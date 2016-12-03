@@ -10,7 +10,7 @@ import {RootController} from "./controllers/root";
 import {HomeController} from "./controllers/home";
 import {TopTrailsController} from "./controllers/topTrails";
 import {LoginController} from './controllers/login';
-import {RegistrationController} from './controllers/register';
+import {RegisterController} from './controllers/register';
 
 import {TrailController} from "./controllers/trail";
 import {TrailNewController} from "./controllers/trailNew";
@@ -19,8 +19,7 @@ import {TrailViewController} from "./controllers/trailView";
 
 import {UsersService} from "./services/users";
 import {MapsService} from "./services/maps";
-import {ChartsService} from "./services/charts";  
-import {HttpService} from "./services/http";        
+import {ChartsService} from "./services/charts";       
 
 
 angular.module('app', ['ngMap', 'ui.router', 'ngCookies', 'chart.js'])
@@ -33,9 +32,8 @@ angular.module('app', ['ngMap', 'ui.router', 'ngCookies', 'chart.js'])
 	.controller('TrailViewController', TrailViewController)
 	.controller('TopTrailsController', TopTrailsController)
 	.controller('LoginController', LoginController)
-	.controller('RegistrationController', RegistrationController)
+	.controller('RegisterController', RegisterController)
 
 	.service('UsersService', UsersService)
 	.service('MapsService', MapsService)
 	.service('ChartsService', ChartsService)
-	.service('HttpService', HttpService)
