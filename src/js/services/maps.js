@@ -1,16 +1,22 @@
 function MapsService ($http, ChartsService, NgMap) {
 
+  const SERVER = "https://trails-back-end.herokuapp.com/";
+
   let vm = this;
   vm.drawLine = drawLine;
   vm.getMap = getMap;
   vm.loadMarker = loadMarker;
   vm.placeMarker = placeMarker;
   vm.getTrail = getTrail;
+  vm.getTrailList = getTrailList;
   vm.updateTrail = updateTrail;
   vm.deleteTrail = deleteTrail;
   vm.newTrail = newTrail;
   vm.initMap = initMap;
 
+  function getTrailList(){
+    return $http.get(`${SERVER}trails`)
+  }
 
   function getMap(id){
      return NgMap.getMap(id)
