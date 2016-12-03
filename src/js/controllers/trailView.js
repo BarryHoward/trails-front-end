@@ -22,6 +22,8 @@ function TrailViewController (MapsService, $stateParams, $scope) {
     })
   }
 
+
+
 }
 
 TrailViewController.$inject = ['MapsService', '$stateParams', '$scope'];
