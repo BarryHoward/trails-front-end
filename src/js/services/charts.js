@@ -57,11 +57,13 @@ function ChartsService ($http, $cookies) {
 
 	function drawChart(routeElevations, waypointElevations){
 		var ctx = document.getElementById('myChart');
+		ctx.width = 800;
+		ctx.height = 125;
 
 		if(vm.myLineChart){
 	        vm.myLineChart.destroy();
 	    }
-	    ctx.height = 75;
+
 		var data = {
 		    datasets: [{
 		        type: 'line',
