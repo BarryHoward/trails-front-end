@@ -6,9 +6,12 @@
 		<span><a href="#/blaze/new">New Trail</a></span>
 		<span><a href="#/topTrails">Top Trails</a></span>
 	</span>
-	<span class='user-nav'>
+	<span class='user-nav' ng-hide="root.loggedIn">
 		<span><a href="#/login">Login</a></span>
 		<span><a href="#/register">Register</a></span>
+	</span>
+	<span class='user-nav' ng-show="root.loggedIn">
+		<button ng-click="root.logout()">Logout</button>
 	</span>
 </nav>
 <div ui-view></div>
