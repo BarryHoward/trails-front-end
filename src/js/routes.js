@@ -34,22 +34,27 @@ function routerConfig ($stateProvider , $urlRouterProvider) {
       url: '/trails',
       abstract: true,
       templateUrl: 'templates/trails.tpl.html',
-      // controller: 'TrailController as trail'
+      controller: 'TrailController as trail'
     })
-    .state('root.trails.new', {
-      url: '/new',
-      templateUrl: 'templates/trails.trailNew.tpl.html',
-      controller: 'TrailNewController as trailNew'
+    .state('root.trails.blazeNew', {
+      url: '/blaze/new',
+      templateUrl: 'templates/trails.blazeNew.tpl.html',
+      controller: 'BlazeNewController as blazeNew'
     })
-    .state('root.trails.update', {
-      url: '/:id/update',
-      templateUrl: 'templates/trails.trailUpdate.tpl.html',
-      controller: 'TrailUpdateController as trailUpdate'
+    .state('root.trails.blazeEdit', {
+      url: '/blaze/:id',
+      templateUrl: 'templates/trails.blazeEdit.tpl.html',
+      controller: 'BlazeEditController as blazeEdit'
+    })
+    .state('root.trails.mark', {
+      url: '/mark/:id',
+      templateUrl: 'templates/trails.mark.tpl.html',
+      controller: 'MarkController as mark'
     })
     .state('root.trails.view', {
-      url: '/:id/view',
-      templateUrl: 'templates/trails.trailView.tpl.html',
-      controller: 'TrailViewController as trailView'
+      url: '/view/:id',
+      templateUrl: 'templates/trails.view.tpl.html',
+      controller: 'ViewController as view'
     })
 
 

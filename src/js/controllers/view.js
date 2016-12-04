@@ -1,6 +1,6 @@
-const mapId = "trailViewMap";
+const mapId = "viewMap";
 
-function TrailViewController (MapsService, $stateParams, $scope) {
+function ViewController (MapsService, $stateParams, $scope) {
   let vm = this;
   const draggable = false;
 
@@ -23,5 +23,5 @@ function TrailViewController (MapsService, $stateParams, $scope) {
 
 }
 
-TrailViewController.$inject = ['MapsService', '$stateParams', '$scope'];
-export {TrailViewController}
+ViewController.$inject = ['MapsService', '$stateParams', '$scope'];
+export {ViewController}
