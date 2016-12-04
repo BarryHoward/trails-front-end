@@ -1,6 +1,28 @@
-@import 'nav';
+@import 'root';
 @import 'maps';
 @import 'charts';
+@import 'trailNew';
+@import 'trailUpdate';
+@import 'register';
+
+html {
+	background-color: #F3F8D7;
+}
+* {
+	box-sizing: border-box;
+}
+
+h1 {
+	font-family: 'Nunito', sans-serif;
+}
+
+h2 {
+	font-family: 'Nunito', sans-serif;
+}
+
+h3 {
+	font-family: 'Nunito', sans-serif;
+}
 
 .container {
 	padding: 20px;
