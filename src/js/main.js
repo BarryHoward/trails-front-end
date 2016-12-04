@@ -17,7 +17,7 @@ import {TrailController} from "./controllers/trail";
 //Trail Controllers
 import {BlazeNewController} from "./controllers/blazeNew";
 import {BlazeEditController} from "./controllers/blazeEdit";
-// import {MarkController} from "./controllers/mark"
+import {MarkController} from "./controllers/mark"
 import {ViewController} from "./controllers/view";
 
 //Services
@@ -38,7 +38,7 @@ angular.module('app', ['ngMap', 'ui.router', 'ngCookies', 'chart.js'])
 
 	.controller('BlazeNewController', BlazeNewController)
 	.controller('BlazeEditController', BlazeEditController)
-	// .controller('MarkController', MarkController)
+	.controller('MarkController', MarkController)
 	.controller('ViewController', ViewController)
 
 	.service('UsersService', UsersService)
