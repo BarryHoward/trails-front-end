@@ -3,7 +3,7 @@ function MapsService ($http, ChartsService, NgMap) {
   const SERVER = "https://trails-back-end.herokuapp.com/";
 
   let vm = this;
-  vm.drawLine = drawLine;
+  vm.createLine = createLine;
   vm.getMap = getMap;
   vm.loadMarker = loadMarker;
   vm.placeMarker = placeMarker;
@@ -12,7 +12,6 @@ function MapsService ($http, ChartsService, NgMap) {
   vm.updateTrail = updateTrail;
   vm.deleteTrail = deleteTrail;
   vm.newTrail = newTrail;
-  vm.initMap = initMap;
 
   function getTrailList(){
     return $http.get(`${SERVER}trails`)
@@ -23,84 +22,81 @@ function MapsService ($http, ChartsService, NgMap) {
   }
 
   function getTrail(id, map, draggable){
-    return new Promise(function (resolve, reject) {
-    $http.get(`${SERVER}trails/${id}`).then(
-      (resp) => {
-        var markers = [];
-        resp.data.waypoints.forEach(function (waypoint) {
-          vm.loadMarker(map, markers, waypoint, draggable)
-        });
-        vm.drawLine(map, markers)
-        vm.initMap(map, markers);
-        ChartsService.chart(markers);
-        var Trail = {markers: markers, title: resp.data.trailInfo.title}
-        resolve(Trail);
-      }, (reject) => {
-          console.log(reject)
-      });
-    })
+      return new Promise(function (resolve, reject) {
+          $http.get(`${SERVER}trails/${id}`).then((resp) => {
+              let path = google.maps.geometry.encoding.decodePath(resp.data.path);
+              path.forEach(function (waypoint) {
+                loadMarker(waypoint, path, map, draggable)
+              });
+              createLine(path, map)
+              centerMap(map, path);
+              ChartsService.chart(path);
+              var Trail = {path: path, title: resp.data.title}
+              resolve(Trail);
+            }, (reject) => {
+                console.log(reject)
+          });
+        })
   }
 
-  function drawLine(map, markers) {
+  function createLine(path, map) {
     if (vm.line){
       vm.line.setMap(null);
     }
-    var addLine = new google.maps.Polyline({
-        path: markers,
+    var trailPoly = new google.maps.Polyline({
+        path: path,
         geodesic: true,
         strokeColor: '#FF0000',
         strokeOpacity: 1.0,
         strokeWeight: 2
       });
-
-    addLine.setMap(map);
-    vm.line = addLine;
+    trailPoly.setMap(map);
+    vm.line = trailPoly;
   }
 
-  function loadMarker(map, markers, waypoint, draggable){
-    var myLatlng = new google.maps.LatLng(waypoint.lat, waypoint.lng)
+  function loadMarker(waypoint, path, map, draggable){
     var marker = new google.maps.Marker({
         map: map,
         draggable: draggable,
         animation: google.maps.Animation.DROP,
-        position: myLatlng,
-        lat: myLatlng.lat(),
-        lng: myLatlng.lng(),
-        totalDistance: waypoint.totalDistance
+        position: waypoint,
+        // totalDistance: waypoint.totalDistance
     });
-    markers.push(marker);
     if (draggable){
-      dragListener(marker, markers, map)
-      deleteListener(marker, markers, map)
+      dragListener(marker, waypoint, path, map)
+      deleteListener(marker, waypoint, path, map)
     }
   }
 
   // Listeners ---------------------------------------------------------
 
-  function dragListener (marker, markers, map){
+  function dragListener (marker, waypoint, path, map){
       google.maps.event.addListener(marker, 'dragend', function (event){
-        marker.lat = marker.getPosition().lat();
-        marker.lng = marker.getPosition().lng();
-        vm.drawLine(map, markers);
-        updateDist(markers);
-        if(markers.length !== 1) {
-          ChartsService.chart(markers);
+        var index = path.indexOf(waypoint)
+        waypoint = marker.getPosition()
+        path.splice(index, 1);
+        path.splice(index, 0, waypoint)
+        vm.line.setPath(path);
+
+        // updateDist(path);
+        if(path.length > 1) {
+          ChartsService.chart(path);
         }
     })
   }
 
-  function deleteListener (marker, markers, map){
+  function deleteListener (marker, waypoint, path, map){
       google.maps.event.addListener(marker, 'click', function (event){
         if (vm.delete){
-          var index = markers.indexOf(marker);
+          var index = path.indexOf(waypoint);
           if (index > -1) {
-            markers.splice(index, 1);
+            path.splice(index, 1);
+            vm.line.setPath(path);
           }
           marker.setMap(null);
-          vm.drawLine(map, markers);
-          updateDist(markers);
-          if(markers.length !== 1) {
-            ChartsService.chart(markers);
+  //         updateDist(path);
+          if(path.length !== 1) {
+            ChartsService.chart(path);
           }
         }
     })
@@ -111,59 +107,58 @@ function MapsService ($http, ChartsService, NgMap) {
 
   //  Place Marker -----------------------------------------------------
 
-  function placeMarker(markers, map, location) {
+  function placeMarker(event, path, map) {
+    console.log(path)
 
+    var waypoint = event.latLng
     if (!vm.delete){
       var marker = new google.maps.Marker({
-          position: location.latLng,
+          position: waypoint,
           map: map,
-          icon: "https://maps.google.com/mapfiles/kml/shapes/small_red",
           draggable: true,
-          lat: location.latLng.lat(),
-          lng: location.latLng.lng(),
       });
 
-      if (vm.insert === "midInsert" && markers.length>0){
-        midInsert(markers, location, marker)
+      if (vm.insert === "midInsert" && path.length>0){
+        var insertIndex = midInsert(waypoint, path);
+        path.splice(insertIndex, 0, waypoint);
+        vm.line.setPath(path);
       } else if (vm.insert === "frontInsert") {
-        markers.unshift(marker);
+        path.unshift(waypoint);
+        vm.line.setPath(path);
       } else {
-        markers.push(marker);
+        path.push(waypoint);
+        vm.line.setPath(path);
       }
-      dragListener(marker, markers, map)
-      deleteListener(marker, markers, map)
-      updateDist(markers);
-      vm.drawLine(map, markers);
-      if(markers.length !== 1) {
-        ChartsService.chart(markers);
+      dragListener(marker, waypoint, path, map)
+      deleteListener(marker, waypoint, path, map)
+      // updateDist(path);
+      if(path.length > 1) {
+        ChartsService.chart(path);
       }
     }
   }
 
-  function midInsert(markers, location, marker){
+  function midInsert(waypoint, path){
       let dist = [];
-      for (var i=0; i<markers.length; i++){
-        dist[i] = google.maps.geometry.spherical.computeDistanceBetween(location.latLng, markers[i].position)
+      for (var i=0; i<path.length; i++){
+        dist[i] = google.maps.geometry.spherical.computeDistanceBetween(waypoint, path[i])
       }
       let minIndex = dist.reduce((iMax, x, i, arr) => x < arr[iMax] ? i : iMax, 0);
       var insertIndex;
       if (minIndex === 0){
-        markers.splice(1, 0, marker);
         insertIndex = 1;
         return insertIndex;
-      } else if (minIndex === markers.length-1){
-        insertIndex = markers.length-1;
-        markers.splice(markers.length-1, 0, marker)
-
+      } else if (minIndex === path.length-1){
+        insertIndex = path.length-1;
         return insertIndex;
       } else {
-        let markBefore = markers[minIndex-1];
-        let markMin = markers[minIndex];
-        let markAfter = markers[minIndex +1];
+        let markBefore = path[minIndex-1];
+        let markMin = path[minIndex];
+        let markAfter = path[minIndex +1];
 
-        let beforeV = {y: markBefore.lat - markMin.lat, x: markBefore.lng - markMin.lng}
-        let afterV = {y: markAfter.lat - markMin.lat, x: markAfter.lng - markMin.lng}
-        let newV = {y: marker.lat - markMin.lat, x: marker.lng - markMin.lng}
+        let beforeV = {y: markBefore.lat() - markMin.lat(), x: markBefore.lng() - markMin.lng()}
+        let afterV = {y: markAfter.lat() - markMin.lat(), x: markAfter.lng() - markMin.lng()}
+        let newV = {y: waypoint.lat() - markMin.lat(), x: waypoint.lng() - markMin.lng()}
 
         let beforeA = Math.asin(beforeV.y/(Math.sqrt(Math.pow(beforeV.x, 2)+ Math.pow(beforeV.y, 2))));
         let afterA = Math.asin(afterV.y/(Math.sqrt(Math.pow(afterV.x, 2)+ Math.pow(afterV.y, 2))));
@@ -186,38 +181,32 @@ function MapsService ($http, ChartsService, NgMap) {
         } else {
           insertIndex = minIndex+1;
         }
-         markers.splice(insertIndex, 0, marker);
          return insertIndex;
       }
   }
 
-  function updateDist (markers){
+  // function updateDist (path){
 
-    for (var i=0; i<markers.length; i++){
-      if (i===0){
-        markers[i].totalDistance =0;
-      } else {
-        var distAdded = google.maps.geometry.spherical.computeDistanceBetween(markers[i-1].position, markers[i].position)
-        markers[i].totalDistance = markers[i-1].totalDistance + distAdded;
-      }
-    }
-  }
+  //   for (var i=0; i<path.length; i++){
+  //     if (i===0){
+  //       path[i].totalDistance =0;
+  //     } else {
+  //       var distAdded = google.maps.geometry.spherical.computeDistanceBetween(path[i-1].position, path[i].position)
+  //       path[i].totalDistance = path[i-1].totalDistance + distAdded;
+  //     }
+  //   }
+  // }
 
 //  Place Marker -----------------------------------------------------
 
   // --- Button Section -------
 
-  function newTrail (markers, trailTitle){
+  function newTrail (path, trailTitle){
     return new Promise(function (resolve, reject) {
       let newTrail = {};
-      newTrail.waypoints = [];
-      markers.forEach(function (marker) {
-        let waypoint = {};
-        waypoint.lat = marker.lat;
-        waypoint.lng = marker.lng;
-        waypoint.totalDistance = marker.totalDistance;
-        newTrail.waypoints.push(waypoint);
-      });
+      let path = vm.line.getPath();
+      let encodeString = google.maps.geometry.encoding.encodePath(path);
+      newTrail.path = encodeString;
       newTrail.title = trailTitle;
       $http.post(`${SERVER}trails`, newTrail).then((resp) => {
           resolve();
@@ -227,19 +216,15 @@ function MapsService ($http, ChartsService, NgMap) {
     })
   }
 
-  function updateTrail (markers, trailTitle, id){
+  function updateTrail (path, trailTitle, id){
     return new Promise(function (resolve, reject) {
       let newTrail = {};
-      newTrail.waypoints = [];
-      markers.forEach(function (marker) {
-        let waypoint = {};
-        waypoint.lat = marker.lat;
-        waypoint.lng = marker.lng;
-        waypoint.totalDistance = marker.totalDistance;
-        newTrail.waypoints.push(waypoint);
-      });
+      let path = vm.line.getPath();
+      let encodeString = google.maps.geometry.encoding.encodePath(path);
+      newTrail.path = encodeString;
       newTrail.title = trailTitle;
       $http.patch(`${SERVER}trails/${id}`, newTrail).then((resp) => {
+          console.log(resp)
           resolve();
         }, (reject) => {
           console.log(reject)
@@ -255,10 +240,10 @@ function MapsService ($http, ChartsService, NgMap) {
 
   // -- Jack's section ------
 
-  function initMap(map, markers) {
+  function centerMap(map, path) {
     var latlngbounds = new google.maps.LatLngBounds();
-    markers.forEach(function (marker) {
-      latlngbounds.extend(marker.position)
+    path.forEach(function (marker) {
+      latlngbounds.extend(marker)
       map.fitBounds(latlngbounds);
     })
   }

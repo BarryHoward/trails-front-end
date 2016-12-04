@@ -2,62 +2,54 @@ function ChartsService ($http, $cookies) {
 
 	let vm = this;
 	vm.chart = chart;
-	vm.getRouteElevations = getRouteElevations;
-	vm.getWaypointElevations = getWaypointElevations;
-	vm.drawChart = drawChart;
+
 	const metersFeetConversion = 3.28084;
 	const metersMilesConversion = 0.000621371;
 
 
-	function chart(markers){
+	function chart(path){
 
-	    var elevator = new google.maps.ElevationService;
-
+	    vm.elevator = new google.maps.ElevationService;
 	    var routeElevations = [];
 	    var waypointElevations = [];
-	  	vm.chartWaypoints = [];
-	    markers.forEach(function (marker) {
-	      vm.chartWaypoints.push(marker.position)
-	    })
 
-
-	    vm.getRouteElevations(elevator, markers).then(function (routeElevations) {
-	      vm.getWaypointElevations(elevator, markers).then(function (waypointElevations) {
-	        vm.drawChart(routeElevations, waypointElevations);
+	   	vm.pathLength = google.maps.geometry.spherical.computeLength(path)
+	    getRouteElevations(path).then(function (routeElevations) {
+	      getWaypointElevations(path).then(function (waypointElevations) {
+	        drawChart(routeElevations, waypointElevations);
 	      })
 	    });
 	}
 
-	function getRouteElevations(elevator, markers){
+	function getRouteElevations(path){
 	  return new Promise(function (resolve, reject) {
-	    elevator.getElevationAlongPath({
-	      'path': markers,
+	    vm.elevator.getElevationAlongPath({
+	      'path': path,
 	      'samples': 200
 	    }, function (elevations, status){
-	    	vm.pathLength = google.maps.geometry.spherical.computeLength(vm.chartWaypoints)
-	        var data = [];
-	        data[0]={x: 0, y: elevations[0].elevation*metersFeetConversion};
+	        var routeElevations = [];
+	        routeElevations[0]={x: 0, y: elevations[0].elevation*metersFeetConversion};
 	        var resolution = vm.pathLength/(elevations.length-1)* metersMilesConversion;
 	        for (var i=1; i<elevations.length; i++){
-	          data[i] = {x: resolution * i,
+	          routeElevations[i] = {x: resolution * i,
 	                      y: elevations[i].elevation*metersFeetConversion}
 	        }
-	      resolve(data);
+	      resolve(routeElevations);
 	    });
 	  })
 	}
 
-	function getWaypointElevations(elevator, markers){
+	function getWaypointElevations(path){
 	  return new Promise(function (resolve, reject) {
-	    elevator.getElevationForLocations({
-	    'locations': vm.chartWaypoints,
+	    vm.elevator.getElevationForLocations({
+	    'locations': path, //change this to the set when we have it
 	  }, function (elevations, status){
-	      var data = [];
-	      for (var i=0; i<markers.length; i++){
-	      data[i] = {x: markers[i].totalDistance*metersMilesConversion,
+	      var waypointElevations = [];
+	      for (var i=0; i<path.length; i++){
+	      waypointElevations[i] = {x: path[i].totalDistance*metersMilesConversion,
 	                  y: elevations[i].elevation*metersFeetConversion}
 	    }
-	      resolve(data);
+	      resolve(waypointElevations);
 	  });
 	 })
 	}
@@ -69,7 +61,7 @@ function ChartsService ($http, $cookies) {
 		if(vm.myLineChart){
 	        vm.myLineChart.destroy();
 	    }
-	    ctx.height = 125;
+	    ctx.height = 75;
 		var data = {
 		    datasets: [{
 		        type: 'line',

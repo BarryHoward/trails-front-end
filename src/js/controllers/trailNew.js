@@ -13,12 +13,13 @@ function TrailNewController (MapsService, $scope) {
   const Geocoder = new google.maps.Geocoder();
 
   function init () {
-    vm.markers = [];
     vm.MapsService.delete = false;
     vm.MapsService.insert = "backInsert";
     MapsService.getMap(mapId).then(function (map) {
       vm.map = map;
+      vm.path=[];
       vm.map.setMapTypeId('terrain');
+      MapsService.createLine(vm.path, vm.map);
     })
     var infoWindow = new google.maps.InfoWindow({map: vm.map});
     vm.someFunction(infoWindow);
@@ -28,7 +29,7 @@ function TrailNewController (MapsService, $scope) {
 
   function addNewTrail(){
     vm.status = "Saving Trail...";
-    MapsService.newTrail(vm.markers, vm.trailTitle)
+    MapsService.newTrail(vm.path, vm.trailTitle)
       .then(function (resp) {
         vm.status = "Trail Saved";
         $scope.$apply();
@@ -36,14 +37,15 @@ function TrailNewController (MapsService, $scope) {
   }
 
   function placeMarker(event){
-    MapsService.placeMarker(vm.markers, vm.map, event);
+    MapsService.placeMarker(event, vm.path, vm.map);
   }
+
 
 // Jack's weird centering shit -----------------------------------
 
 
   function someFunction(infoWindow){
-        if (navigator.geolocation) {
+      if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function(position) {
         var pos = {
           lat: position.coords.latitude,

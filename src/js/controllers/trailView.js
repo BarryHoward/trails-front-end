@@ -8,12 +8,11 @@ function TrailViewController (MapsService, $stateParams, $scope) {
 
   function init () {
     let trail_id = $stateParams.id
-    vm.markers = [];
     vm.status = "View a Trail!"
 
     MapsService.getMap(mapId).then(function (map) {
       MapsService.getTrail(trail_id, map, draggable).then(function (MapInfo){
-        vm.markers = MapInfo.markers;
+        vm.path = MapInfo.path;
         vm.trailTitle = MapInfo.title;
         vm.map = map;
         vm.map.setMapTypeId('terrain');
@@ -21,8 +20,6 @@ function TrailViewController (MapsService, $stateParams, $scope) {
       });
     })
   }
-
-
 
 }
 
