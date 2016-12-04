@@ -9,7 +9,7 @@ function MapsService ($http, ChartsService, NgMap) {
   vm.placeMarker = placeMarker;
   vm.getTrail = getTrail;
   vm.getTrailList = getTrailList;
-  vm.updateTrail = updateTrail;
+  vm.editTrail = editTrail;
   vm.deleteTrail = deleteTrail;
   vm.newTrail = newTrail;
 
@@ -225,7 +225,7 @@ function closestPath(waypoint, path){
     })
   }
 
-  function updateTrail (path, trailTitle, id){
+  function editTrail (path, trailTitle, id){
     return new Promise(function (resolve, reject) {
       let newTrail = {};
       let path = vm.line.getPath();

@@ -42,12 +42,12 @@ function routerConfig ($stateProvider , $urlRouterProvider) {
       controller: 'BlazeNewController as blazeNew'
     })
     .state('root.trails.blazeEdit', {
-      url: '/blaze/:id/',
+      url: '/blaze/:id',
       templateUrl: 'templates/trails.blazeEdit.tpl.html',
       controller: 'BlazeEditController as blazeEdit'
     })
     .state('root.trails.mark', {
-      url: '/mark/:id/',
+      url: '/mark/:id',
       templateUrl: 'templates/trails.mark.tpl.html',
       controller: 'MarkController as mark'
     })

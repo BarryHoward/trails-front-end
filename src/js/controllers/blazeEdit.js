@@ -15,7 +15,7 @@ function BlazeEditController (MapsService, $stateParams, $scope) {
 
   function init () {
     let trail_id = $stateParams.id
-    vm.status = "edit a Trail!"
+    vm.status = "Edit a Trail!"
     vm.trailTitle = "Trail Title"
     vm.MapsService.delete = false;
     vm.MapsService.insert = "backInsert";
