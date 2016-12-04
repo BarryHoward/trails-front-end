@@ -23,8 +23,8 @@
 
 <button type="button" name="update" ng-click="trailUpdate.updateTrail()">Save Changes</button>
 <button type="button" name="delete" ng-click="trailUpdate.deleteTrail()">Delete Trail</button>
-<ng-map id="trailUpdateMap" on-click="trailUpdate.placeMarker($event)">
+<ng-map class="map" id="trailUpdateMap" on-click="trailUpdate.placeMarker($event)">
 
 </ng-map>
 <br>
-<canvas id="myChart" width="400" height="400"></canvas>
+<canvas class="chart" id="myChart" width="400" height="400"></canvas>

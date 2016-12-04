@@ -68,6 +68,8 @@ function ChartsService ($http, $cookies) {
 
 	function drawChart(routeElevations, waypointElevations){
 		var ctx = document.getElementById('myChart');
+		ctx.height = 400;
+		ctx.width = 800;
 		var data = {
 		    datasets: [{
 		        type: 'line',
