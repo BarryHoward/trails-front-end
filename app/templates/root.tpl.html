@@ -11,8 +11,9 @@
 		<span><a href="#/register">Register</a></span>
 	</span>
 	<span class='user-nav' ng-show="root.loggedIn">
+		<span><small><span class="logged-in">Logged in as</span></small>{{root.username}}</span>
 		<button class="logout-button" g-click="root.logout()">Logout</button>
-		<span><small><span class="logged-in">Logged in as</span></small>{{root.username}}
 	</span>
+
 </nav>
 <div ui-view></div>
