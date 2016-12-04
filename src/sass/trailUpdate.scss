@@ -10,6 +10,8 @@
   padding: 5px;
   font-family: 'Nunito', sans-serif;
   border-radius: 10px;
+  margin: 10px 10px;
+  margin-bottom: 0px;
 }
 
 .delete-trail-button {
@@ -19,8 +21,16 @@
   padding: 5px;
   font-family: 'Nunito', sans-serif;
   border-radius: 10px;
+  margin: 10px 10px;
+  margin-bottom: 0px;
 }
 
 .update-input {
   margin: 10px 0px;
+}
+
+.update-delete {
+  width: 450px;
+  display: flex;
+  justify-content: center;
 }
