@@ -11,6 +11,9 @@
   width: 300px;
   height: 30px;
   padding: 5px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  border-style: none;
 }
 
 .add-trail-button {
@@ -25,13 +28,14 @@
 
 .marker-buttons {
   border: 3px solid black;
-  width: 500px;
-  padding: 15px;
+  width: 550px;
+  padding: 10px;
   background-color: #FAFAEB;
+  margin-left: 4%;
 }
 
 .add-delete {
-  padding: 5px 100px;
+  padding: 5px 130px;
   span {
     width: 100px;
     margin: 0px 5px;
