@@ -42,7 +42,7 @@ function BlazeEditController (MapsService, $stateParams, $scope) {
     vm.status = "Trail Updating...";
     MapsService.editTrail(vm.path, vm.trailTitle, $stateParams.id)
       .then(function (resp) {
-        vm.status = "edit Completed";
+        vm.status = "Update Completed";
         $scope.$apply();
       })
   }
