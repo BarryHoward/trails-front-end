@@ -9,13 +9,12 @@ function TrailUpdateController (MapsService, $stateParams, $scope) {
   vm.updateTrail = updateTrail;
   vm.deleteTrail = deleteTrail;
   vm.MapsService = MapsService;
-  vm.chartWidth = 600;
-  vm.chartHeight = 300;
+  // vm.chartWidth = 600;
+  // vm.chartHeight = 300;
 
 
   function init () {
     let trail_id = $stateParams.id
-    vm.markers = [];
     vm.status = "Update a Trail!"
     vm.trailTitle = "Trail Title"
     vm.MapsService.delete = false;
@@ -23,7 +22,7 @@ function TrailUpdateController (MapsService, $stateParams, $scope) {
 
     MapsService.getMap(mapId).then(function (map) {
       MapsService.getTrail(trail_id, map, draggable).then(function (MapInfo){
-        vm.markers = MapInfo.markers;
+        vm.path = MapInfo.path;
         vm.trailTitle = MapInfo.title;
         vm.map = map;
         vm.map.setMapTypeId('terrain');
@@ -35,13 +34,13 @@ function TrailUpdateController (MapsService, $stateParams, $scope) {
   init();
 
   function placeMarker(event){
-    MapsService.placeMarker(vm.markers, vm.map, event);
+    MapsService.placeMarker(event, vm.path, vm.map);
   }
 
   
   function updateTrail(){
     vm.status = "Trail Updating...";
-    MapsService.updateTrail(vm.markers, vm.trailTitle, $stateParams.id)
+    MapsService.updateTrail(vm.path, vm.trailTitle, $stateParams.id)
       .then(function (resp) {
         vm.status = "Update Completed";
         $scope.$apply();
