@@ -84,7 +84,18 @@ function MapsService ($http, ChartsService, NgMap) {
         var index = path.indexOf(waypoint)
         waypoint = marker.getPosition()
         path.splice(index, 1);
-        path.splice(index, 0, waypoint)
+
+        // vm.snap = true;
+
+        if (vm.snap){
+          let insert = closestPath(waypoint, path)
+          waypoint = google.maps.geometry.spherical.interpolate(path[insert[0]-1], path[insert[0]], insert[1])
+          path.splice(insert[0], 0, waypoint);
+          console.log(marker)
+          marker.setPosition(waypoint);
+        } else {
+          path.splice(index, 0, waypoint)
+        }
         vm.line.setPath(path);
 
         // updateDist(path);
@@ -116,45 +127,45 @@ function MapsService ($http, ChartsService, NgMap) {
 
 function closestPath(waypoint, path){
   var pathDistances = [];
+  var percentage = [];
   for (var i=0; i<path.length-1; i++){
     let a = google.maps.geometry.spherical.computeDistanceBetween(waypoint, path[i+1]);
     let b = google.maps.geometry.spherical.computeDistanceBetween(waypoint, path[i]);
     let c = google.maps.geometry.spherical.computeDistanceBetween(path[i], path[i+1]);
     let A = Math.acos((Math.pow(b,2)+Math.pow(c,2)-Math.pow(a,2))/(2*b*c))
     let B = Math.acos((Math.pow(c,2)+Math.pow(a,2)-Math.pow(b,2))/(2*a*c))
-    let C = Math.acos((Math.pow(a,2)+Math.pow(b,2)-Math.pow(c,2))/(2*a*b))
-    let angles = [A, B, C];
-    if (Math.max.apply(Math, angles)===A){
+    let C = Math.PI-B-A;
+
+    if (A>B && A>C){
       pathDistances[i] = b;
-    } else if (Math.max.apply(Math, angles)===B){
+      percentage[i]=0;
+    } else if (B>C){
       pathDistances[i] = a;
+      percentage[i]=1;
     } else {
-      pathDistances[i] = b*Math.sin(Math.acos((Math.pow(b,2)+Math.pow(c,2)-Math.pow(a,2))/(2*b*c)));
+      pathDistances[i] = a*Math.sin(B);
+      percentage[i]=Math.sqrt(Math.pow(b,2) - Math.pow(pathDistances[i],2))/c;
     } 
   }
   var minIndex = pathDistances.reduce((iMin, x, i, arr) => x < arr[iMin] ? i : iMin, 0) + 1;
-  console.log(minIndex)
-  return minIndex;
+  return [minIndex, percentage[minIndex-1]];
 }
 
   //  Place Marker -----------------------------------------------------
 
-  function placeMarker(event, path, map) {
-
-
+  function placeMarker(event, path, map, snap) {
 
     var waypoint = event.latLng
     if (!vm.delete){
-      var marker = new google.maps.Marker({
-          position: waypoint,
-          map: map,
-          draggable: true,
-          icon: image
-      });
+      // vm.snap = true;
 
       if (vm.insert === "midInsert" && path.length>0){
-        let insertIndex = closestPath(event.latLng, path)
-        path.splice(insertIndex, 0, waypoint);
+        let insert = closestPath(waypoint, path)
+        var snapWaypoint = google.maps.geometry.spherical.interpolate(path[insert[0]-1], path[insert[0]], insert[1])
+        if (vm.snap){
+          waypoint = snapWaypoint;
+        }
+        path.splice(insert[0], 0, waypoint);
         vm.line.setPath(path);
       } else if (vm.insert === "frontInsert") {
         path.unshift(waypoint);
@@ -163,61 +174,25 @@ function closestPath(waypoint, path){
         path.push(waypoint);
         vm.line.setPath(path);
       }
+
+      var marker = new google.maps.Marker({
+          position: waypoint,
+          map: map,
+          draggable: true,
+          icon: image
+      });
+
       dragListener(marker, waypoint, path, map)
       deleteListener(marker, waypoint, path, map)
       // updateDist(path);
       if(path.length > 1) {
         ChartsService.chart(path);
       }
+
+
     }
   }
 
-  // function midInsert(waypoint, path){
-  //     let dist = [];
-  //     for (var i=0; i<path.length; i++){
-  //       dist[i] = google.maps.geometry.spherical.computeDistanceBetween(waypoint, path[i])
-  //     }
-  //     let minIndex = dist.reduce((iMax, x, i, arr) => x < arr[iMax] ? i : iMax, 0);
-  //     var insertIndex;
-  //     if (minIndex === 0){
-  //       insertIndex = 1;
-  //       return insertIndex;
-  //     } else if (minIndex === path.length-1){
-  //       insertIndex = path.length-1;
-  //       return insertIndex;
-  //     } else {
-  //       let markBefore = path[minIndex-1];
-  //       let markMin = path[minIndex];
-  //       let markAfter = path[minIndex +1];
-
-  //       let beforeV = {y: markBefore.lat() - markMin.lat(), x: markBefore.lng() - markMin.lng()}
-  //       let afterV = {y: markAfter.lat() - markMin.lat(), x: markAfter.lng() - markMin.lng()}
-  //       let newV = {y: waypoint.lat() - markMin.lat(), x: waypoint.lng() - markMin.lng()}
-
-  //       let beforeA = Math.asin(beforeV.y/(Math.sqrt(Math.pow(beforeV.x, 2)+ Math.pow(beforeV.y, 2))));
-  //       let afterA = Math.asin(afterV.y/(Math.sqrt(Math.pow(afterV.x, 2)+ Math.pow(afterV.y, 2))));
-  //       let newA = Math.asin(newV.y/(Math.sqrt(Math.pow(newV.x, 2)+ Math.pow(newV.y, 2))));
-  //       if (beforeV.x<0){
-  //           beforeA = Math.PI - beforeA;
-  //       }
-  //       if (afterV.x<0){
-  //           afterA = Math.PI - afterA;
-  //       }
-  //       if (newV.x<0){
-  //           newA = Math.PI - newA;
-  //       }          
-
-  //       let beforeDif = Math.min((2 * Math.PI) - Math.abs(beforeA - newA), Math.abs(beforeA - newA))
-  //       let afterDif = Math.min((2 * Math.PI) - Math.abs(afterA - newA), Math.abs(afterA - newA))
-
-  //       if (beforeDif<afterDif){
-  //         insertIndex = minIndex;
-  //       } else {
-  //         insertIndex = minIndex+1;
-  //       }
-  //        return insertIndex;
-  //     }
-  // }
 
   // function updateDist (path){
 
