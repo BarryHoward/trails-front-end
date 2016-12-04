@@ -1,6 +1,6 @@
-const mapId = "trailNewMap"
+const mapId = "blazeNewMap"
 
-function TrailNewController (MapsService, $scope) {
+function BlazeNewController (MapsService, $scope) {
 
   let vm = this;
 
@@ -83,5 +83,5 @@ function TrailNewController (MapsService, $scope) {
 
 }
 
-TrailNewController.$inject = ['MapsService', '$scope'];
-export { TrailNewController }
+BlazeNewController.$inject = ['MapsService', '$scope'];
+export { BlazeNewController }

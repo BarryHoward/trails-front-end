@@ -1,12 +1,12 @@
 
-const mapId = "trailUpdateMap"
+const mapId = "markMap"
 
-function TrailUpdateController (MapsService, $stateParams, $scope) {
+function MarkController (MapsService, $stateParams, $scope) {
   let vm = this;
   const draggable = true;
 
   vm.placeMarker = placeMarker;
-  vm.updateTrail = updateTrail;
+  vm.editTrail = editTrail;
   vm.deleteTrail = deleteTrail;
   vm.MapsService = MapsService;
   // vm.chartWidth = 600;
@@ -15,7 +15,7 @@ function TrailUpdateController (MapsService, $stateParams, $scope) {
 
   function init () {
     let trail_id = $stateParams.id
-    vm.status = "Update a Trail!"
+    vm.status = "edit a Trail!"
     vm.trailTitle = "Trail Title"
     vm.MapsService.delete = false;
     vm.MapsService.insert = "backInsert";
@@ -38,11 +38,11 @@ function TrailUpdateController (MapsService, $stateParams, $scope) {
   }
 
   
-  function updateTrail(){
+  function editTrail(){
     vm.status = "Trail Updating...";
-    MapsService.updateTrail(vm.path, vm.trailTitle, $stateParams.id)
+    MapsService.editTrail(vm.path, vm.trailTitle, $stateParams.id)
       .then(function (resp) {
-        vm.status = "Update Completed";
+        vm.status = "edit Completed";
         $scope.$apply();
       })
   }
@@ -57,5 +57,5 @@ function TrailUpdateController (MapsService, $stateParams, $scope) {
   }
 }
 
-TrailUpdateController.$inject = ['MapsService', '$stateParams', '$scope'];
-export {TrailUpdateController}
+MarkController.$inject = ['MapsService', '$stateParams', '$scope'];
+export {MarkController}
