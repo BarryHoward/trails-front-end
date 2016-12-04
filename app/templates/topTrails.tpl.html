@@ -1,1 +1,5 @@
 <h1>Top Trails</h1>
+
+<div ng-repeat="trail in topTrails.trailList">
+<a href="#/trails/{{trail.id}}/update">{{trail.title}}</a>
+</div>

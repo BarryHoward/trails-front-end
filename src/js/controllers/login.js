@@ -1,21 +1,18 @@
-function LoginController (UsersService, $state) {
+function LoginController (UsersService, $state, $rootScope) {
   let vm = this;
   vm.login = login;
 
   function login(userInfo) {
-    console.log('I got clicked!')
-    console.log(userInfo)
-    UsersService.login(userInfo).then(
-      (resp) => {
-        $state.go('root.home')
-        console.log(resp)
-      },
-      (errors) => {
-        console.log(errors)
-      }
-    );
+    UsersService.login(userInfo).then((resp) => {
+      UsersService.setUser(resp.data)
+      $rootScope.$broadcast('loginChange', {});
+      $state.go('root.home')
+      console.log(resp)
+    },(errors) => {
+      console.log(errors)
+    });
   };
 
 };
-LoginController.$inject = ['UsersService', '$state']
+LoginController.$inject = ['UsersService', '$state', '$rootScope']
 export {LoginController}

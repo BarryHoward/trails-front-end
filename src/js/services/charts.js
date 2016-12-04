@@ -11,12 +11,14 @@ function ChartsService ($http, $cookies) {
 
 	function chart(markers){
 
-	     var elevator = new google.maps.ElevationService;
+	    var elevator = new google.maps.ElevationService;
 
-	     var routeElevations = [];
-	     var waypointElevations = [];
-	     vm.pathLength = markers[markers.length-1].totalDistance;
-
+	    var routeElevations = [];
+	    var waypointElevations = [];
+	  	vm.chartWaypoints = [];
+	    markers.forEach(function (marker) {
+	      vm.chartWaypoints.push(marker.position)
+	    })
 
 
 	    vm.getRouteElevations(elevator, markers).then(function (routeElevations) {
@@ -32,9 +34,10 @@ function ChartsService ($http, $cookies) {
 	      'path': markers,
 	      'samples': 200
 	    }, function (elevations, status){
+	    	vm.pathLength = google.maps.geometry.spherical.computeLength(vm.chartWaypoints)
 	        var data = [];
 	        data[0]={x: 0, y: elevations[0].elevation*metersFeetConversion};
-	        var resolution = vm.pathLength/elevations.length* metersMilesConversion;
+	        var resolution = vm.pathLength/(elevations.length-1)* metersMilesConversion;
 	        for (var i=1; i<elevations.length; i++){
 	          data[i] = {x: resolution * i,
 	                      y: elevations[i].elevation*metersFeetConversion}
@@ -46,14 +49,8 @@ function ChartsService ($http, $cookies) {
 
 	function getWaypointElevations(elevator, markers){
 	  return new Promise(function (resolve, reject) {
-	  	//build position array
-	  	var chartWaypoints = [];
-	    markers.forEach(function (marker) {
-	      chartWaypoints.push(marker.position)
-	    })
-
 	    elevator.getElevationForLocations({
-	    'locations': chartWaypoints,
+	    'locations': vm.chartWaypoints,
 	  }, function (elevations, status){
 	      var data = [];
 	      for (var i=0; i<markers.length; i++){
@@ -68,8 +65,16 @@ function ChartsService ($http, $cookies) {
 
 	function drawChart(routeElevations, waypointElevations){
 		var ctx = document.getElementById('myChart');
+<<<<<<< HEAD
 		ctx.height = 400;
 		ctx.width = 800;
+=======
+
+		if(vm.myLineChart){
+	        vm.myLineChart.destroy();
+	    }
+	    ctx.height = 125;
+>>>>>>> master
 		var data = {
 		    datasets: [{
 		        type: 'line',
@@ -98,17 +103,24 @@ function ChartsService ($http, $cookies) {
 		              position: 'bottom',
 		              ticks: {
 		                min: 0,
-		                // max: 3,
+		                max: 20,
 		                beginAtZero: true
 		              }
-		          }]
+		          }],
+		          yAxes: [{
+		              ticks: {
+		                min: 0,
+		                max: 6600,
+		                beginAtZero: true
+		              }
+		          }],
 		      },
 					hover: {
 						intersect: false
 					}
 		  }
 
-		var myLineChart = new Chart(ctx, {
+		vm.myLineChart = new Chart(ctx, {
 		    type: 'bar',
 		    data: data,
 		    options: options

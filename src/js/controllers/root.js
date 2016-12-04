@@ -1,19 +1,21 @@
-function RootController ($rootScope) {
+function RootController (UsersService, $rootScope) {
 	let vm = this;
-	// vm.admin = OwnerService.isAdmin();
-	// vm.loggedIn = OwnerService.isLoggedIn();
-	// vm.logout = logout;
 
-	// $rootScope.$on('loginChange', (event, data) => {
-	// 	vm.loggedIn = OwnerService.isLoggedIn();
-	// 	vm.admin = OwnerService.isAdmin();
-	// });
+	vm.loggedIn = UsersService.isLoggedIn();
+	vm.username = UsersService.currentUser();
+	vm.logout = logout;
 
-	// function logout(){
-	//   	OwnerService.logout()
-	//     $rootScope.$broadcast('loginChange', {});
- //  	}
+	$rootScope.$on('loginChange', (event, data) => {
+		vm.loggedIn = UsersService.isLoggedIn();
+		vm.username = UsersService.currentUser();
+		console.log(vm.loggedIn)
+	});
+
+	function logout(){
+	  	UsersService.logout()
+	    $rootScope.$broadcast('loginChange', {});
+  	}
 }
 
- RootController.$inject = ['$rootScope'];
+ RootController.$inject = ['UsersService', '$rootScope'];
  export {RootController};
