@@ -1,0 +1,56 @@
+
+.new-trail {
+  border: 1px solid grey;
+  width: 500px;
+  padding: 10px;
+  margin: 20px 0px;
+  background-color: #FAFAEB;
+}
+
+.title-input {
+  width: 300px;
+  height: 30px;
+  padding: 5px;
+}
+
+.add-trail-button {
+  background-color: #88BE5B;
+  color: white;
+  border-style: none;
+  padding: 5px;
+  font-family: 'Nunito', sans-serif;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.marker-buttons {
+  border: 3px solid black;
+  width: 500px;
+  padding: 15px;
+  background-color: #FAFAEB;
+}
+
+.add-delete {
+  padding: 5px 100px;
+  span {
+    width: 100px;
+    margin: 0px 5px;
+    font-family: 'Coda', cursive;
+  }
+  input {
+    margin: 0px 5px;
+  }
+}
+
+.insert-buttons {
+  border-top: 1px solid black;
+  padding: 5px 30px;
+  span {
+    width: 100px;
+    margin: 0px 5px;
+    font-family: 'Coda', cursive;
+  }
+  input {
+    margin: 0px 5px;
+  }
+}

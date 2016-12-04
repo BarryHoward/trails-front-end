@@ -1,12 +1,14 @@
 
-<h1>Welcome {{root.username}}</h1>
-<nav>
-	<span><a href="#/home">Home</a></span>
-	<span><a href="#/trails/new">New Trail</a></span>
-	<span><a href="#/topTrails">Top Trails</a></span>
-	<span ng-hide="root.loggedIn"><a href="#/login">Login</a></span>
-	<span ng-hide="root.loggedIn"><a href="#/register">Register</a></span>
-	<span ng-show="root.loggedIn"><button ng-click="root.logout()">Logout</button>
-
+<h1><a id="title" href='#/home'>The Cranky Cartographer</a></h1>
+<nav class="nav-links">
+	<span class="site-nav">
+		<span><a href="#/home">Home</a></span>
+		<span><a href="#/trails/new">New Trail</a></span>
+		<span><a href="#/topTrails">Top Trails</a></span>
+	</span>
+	<span class='user-nav'>
+		<span><a href="#/login">Login</a></span>
+		<span><a href="#/register">Register</a></span>
+	</span>
 </nav>
 <div ui-view></div>

@@ -1,17 +1,19 @@
 <h2>Register!</h2>
 
-<form class="registration" ng-submit="register.create(user)" method="post">
-
-  <input type="text" name="username" placeholder="username"
-    required ng-model="user.username">
-  <br>
-
-  <input type="password" name="password" placeholder="password"
-    required ng-model="user.password">
-  <br>
-
-  <input type="text" name="email" placeholder="email address"
-    required ng-model="user.email">
-  <br>
-  <button type="button" name="registerButton" ng-click="register.create(user)">Register</button>
-</form>
+<div class="register-main">
+  <form class="registration" ng-submit="register.create(user)" method="post">
+    <span class="register-labels"><label>Username</label></span>
+    <input class="register-input" type="text" name="username"
+      required ng-model="user.username">
+    <br>
+    <span class="register-labels"><label>Password</label></span>
+    <input class="register-input" type="text" name="password"
+      required ng-model="user.password">
+    <br>
+    <span class="register-labels"><label>Email Address</label></span>
+    <input class="register-input" type="text" name="email"
+      required ng-model="user.email">
+    <br>
+    <button class="register-button" type="button" name="registerButton" ng-click="register.create(user)">Register</button>
+  </form>
+</div>

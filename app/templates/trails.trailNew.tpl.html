@@ -2,37 +2,36 @@
 
 <h1 class="title">Add a New Trail</h1>
 
-  <form name="new-trail" ng-submit="trailNew.addNewTrail(trail)">
+  <form class="new-trail" name="new-trail" ng-submit="trailNew.addNewTrail(trail)">
       <input class="title-input" name="title" type="text" placeholder="Trail Name..."
              ng-model="trailNew.trailTitle" />
-			<button class="add-trail-button">Add New Trail!</button>
+			<button class="add-trail-button">Create Trail</button>
 	</form>
+  <div class="marker-buttons">
+  	<div class="add-delete">
+  		<input type="radio" ng-model="trailNew.MapsService.delete" name="delete" ng-value="false"></input>
+  	    <span>Add Points</span>
+  	    <input type="radio" ng-model="trailNew.MapsService.delete" name="delete" ng-value="true"></input>
+  	    <span>Delete Points</span>
+  	</div>
 
-	<div class="add-delete">
-		<input type="radio" ng-model="trailNew.MapsService.delete" name="delete" ng-value="false"></input>
-	    <span>Add Points</span>
-	    <input type="radio" ng-model="trailNew.MapsService.delete" name="delete" ng-value="true"></input>
-	    <span>Delete Points</span>
-	</div>
-
-	<div class="insert-buttons">
-		<input type="radio" ng-model="trailNew.MapsService.insert" name="insert" value="frontInsert"></input>
-	    <span>Add to Front</span>
-	    <input type="radio" ng-model="trailNew.MapsService.insert" name="insert" value="midInsert"></input>
-	    <span>Insert Between</span>
-	    <input type="radio" ng-model="trailNew.MapsService.insert" name="insert" value="backInsert"></input>
-	    <span>Add to End</span>
-	</div>
-
+  	<div class="insert-buttons">
+  		<input type="radio" ng-model="trailNew.MapsService.insert" name="insert" value="frontInsert"></input>
+  	    <span>Add to Front</span>
+  	    <input type="radio" ng-model="trailNew.MapsService.insert" name="insert" value="midInsert"></input>
+  	    <span>Insert Between</span>
+  	    <input type="radio" ng-model="trailNew.MapsService.insert" name="insert" value="backInsert"></input>
+  	    <span>Add to End</span>
+  	</div>
+  </div>
   <form name="map-center" ng-submit="trailNew.geocodeAddress()">
     <input type="text" name="address" ng-model="trailNew.address"></input>
     <button class="geocode" ng-click="trailNew.geocodeAddress()" type="button">Geocode</button>
   </form>
 
-<ng-map class="map" id="trailNewMap" on-click="trailNew.placeMarker($event)">
+<ng-map class='map' id="trailNewMap" on-click="trailNew.placeMarker($event)">
 	<!-- <marker position="[40.74, -74.18]"></marker> -->
 </ng-map>
 <br>
-<div class="chart-box">
-	<canvas class="chart" id="myChart"></canvas>
-</div>
+<canvas class="chart" id="myChart" width="400" height="400"></canvas>
+
