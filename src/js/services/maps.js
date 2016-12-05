@@ -12,6 +12,7 @@ function MapsService ($http, ChartsService, NgMap) {
   vm.editTrail = editTrail;
   vm.deleteTrail = deleteTrail;
   vm.newTrail = newTrail;
+  vm.initSearch = initSearch;
 
     var image = {
         url: "http://2.bp.blogspot.com/-i30Td7s1DOE/ViQWyk6J8XI/AAAAAAAACg8/kw4AN6Wyb-s/s1600/red_dot.png",
@@ -19,6 +20,43 @@ function MapsService ($http, ChartsService, NgMap) {
         origin: new google.maps.Point(0,0),
         anchor: new google.maps.Point(5,5)
     };
+
+  function initSearch (map, textInput) {
+    var searchBox = new google.maps.places.SearchBox(textInput);
+    map.controls[google.maps.ControlPosition.TOP_LEFT].push(textInput);
+
+      // Bias the SearchBox results towards current map's viewport.
+      map.addListener('bounds_changed', function() {
+        searchBox.setBounds(map.getBounds());
+      });
+
+      // Listen for the event fired when the user selects a prediction and retrieve
+      // more details for that place.
+      searchBox.addListener('places_changed', function() {
+        var places = searchBox.getPlaces();
+
+        if (places.length == 0) {
+          return;
+        }
+
+        // For each place, get the name and location.
+        var bounds = new google.maps.LatLngBounds();
+        places.forEach(function(place) {
+          if (!place.geometry) {
+            console.log("Returned place contains no geometry");
+            return;
+          }
+
+          if (place.geometry.viewport) {
+            // Only geocodes have viewport.
+            bounds.union(place.geometry.viewport);
+          } else {
+            bounds.extend(place.geometry.location);
+          }
+        });
+        map.fitBounds(bounds);
+      });
+  }
 
   function getTrailList(){
     return $http.get(`${SERVER}trails`)
@@ -145,7 +183,7 @@ function closestPath(waypoint, path){
     } else {
       pathDistances[i] = a*Math.sin(B);
       percentage[i]=Math.sqrt(Math.pow(b,2) - Math.pow(pathDistances[i],2))/c;
-    } 
+    }
   }
   var minIndex = pathDistances.reduce((iMin, x, i, arr) => x < arr[iMin] ? i : iMin, 0) + 1;
   return [minIndex, percentage[minIndex-1]];
