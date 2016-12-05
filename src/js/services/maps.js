@@ -21,9 +21,11 @@ function MapsService ($http, ChartsService, NgMap) {
         anchor: new google.maps.Point(5,5)
     };
 
-  function initSearch (map, textInput) {
-    var searchBox = new google.maps.places.SearchBox(textInput);
-    map.controls[google.maps.ControlPosition.TOP_LEFT].push(textInput);
+  function initSearch (map) {
+    var input = document.getElementById('pac-input')
+    var searchBox = new google.maps.places.SearchBox(input);
+    map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+    console.log(map.controls[google.maps.ControlPosition.TOP_LEFT])
 
       // Bias the SearchBox results towards current map's viewport.
       map.addListener('bounds_changed', function() {
