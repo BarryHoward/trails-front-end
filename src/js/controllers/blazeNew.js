@@ -69,6 +69,7 @@
 function BlazeNewController (MapsService, $scope) {
 
   const mapId = "blazeNewMap"
+  let vm =this;
 
   //params specific to page
   MapsService.delete = false;
@@ -77,6 +78,7 @@ function BlazeNewController (MapsService, $scope) {
   MapsService.snap = false;
   MapsService.markerArray = [];
   MapsService.panel={};
+  MapsService.trailPath = [];
 
   vm.MapsService = MapsService;
   vm.placeMarker = placeMarker;
@@ -96,7 +98,9 @@ function BlazeNewController (MapsService, $scope) {
       MapsService.map=map;
         MapsService.createTrailPoly();
         MapsService.initSearch();
-        someFunction()
+        MapsService.map.setMapTypeId('terrain');
+        var infoWindow = new google.maps.InfoWindow({map: MapsService.map});
+        someFunction(infoWindow);
     })
   }
   init();
@@ -119,8 +123,8 @@ function BlazeNewController (MapsService, $scope) {
   function placeMarker(event){
     let waypoint = event.latLng;
     let marker = MapsService.placeMarker(waypoint);
-    MapsService.dragListener(marker, waypoint, $scope)
-    MapsService.deleteListener(marker, waypoint, $scope)
+    MapsService.dragListener(marker, $scope)
+    MapsService.deleteListener(marker, $scope)
   }
 
 
@@ -135,20 +139,20 @@ function BlazeNewController (MapsService, $scope) {
           lng: position.coords.longitude
         };
         infoWindow.setPosition(pos);
-        vm.map.setCenter(pos);
+        MapsService.map.setCenter(pos);
       }, function() {
-        handleLocationError(true, infoWindow, vm.map.getCenter());
+        handleLocationError(true, infoWindow, MapsService.map.getCenter());
       });
     } else {
-      handleLocationError(false, infoWindow, vm.map.getCenter());
+      handleLocationError(false, infoWindow, MapsService.map.getCenter());
     }
   }
 
   function geocodeAddress() {
     Geocoder.geocode({'address': vm.address}, function(results, status) {
           if (status === 'OK') {
-            vm.map.setCenter(results[0].geometry.location);
-            vm.map.setZoom(6);
+            MapsService.map.setCenter(results[0].geometry.location);
+            MapsService.map.setZoom(6);
           } else {
             alert('Geocode was not successful for the following reason: ' + status);
           }

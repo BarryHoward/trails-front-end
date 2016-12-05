@@ -138,17 +138,18 @@ function MapsService ($http, ChartsService, NgMap, icons, $rootScope) {
   
   // Listeners 
 
-  function dragListener (marker, waypoint, scope){
+  function dragListener (marker, scope){
+      let waypoint = marker.getPosition();
       google.maps.event.addListener(marker, 'dragend', function (event){
+        let newWaypoint = event.latLng;
         if (!vm.snap){
           var index = vm.trailPath.indexOf(waypoint);
-          waypoint = marker.getPosition();
-          vm.trailPath[index] = waypoint;
+          vm.trailPath[index] = newWaypoint;
           vm.trailPoly.setPath(vm.trailPath);
         } else {
-          let insert = closestPath(marker.getPosition())
-          waypoint = spherical.interpolate(vm.trailPath[insert[0]-1], vm.trailPath[insert[0]], insert[1])
-          marker.setPosition(waypoint);
+          let insert = closestPath(newWaypoint)
+          newWaypoint = spherical.interpolate(vm.trailPath[insert[0]-1], vm.trailPath[insert[0]], insert[1])
+          marker.setPosition(newWaypoint);
           marker.setIcon(icons.pointUnsaved)
           marker.distance = insert[2];
           vm.currentMarker = marker;
@@ -161,8 +162,9 @@ function MapsService ($http, ChartsService, NgMap, icons, $rootScope) {
     })
   }
 
-  function deleteListener (marker, waypoint, scope){
+  function deleteListener (marker, scope){
       google.maps.event.addListener(marker, 'click', function (event){
+        let waypoint = marker.getPosition();
         if (vm.delete){
           if (!vm.snap){
             var index = vm.trailPath.indexOf(waypoint);
@@ -171,7 +173,6 @@ function MapsService ($http, ChartsService, NgMap, icons, $rootScope) {
           }
           var markIndex = vm.markerArray.indexOf(marker);
           vm.markerArray.splice(markIndex, 1);
-
           marker.setMap(null);
           if(vm.trailPath.length > 1) {
             ChartsService.chart(vm.trailPath);
