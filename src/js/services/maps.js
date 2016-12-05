@@ -27,37 +27,36 @@ function MapsService ($http, ChartsService, NgMap) {
     map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
     console.log(map.controls[google.maps.ControlPosition.TOP_LEFT])
 
-      // Bias the SearchBox results towards current map's viewport.
-      map.addListener('bounds_changed', function() {
-        searchBox.setBounds(map.getBounds());
-      });
+    //Listener for selecting an autocomplete option from the dropdown
+    map.addListener('bounds_changed', function() {
+      searchBox.setBounds(map.getBounds());
+    });
 
-      // Listen for the event fired when the user selects a prediction and retrieve
-      // more details for that place.
-      searchBox.addListener('places_changed', function() {
-        var places = searchBox.getPlaces();
+    // get place information when the user makes a selection (may leave this out because it's not displaying anything currently)
+    searchBox.addListener('places_changed', function() {
+      var places = searchBox.getPlaces();
 
-        if (places.length == 0) {
+      if (places.length == 0) {
+        return;
+      }
+
+      // For each place, get the name and location.
+      var bounds = new google.maps.LatLngBounds();
+      places.forEach(function(place) {
+        if (!place.geometry) {
+          console.log("Returned place contains no geometry");
           return;
         }
 
-        // For each place, get the name and location.
-        var bounds = new google.maps.LatLngBounds();
-        places.forEach(function(place) {
-          if (!place.geometry) {
-            console.log("Returned place contains no geometry");
-            return;
-          }
-
-          if (place.geometry.viewport) {
-            // Only geocodes have viewport.
-            bounds.union(place.geometry.viewport);
-          } else {
-            bounds.extend(place.geometry.location);
-          }
-        });
-        map.fitBounds(bounds);
+        if (place.geometry.viewport) {
+          // Set the viewport if available. This makes the map display more mobile-friendly. Only for geocodes.
+          bounds.union(place.geometry.viewport);
+        } else {
+          bounds.extend(place.geometry.location);
+        }
       });
+      map.fitBounds(bounds);
+    });
   }
 
   function getTrailList(){

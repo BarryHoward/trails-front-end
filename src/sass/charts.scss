@@ -9,3 +9,15 @@
   background-color: #FAFAED;
 
 }
+
+.elevation-header {
+  border: 1px solid red;
+  height: 30px;
+  width: 300px;
+  margin: 30px auto;
+  margin-bottom: -60px;
+  text-align: center;
+   h2 {
+     margin: 0px;
+   }
+}
