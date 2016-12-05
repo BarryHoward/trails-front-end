@@ -4,6 +4,7 @@
 
 <input class="title-input" name="title" type="text" placeholder="Trail Name..."
        ng-model="mark.trailTitle" /></input>
+<div class="marker-buttons">
 
 	<div class="add-delete">
 		<input type="radio" ng-model="mark.MapsService.delete" name="delete" ng-value="false"></input>
@@ -11,21 +12,25 @@
 	    <input type="radio" ng-model="mark.MapsService.delete" name="delete" ng-value="true"></input>
 	    <span>Delete Points</span>
 	</div>
-
-	<div class="move-delete">
+	<div class="insert-buttons">
 		<input type="radio" ng-model="mark.MapsService.insert" name="insert" value="frontInsert"></input>
 	    <span>Add to Beginning</span>
 	    <input type="radio" ng-model="mark.MapsService.insert" name="insert" value="midInsert"></input>
 	    <span>Insert Between</span>
 	    <input type="radio" ng-model="mark.MapsService.insert" name="insert" value="backInsert"></input>
 	    <span>Add to End</span>
+      <div class="update-delete">
+        <button class="update-trail-button" type="button" name="edit" ng-click="mark.editTrail()">Save Changes</button>
+        <button class="delete-trail-button" type="button" name="delete" ng-click="mark.deleteTrail()">Delete Trail</button>
+      </div>
 	</div>
-
-<button type="button" name="edit" ng-click="mark.editTrail()">Save Changes</button>
-<button type="button" name="delete" ng-click="mark.deleteTrail()">Delete Trail</button>
-<ng-map class="map" id="markMap" on-click="mark.placeMarker($event)">
-</ng-map>
+</div>
+<div class="map-container">
+  <ng-map class="map" id="markMap" on-click="mark.placeMarker($event)">
+  </ng-map>
+</div>
 
 <div class="chart-box">
 	<canvas class="chart" id="myChart"></canvas>
 </div>
+

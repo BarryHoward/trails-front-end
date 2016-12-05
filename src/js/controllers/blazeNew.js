@@ -3,6 +3,7 @@ const mapId = "blazeNewMap"
 function BlazeNewController (MapsService, $scope) {
 
   let vm = this;
+  const snap =false;
 
   vm.placeMarker = placeMarker;
   vm.addNewTrail = addNewTrail;
@@ -37,7 +38,7 @@ function BlazeNewController (MapsService, $scope) {
   }
 
   function placeMarker(event){
-    MapsService.placeMarker(event, vm.path, vm.map);
+    MapsService.placeMarker(event, vm.path, vm.map, vm.snap);
   }
 
 
