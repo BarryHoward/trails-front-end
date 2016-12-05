@@ -15,6 +15,8 @@ function BlazeEditController (MapsService, $stateParams, $scope) {
 
   function init () {
     let trail_id = $stateParams.id
+    var input = document.getElementById('pac-input');
+    vm.map.controls[google.maps.ControlPosition.TOP_LEFT].push(input)
     vm.status = "Edit a Trail!"
     vm.trailTitle = "Trail Title"
     vm.MapsService.delete = false;
@@ -37,7 +39,7 @@ function BlazeEditController (MapsService, $stateParams, $scope) {
     MapsService.placeMarker(event, vm.path, vm.map);
   }
 
-  
+
   function editTrail(){
     vm.status = "Trail Updating...";
     MapsService.editTrail(vm.path, vm.trailTitle, $stateParams.id)
