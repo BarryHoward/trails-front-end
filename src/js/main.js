@@ -23,7 +23,10 @@ import {ViewController} from "./controllers/view";
 //Services
 import {UsersService} from "./services/users";
 import {MapsService} from "./services/maps";
-import {ChartsService} from "./services/charts";       
+import {ChartsService} from "./services/charts";
+
+//Models
+import {icons} from "./models/icons";
 
 
 angular.module('app', ['ngMap', 'ui.router', 'ngCookies', 'chart.js'])
@@ -44,3 +47,5 @@ angular.module('app', ['ngMap', 'ui.router', 'ngCookies', 'chart.js'])
 	.service('UsersService', UsersService)
 	.service('MapsService', MapsService)
 	.service('ChartsService', ChartsService)
+
+	.constant('icons', icons)

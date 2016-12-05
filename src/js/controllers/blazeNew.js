@@ -1,47 +1,126 @@
-const mapId = "blazeNewMap"
+
+
+
+// function BlazeEditController (MapsService, $stateParams, $scope) {
+//   let vm = this;
+
+//   //params specific to page
+//   MapsService.trail_id = $stateParams.id;
+//   MapsService.delete = false;
+//   MapsService.insert = "backInsert";
+//   MapsService.newMarkerAllow = true;
+//   MapsService.snap = false;
+//   MapsService.markerArray = [];
+//   MapsService.panel={};
+
+//   vm.MapsService = MapsService;
+//   vm.placeMarker = placeMarker;
+//   vm.newTrail = newTrail;
+
+//   const metersFeetConversion = 3.28084;
+//   const metersMilesConversion = 0.000621371;
+//   const encoding = google.maps.geometry.encoding;
+//   const spherical = google.maps.geometry.spherical;
+
+//   init();
+
+//   function init(){
+//     //initial variables
+//     vm.status = "Make a Trail!";
+
+//     MapsService.getMap(mapId).then(function (map){
+//       MapsService.map=map;
+//         MapsService.createTrailPoly();
+//         MapsService.initSearch();
+//     })
+//   }
+
+//   function placeMarker(event){
+//     let waypoint = event.latLng;
+//     let marker = MapsService.placeMarker(waypoint);
+//     MapsService.dragListener(marker, waypoint, $scope)
+//     MapsService.deleteListener(marker, waypoint, $scope)
+//   }
+
+
+//   function newTrail(){
+//     vm.status = "Trail Updating...";
+//     let newTrail = {};
+//     let encodeString = encoding.encodePath(MapsService.trailPath);
+//     newTrail.path = encodeString;
+//     newTrail.title = MapsService.trailTitle;
+//     newTrail.length = spherical.computeLength(MapsService.trailPath)*metersMilesConversion;
+//     newTrail.description = vm.trailDescription;
+//     newTrail.image_url = vm.trailImage_url;
+//     MapsService.newTrail($stateParams.id, newTrail).then(function (resp) {
+//         vm.status = "Update Completed";
+//         $scope.$apply();
+//       })
+//   }
+// }
+
+// BlazeEditController.$inject = ['MapsService', '$stateParams', '$scope'];
+// export {BlazeEditController}
+
+
+
+
 
 function BlazeNewController (MapsService, $scope) {
 
-  let vm = this;
-  const snap =false;
+  const mapId = "blazeNewMap"
 
-  vm.placeMarker = placeMarker;
-  vm.addNewTrail = addNewTrail;
+  //params specific to page
+  MapsService.delete = false;
+  MapsService.insert = "backInsert";
+  MapsService.newMarkerAllow = true;
+  MapsService.snap = false;
+  MapsService.markerArray = [];
+  MapsService.panel={};
+
   vm.MapsService = MapsService;
-  vm.geocodeAddress = geocodeAddress;
-  vm.someFunction = someFunction;
+  vm.placeMarker = placeMarker;
+  vm.newTrail = newTrail;
 
+  const metersFeetConversion = 3.28084;
+  const metersMilesConversion = 0.000621371;
+  const encoding = google.maps.geometry.encoding;
+  const spherical = google.maps.geometry.spherical;
   const Geocoder = new google.maps.Geocoder();
 
-  function init () {
-    // let input = document.getElementById('new-pac-input')
-    vm.MapsService.delete = false;
-    vm.MapsService.insert = "backInsert";
-    vm.MapsService.newMarker = true;
-    MapsService.getMap(mapId).then(function (map) {
-      vm.map = map;
-      vm.path=[];
-      vm.map.setMapTypeId('terrain');
-      MapsService.createLine(vm.path, vm.map);
-      MapsService.initSearch(vm.map)
-    })
-    var infoWindow = new google.maps.InfoWindow({map: vm.map});
-    vm.someFunction(infoWindow);
-  }
+  function init(){
+    //initial variables
+    vm.status = "Make a Trail!";
 
+    MapsService.getMap(mapId).then(function (map){
+      MapsService.map=map;
+        MapsService.createTrailPoly();
+        MapsService.initSearch();
+        someFunction()
+    })
+  }
   init();
 
-  function addNewTrail(){
-    vm.status = "Saving Trail...";
-    MapsService.newTrail(vm.path, vm.trailTitle)
-      .then(function (resp) {
+  function newTrail(){
+    vm.status = "Trail Saving...";
+    let newTrail = {};
+    let encodeString = encoding.encodePath(MapsService.trailPath);
+    newTrail.path = encodeString;
+    newTrail.title = MapsService.trailTitle;
+    newTrail.length = spherical.computeLength(MapsService.trailPath)*metersMilesConversion;
+    newTrail.description = vm.trailDescription;
+    newTrail.image_url = vm.trailImage_url;
+    MapsService.newTrail(newTrail).then(function (resp) {
         vm.status = "Trail Saved";
         $scope.$apply();
       })
   }
 
   function placeMarker(event){
-    MapsService.placeMarker(event, vm.path, vm.map, vm.snap);
+    let waypoint = event.latLng;
+    let marker = MapsService.placeMarker(waypoint);
+    MapsService.dragListener(marker, waypoint, $scope)
+    MapsService.deleteListener(marker, waypoint, $scope)
   }
 
 
