@@ -3,7 +3,9 @@ const mapId = "blazeEditMap"
 
 function BlazeEditController (MapsService, $stateParams, $scope) {
   let vm = this;
+  const blaze = true;
   const draggable = true;
+  const snap = false;
 
   vm.placeMarker = placeMarker;
   vm.editTrail = editTrail;
@@ -19,9 +21,10 @@ function BlazeEditController (MapsService, $stateParams, $scope) {
     vm.trailTitle = "Trail Title"
     vm.MapsService.delete = false;
     vm.MapsService.insert = "backInsert";
+    vm.MapsService.newMarker = true;
 
     MapsService.getMap(mapId).then(function (map) {
-      MapsService.getTrail(trail_id, map, draggable).then(function (MapInfo){
+      MapsService.getTrail(trail_id, map, blaze, snap, draggable).then(function (MapInfo){
         vm.path = MapInfo.path;
         vm.trailTitle = MapInfo.title;
         vm.map = map;
@@ -34,7 +37,7 @@ function BlazeEditController (MapsService, $stateParams, $scope) {
   init();
 
   function placeMarker(event){
-    MapsService.placeMarker(event, vm.path, vm.map);
+    MapsService.placeMarker(event, vm.path, vm.map, snap);
   }
 
   

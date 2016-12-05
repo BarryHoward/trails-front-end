@@ -10,32 +10,34 @@ function ChartsService ($http, $cookies) {
 	function chart(path){
 
 	    vm.elevator = new google.maps.ElevationService;
-	    var routeElevations = [];
+	    var pathElevations = [];
 	    var waypointElevations = [];
 
 	   	vm.pathLength = google.maps.geometry.spherical.computeLength(path)
-	    getRouteElevations(path).then(function (routeElevations) {
+	    getPathElevations(path).then(function (pathElevations) {
 	      getWaypointElevations(path).then(function (waypointElevations) {
-	        drawChart(routeElevations, waypointElevations);
+	        drawChart(pathElevations, waypointElevations);
 	      })
 	    });
 	}
 
-	function getRouteElevations(path){
+	function getPathElevations(path){
 	  return new Promise(function (resolve, reject) {
-	    vm.elevator.getElevationAlongPath({
-	      'path': path,
-	      'samples': 200
-	    }, function (elevations, status){
-	        var routeElevations = [];
-	        routeElevations[0]={x: 0, y: elevations[0].elevation*metersFeetConversion};
-	        var resolution = vm.pathLength/(elevations.length-1)* metersMilesConversion;
-	        for (var i=1; i<elevations.length; i++){
-	          routeElevations[i] = {x: resolution * i,
-	                      y: elevations[i].elevation*metersFeetConversion}
-	        }
-	      resolve(routeElevations);
-	    });
+	  	if (path.length >1){
+		    vm.elevator.getElevationAlongPath({
+		      'path': path,
+		      'samples': 200
+		    }, function (elevations, status){
+		        var pathElevations = [];
+		        pathElevations[0]={x: 0, y: elevations[0].elevation*metersFeetConversion};
+		        var resolution = vm.pathLength/(elevations.length-1)* metersMilesConversion;
+		        for (var i=1; i<elevations.length; i++){
+		          pathElevations[i] = {x: resolution * i,
+		                      y: elevations[i].elevation*metersFeetConversion}
+		        }
+		      resolve(pathElevations);
+		    });
+		} else {resolve();}
 	  })
 	}
 
@@ -55,7 +57,7 @@ function ChartsService ($http, $cookies) {
 	}
 
 
-	function drawChart(routeElevations, waypointElevations){
+	function drawChart(pathElevations, waypointElevations){
 		var ctx = document.getElementById('myChart');
 		ctx.width = 800;
 		ctx.height = 125;
@@ -68,7 +70,7 @@ function ChartsService ($http, $cookies) {
 		    datasets: [{
 		        type: 'line',
 		        label: 'Elevation',
-		        data: routeElevations,
+		        data: pathElevations,
 		        fill: true,
 		        pointBorderColor: 'rgba(0, 0, 0, 0)',
 		        pointBackgroundColor: 'rgba(0, 0, 0, 0)',
@@ -84,8 +86,8 @@ function ChartsService ($http, $cookies) {
 		        pointBackgroundColor: 'rgba(255, 0, 0, 1)'
 		      }
 		    ]
-		  }
-		  var options = {
+		}
+		var options = {
 		      scales: {
 		          xAxes: [{
 		              type: 'linear',
@@ -107,7 +109,7 @@ function ChartsService ($http, $cookies) {
 					hover: {
 						intersect: false
 					}
-		  }
+		}
 
 		vm.myLineChart = new Chart(ctx, {
 		    type: 'bar',
