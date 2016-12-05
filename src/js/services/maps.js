@@ -12,6 +12,7 @@ function MapsService ($http, ChartsService, NgMap) {
   vm.editTrail = editTrail;
   vm.deleteTrail = deleteTrail;
   vm.newTrail = newTrail;
+  vm.initSearch = initSearch;
 
     var image = {
         url: "http://2.bp.blogspot.com/-i30Td7s1DOE/ViQWyk6J8XI/AAAAAAAACg8/kw4AN6Wyb-s/s1600/red_dot.png",
@@ -19,6 +20,44 @@ function MapsService ($http, ChartsService, NgMap) {
         origin: new google.maps.Point(0,0),
         anchor: new google.maps.Point(5,5)
     };
+
+  function initSearch (map) {
+    var input = document.getElementById('pac-input')
+    var searchBox = new google.maps.places.SearchBox(input);
+    map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+    console.log(map.controls[google.maps.ControlPosition.TOP_LEFT])
+
+    //Listener for selecting an autocomplete option from the dropdown
+    map.addListener('bounds_changed', function() {
+      searchBox.setBounds(map.getBounds());
+    });
+
+    // get place information when the user makes a selection (may leave this out because it's not displaying anything currently)
+    searchBox.addListener('places_changed', function() {
+      var places = searchBox.getPlaces();
+
+      if (places.length == 0) {
+        return;
+      }
+
+      // For each place, get the name and location.
+      var bounds = new google.maps.LatLngBounds();
+      places.forEach(function(place) {
+        if (!place.geometry) {
+          console.log("Returned place contains no geometry");
+          return;
+        }
+
+        if (place.geometry.viewport) {
+          // Set the viewport if available. This makes the map display more mobile-friendly. Only for geocodes.
+          bounds.union(place.geometry.viewport);
+        } else {
+          bounds.extend(place.geometry.location);
+        }
+      });
+      map.fitBounds(bounds);
+    });
+  }
 
   function getTrailList(){
     return $http.get(`${SERVER}trails`)
@@ -145,7 +184,7 @@ function closestPath(waypoint, path){
     } else {
       pathDistances[i] = a*Math.sin(B);
       percentage[i]=Math.sqrt(Math.pow(b,2) - Math.pow(pathDistances[i],2))/c;
-    } 
+    }
   }
   var minIndex = pathDistances.reduce((iMin, x, i, arr) => x < arr[iMin] ? i : iMin, 0) + 1;
   return [minIndex, percentage[minIndex-1]];

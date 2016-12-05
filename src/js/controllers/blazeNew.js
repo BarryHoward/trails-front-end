@@ -13,6 +13,7 @@ function BlazeNewController (MapsService, $scope) {
   const Geocoder = new google.maps.Geocoder();
 
   function init () {
+    // let input = document.getElementById('new-pac-input')
     vm.MapsService.delete = false;
     vm.MapsService.insert = "backInsert";
     MapsService.getMap(mapId).then(function (map) {
@@ -20,6 +21,7 @@ function BlazeNewController (MapsService, $scope) {
       vm.path=[];
       vm.map.setMapTypeId('terrain');
       MapsService.createLine(vm.path, vm.map);
+      MapsService.initSearch(vm.map)
     })
     var infoWindow = new google.maps.InfoWindow({map: vm.map});
     vm.someFunction(infoWindow);

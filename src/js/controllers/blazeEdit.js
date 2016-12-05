@@ -11,9 +11,11 @@ function BlazeEditController (MapsService, $stateParams, $scope) {
   vm.MapsService = MapsService;
   // vm.chartWidth = 600;
   // vm.chartHeight = 300;
+  vm.initSearch = initSearch;
 
 
   function init () {
+    // let updateInput = document.getElementById('update-pac-input')
     let trail_id = $stateParams.id
     vm.status = "Edit a Trail!"
     vm.trailTitle = "Trail Title"
@@ -27,6 +29,7 @@ function BlazeEditController (MapsService, $stateParams, $scope) {
         vm.map = map;
         vm.map.setMapTypeId('terrain');
         $scope.$apply();
+        MapsService.initSearch(vm.map)
       });
     })
   }
@@ -37,7 +40,7 @@ function BlazeEditController (MapsService, $stateParams, $scope) {
     MapsService.placeMarker(event, vm.path, vm.map);
   }
 
-  
+
   function editTrail(){
     vm.status = "Trail Updating...";
     MapsService.editTrail(vm.path, vm.trailTitle, $stateParams.id)
@@ -54,6 +57,10 @@ function BlazeEditController (MapsService, $stateParams, $scope) {
     }, (reject) => {
         console.log(reject)
       });
+  }
+
+  function initSearch (map) {
+    MapsService.searchBox(map)
   }
 }
 

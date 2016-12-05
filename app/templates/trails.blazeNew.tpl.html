@@ -25,16 +25,19 @@
   	    <span>Add to End</span>
   	</div>
   </div>
-  <form name="map-center" ng-submit="blazeNew.geocodeAddress()">
+
+  <!-- <form name="map-center" ng-submit="blazeNew.geocodeAddress()">
     <input type="text" name="address" ng-model="blazeNew.address"></input>
     <button class="geocode" ng-click="blazeNew.geocodeAddress()" type="button">Geocode</button>
-  </form>
+  </form> -->
 
 <div class="map-container">
+  <input id="pac-input" class="controls" type="text" placeholder="Search...">
   <ng-map class="map" id="blazeNewMap" on-click="blazeNew.placeMarker($event)">
   </ng-map>
 </div>
 
+<div class="elevation-header"><h2>Elevation Information</h2></div>
 <div class="chart-box">
 	<canvas class="chart" id="myChart"></canvas>
 </div>
