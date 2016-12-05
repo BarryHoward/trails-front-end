@@ -16,6 +16,7 @@ function BlazeNewController (MapsService, $scope) {
   function init () {
     vm.MapsService.delete = false;
     vm.MapsService.insert = "backInsert";
+    vm.MapsService.newMarker = true;
     MapsService.getMap(mapId).then(function (map) {
       vm.map = map;
       vm.path=[];

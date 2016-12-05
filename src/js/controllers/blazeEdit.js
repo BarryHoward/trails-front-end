@@ -21,6 +21,7 @@ function BlazeEditController (MapsService, $stateParams, $scope) {
     vm.trailTitle = "Trail Title"
     vm.MapsService.delete = false;
     vm.MapsService.insert = "backInsert";
+    vm.MapsService.newMarker = true;
 
     MapsService.getMap(mapId).then(function (map) {
       MapsService.getTrail(trail_id, map, blaze, snap, draggable).then(function (MapInfo){

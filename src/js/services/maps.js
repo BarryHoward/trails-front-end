@@ -11,6 +11,11 @@ function MapsService ($http, ChartsService, NgMap) {
   vm.editTrail = editTrail;
   vm.deleteTrail = deleteTrail;
   vm.newTrail = newTrail;
+  vm.savePoint = savePoint;
+  vm.waypoint = {};
+
+  const metersFeetConversion = 3.28084;
+  const metersMilesConversion = 0.000621371;
 
   const trailIcon = {
       url: "http://2.bp.blogspot.com/-i30Td7s1DOE/ViQWyk6J8XI/AAAAAAAACg8/kw4AN6Wyb-s/s1600/red_dot.png",
@@ -45,6 +50,7 @@ function MapsService ($http, ChartsService, NgMap) {
           if (point){
             $http.get(`${SERVER}trails/${id}/points`).then((resp) =>{
               var points = resp.data
+              console.log(resp.data)
               points.forEach(function (waypoint){
                 loadPointMarker(waypoint, path, map, draggable)
               })
@@ -114,6 +120,7 @@ function MapsService ($http, ChartsService, NgMap) {
           let insert = closestPath(marker.getPosition(), path)
           waypoint = google.maps.geometry.spherical.interpolate(path[insert[0]-1], path[insert[0]], insert[1])
           marker.setPosition(waypoint);
+          updateController(waypoint, path, insert);
         }
         if(path.length > 1) {
           ChartsService.chart(path);
@@ -128,14 +135,12 @@ function MapsService ($http, ChartsService, NgMap) {
             var index = path.indexOf(waypoint);
             path.splice(index, 1);
             vm.line.setPath(path);
-          } else {
-            var index = vm.markers.indexof(marker);
-            vm.markers.splice(index,1);
           }
           marker.setMap(null);
           if(path.length !== 1) {
             ChartsService.chart(path);
           }
+          vm.newMarker = true;
         }
     })
   }
@@ -183,6 +188,9 @@ function closestPath(waypoint, path){
           path.splice(insert[0], 0, waypoint);
           vm.line.setPath(path);
         }
+      updateController(waypoint, path, insert);
+
+
       } else if (vm.insert === "frontInsert") {
         path.unshift(waypoint);
         vm.line.setPath(path);
@@ -191,22 +199,41 @@ function closestPath(waypoint, path){
         vm.line.setPath(path);
       }
 
+
+      //
       var marker = new google.maps.Marker({
           position: waypoint,
           map: map,
           draggable: true,
           icon: trailIcon
       });
+      if (!vm.newMarker){
+        vm.currentMarker.setMap(null);
+      }
+      vm.currentMarker = marker;
       if (snap){
         marker.setIcon(pointIcon);
       }
-
       dragListener(marker, waypoint, path, map, snap)
       deleteListener(marker, waypoint, path, map, snap)
       if(path.length > 1) {
         ChartsService.chart(path);
       }
     }
+  }
+
+  function updateController(waypoint, path, insert){
+          vm.waypoint.lat=waypoint.lat();
+          vm.waypoint.lng=waypoint.lng();
+          let path1 = path.slice(0, [insert[0]])
+          let path2 = path.slice(0, [insert[0]+1])
+          vm.waypoint.distance = (google.maps.geometry.spherical.computeLength(path1)
+          + (google.maps.geometry.spherical.computeLength(path2) - google.maps.geometry.spherical.computeLength(path1))*insert[1])
+          * metersMilesConversion;
+          vm.trailLength = google.maps.geometry.spherical.computeLength(path)*metersMilesConversion;
+          console.log(vm.waypoint)
+          console.log(vm)
+
   }
 
 //  Place Marker -----------------------------------------------------
@@ -246,6 +273,10 @@ function closestPath(waypoint, path){
 
   function deleteTrail(id){
     return $http.delete(`${SERVER}trails/${id}`);
+  }
+
+  function savePoint(waypoint){
+    return $http.post(`${SERVER}points`, waypoint)
   }
 
   // -----------------------

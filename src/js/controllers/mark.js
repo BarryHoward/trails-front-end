@@ -11,6 +11,8 @@ function MarkController (MapsService, $stateParams, $scope) {
   // vm.editTrail = editTrail;
   // vm.deleteTrail = deleteTrail;
   vm.MapsService = MapsService;
+  vm.savePoint = savePoint;
+  vm.deletePoint = deletePoint;
   // vm.chartWidth = 600;
   // vm.chartHeight = 300;
 
@@ -20,7 +22,8 @@ function MarkController (MapsService, $stateParams, $scope) {
     vm.status = "Add Points to a Trail"
     vm.trailTitle = "Trail Title"
     vm.MapsService.delete = false;
-    vm.MapsService.insert = "backInsert";
+    vm.MapsService.newMarker = true;
+
 
     MapsService.getMap(mapId).then(function (map) {
       MapsService.getTrail(trail_id, map, blaze, snap, draggable).then(function (MapInfo){
@@ -36,9 +39,24 @@ function MarkController (MapsService, $stateParams, $scope) {
   init();
 
   function placeMarker(event){
-    MapsService.placeMarker(event, vm.path, vm.map, snap);
+      MapsService.placeMarker(event, vm.path, vm.map, snap);
+      vm.MapsService.newMarker = false;
   }
 
+  function savePoint(){
+    vm.MapsService.newMarker = true;
+    console.log(vm.MapsService.waypoint)
+    vm.MapsService.waypoint.trail_id = $stateParams.id
+    MapsService.savePoint(vm.MapsService.waypoint).then((resp) => {
+      console.log(resp)
+    })
+  }
+
+  function deletePoint(){
+    vm.MapsService.newMarker = true;
+    vm.MapsService.currentMarker.setMap(null);
+    vm.MapsService.currentMarker = null;
+  }
   
   // function editTrail(){
   //   vm.status = "Trail Updating...";
