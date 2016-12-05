@@ -27,7 +27,9 @@ function MapsService ($http, ChartsService, NgMap) {
   const pointIcon = {
     url: "http://maps.google.com/mapfiles/ms/icons/blue.png"
   }
-
+  const savedIcon = {
+    url: "http://maps.google.com/mapfiles/ms/icons/green.png"
+  }
 
 
   function getTrailList(){
@@ -100,7 +102,7 @@ function MapsService ($http, ChartsService, NgMap) {
         map: map,
         animation: google.maps.Animation.DROP,
         position: {lat: waypoint.lat, lng: waypoint.lng},
-        icon: pointIcon,
+        icon: savedIcon,
         draggable: draggable
     });
     dragListener(marker, waypoint, path, map, true)
@@ -120,6 +122,8 @@ function MapsService ($http, ChartsService, NgMap) {
           let insert = closestPath(marker.getPosition(), path)
           waypoint = google.maps.geometry.spherical.interpolate(path[insert[0]-1], path[insert[0]], insert[1])
           marker.setPosition(waypoint);
+          marker.setIcon(pointIcon)
+          vm.currentMarker = marker;
           updateController(waypoint, path, insert);
         }
         if(path.length > 1) {
@@ -198,8 +202,6 @@ function closestPath(waypoint, path){
         path.push(waypoint);
         vm.line.setPath(path);
       }
-
-
       //
       var marker = new google.maps.Marker({
           position: waypoint,
@@ -276,6 +278,7 @@ function closestPath(waypoint, path){
   }
 
   function savePoint(waypoint){
+    vm.currentMarker.setIcon(savedIcon)
     return $http.post(`${SERVER}points`, waypoint)
   }
 
