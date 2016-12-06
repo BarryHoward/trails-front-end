@@ -6,69 +6,61 @@
        ng-model="mark.trailTitle" /></input>
 <div class="marker-buttons">
 
-<!-- 	<div class="add-delete">
-		<input type="radio" ng-model="mark.MapsService.delete" name="delete" ng-value="false"></input>
-	    <span>Add Points</span>
-	    <input type="radio" ng-model="mark.MapsService.delete" name="delete" ng-value="true"></input>
-	    <span>Delete Points</span>
-	</div>
-	<div class="insert-buttons">
-		<input type="radio" ng-model="mark.MapsService.insert" name="insert" value="frontInsert"></input>
-	    <span>Add to Beginning</span>
-	    <input type="radio" ng-model="mark.MapsService.insert" name="insert" value="midInsert"></input>
-	    <span>Insert Between</span>
-	    <input type="radio" ng-model="mark.MapsService.insert" name="insert" value="backInsert"></input>
-	    <span>Add to End</span> -->
       <div class="update-delete">
         <button class="update-trail-button" type="button" name="edit" ng-click="mark.savePoint()">Save Point</button>
         <button class="delete-trail-button" type="button" name="delete" ng-click="mark.deletePoint()">Delete Point</button>
       </div>
-	</div>
 </div>
 <div class="map-container">
+  <input id="pac-input" class="controls" type="text" placeholder="Search...">
   <ng-map class="map" id="markMap" on-click="mark.placeMarker($event)">
   </ng-map>
-
 </div>
 <div class="point-control-container">
 	<div class="distance-input-container">
 		<span>
 			<label>Distance: </label>
-			<input type="text" ng-model="mark.MapsService.waypoint.distance"></input>
+			<input type="text" ng-model="mark.MapsService.panel.distance"></input>
 						mi. out of {{mark.MapsService.trailLength}}
 		</span>
 	</div>
 	<div class="lat-lng-input-container">
 		<span>
 			<label>Lat: </label>
-			<input type="text" ng-model="mark.MapsService.waypoint.lat"></input>
+			<input type="text" ng-model="mark.MapsService.panel.lat"></input>
 			<label>Lng: </label>
-			<input type="text" ng-model="mark.MapsService.waypoint.lng"></input>
+			<input type="text" ng-model="mark.MapsService.panel.lng"></input>
 		</span>
 	</div>
 	<div class="type-container">
-		<label>shelter: </label><input type="checkbox" ng-model="mark.MapsService.waypoint.shelter">
-		<label>campsite: </label><input type="checkbox" ng-model="mark.MapsService.waypoint.campsite">
+		<label>shelter: </label><input type="checkbox" ng-model="mark.MapsService.panel.shelter">
+		<label>campsite: </label><input type="checkbox" ng-model="mark.MapsService.panel.campsite">
 		<br>
-		<label>water: </label><input type="checkbox" ng-model="mark.MapsService.waypoint.water">
-		<label>view: </label><input type="checkbox" ng-model="mark.MapsService.waypoint.view">
+		<label>water: </label><input type="checkbox" ng-model="mark.MapsService.panel.water">
+		<label>view: </label><input type="checkbox" ng-model="mark.MapsService.panel.view">
 		<br>
-		<label>road: </label><input type="checkbox" ng-model="mark.MapsService.waypoint.road">
-		<label>parking: </label><input type="checkbox" ng-model="mark.MapsService.waypoint.parking">
+		<label>road: </label><input type="checkbox" ng-model="mark.MapsService.panel.road">
+		<label>parking: </label><input type="checkbox" ng-model="mark.MapsService.panel.parking">
 		<br>
-		<label>resupply: </label><input type="checkbox" ng-model="mark.MapsService.waypoint.resupply">
+		<label>resupply: </label><input type="checkbox" ng-model="mark.MapsService.panel.resupply">
 	</div>
 	<div class="title-container">
-		<label>Title: </label><input type="text" ng-model="mark.MapsService.waypoint.title"></input>
+		<label>Title: </label><input type="text" ng-model="mark.MapsService.panel.title"></input>
 	</div>
 	<div class="description-container">
 		<label>Description: </label>
-		<textarea ng-model="mark.MapsService.waypoint.description"></textarea>
+		<textarea ng-model="mark.MapsService.panel.description"></textarea>
 	</div>
 	<div class="image-url-container">
 		<label>Image Url: </label>
-		<input type="text" ng-model="mark.MapsService.waypoint.image_url"></input>
+		<input type="text" ng-model="mark.MapsService.panel.image_url"></input>
 	</div>
+
+	<div class="update-delete">
+        <button class="update-trail-button" type="button" name="edit" ng-hide="mark.MapsService.currentMarker.id" ng-click="mark.savePoint()">Save Point</button>
+        <button class="update-trail-button" type="button" name="edit" ng-show="mark.MapsService.currentMarker.id" ng-click="mark.editPoint()">Edit Point</button>
+        <button class="delete-trail-button" type="button" name="delete" ng-click="mark.deletePoint()">Delete Point</button>
+    </div>
 </div>
 
 <div class="chart-box">

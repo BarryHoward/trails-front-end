@@ -1,59 +1,102 @@
-function MapsService ($http, ChartsService, NgMap) {
+function MapsService ($http, ChartsService, NgMap, icons, $rootScope) {
 
   const SERVER = "https://trails-back-end.herokuapp.com/";
 
   let vm = this;
-  vm.createLine = createLine;
+
   vm.getMap = getMap;
-  vm.placeMarker = placeMarker;
   vm.getTrail = getTrail;
-  vm.getTrailList = getTrailList;
+  vm.getPoints = getPoints;
+  vm.createTrailPoly = createTrailPoly;
+  vm.centerMap = centerMap;
+  vm.initSearch = initSearch;
+  vm.loadTrailMarker = loadTrailMarker;
+  vm.loadPointMarker = loadPointMarker;
+  vm.dragListener = dragListener;
+  vm.clickListener = clickListener;
+  vm.closestPath = closestPath;
+  vm.placeMarker = placeMarker;
+
   vm.editTrail = editTrail;
   vm.deleteTrail = deleteTrail;
   vm.newTrail = newTrail;
-  vm.initSearch = initSearch;
-
+  vm.getTrailList = getTrailList;
   vm.savePoint = savePoint;
+  vm.editPoint = editPoint;
+  vm.initChart = initChart;
+
+ 
   vm.waypoint = {};
 
   const metersFeetConversion = 3.28084;
   const metersMilesConversion = 0.000621371;
+  const encoding = google.maps.geometry.encoding;
+  const spherical = google.maps.geometry.spherical;
 
-  const trailIcon = {
-      url: "http://2.bp.blogspot.com/-i30Td7s1DOE/ViQWyk6J8XI/AAAAAAAACg8/kw4AN6Wyb-s/s1600/red_dot.png",
-      size: new google.maps.Size(9, 9),
-      origin: new google.maps.Point(0,0),
-      anchor: new google.maps.Point(5,5)
-  };
 
-  const pointIcon = {
-    url: "http://maps.google.com/mapfiles/ms/icons/blue.png"
+
+
+// -----------------------------------------------------------------------
+
+  // Get map
+
+  function getMap(id){
+     return NgMap.getMap(id)
   }
-  const savedIcon = {
-    url: "http://maps.google.com/mapfiles/ms/icons/green.png"
+
+// -----------------------------------------------------------------------
+  
+  // Get existing Trail 
+
+  function getTrail(){
+    return $http.get(`${SERVER}trails/${vm.trail_id}`);
   }
 
+  function getPoints(){
+    return $http.get(`${SERVER}trails/${vm.trail_id}/points`);
+  }
 
+// -----------------------------------------------------------------------
+  
+  //Create line and Center map
 
-  function initSearch (map) {
+  function createTrailPoly() {
+    if (vm.trailPoly){
+      vm.trailPoly.setMap(null);
+    }
+    var trailPoly = new google.maps.Polyline({
+        path: vm.trailPath,
+        geodesic: true,
+        strokeColor: '#FF0000',
+        strokeOpacity: 1.0,
+        strokeWeight: 2
+      });
+    trailPoly.setMap(vm.map);
+    vm.trailPoly = trailPoly;
+  }
+
+  function centerMap() {
+    var latlngbounds = new google.maps.LatLngBounds();
+    vm.trailPath.forEach(function (waypoint) {
+      latlngbounds.extend(waypoint)
+    })
+    vm.map.fitBounds(latlngbounds);
+  }
+
+  function initSearch () {
     var input = document.getElementById('pac-input')
     var searchBox = new google.maps.places.SearchBox(input);
-    map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-    console.log(map.controls[google.maps.ControlPosition.TOP_LEFT])
-
+    vm.map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
     //Listener for selecting an autocomplete option from the dropdown
-    map.addListener('bounds_changed', function() {
-      searchBox.setBounds(map.getBounds());
+    vm.map.addListener('bounds_changed', function() {
+      searchBox.setBounds(vm.map.getBounds());
     });
-
     // get place information when the user makes a selection (may leave this out because it's not displaying anything currently)
     searchBox.addListener('places_changed', function() {
       var places = searchBox.getPlaces();
-
       if (places.length == 0) {
         return;
       }
-
       // For each place, get the name and location.
       var bounds = new google.maps.LatLngBounds();
       places.forEach(function(place) {
@@ -61,7 +104,6 @@ function MapsService ($http, ChartsService, NgMap) {
           console.log("Returned place contains no geometry");
           return;
         }
-
         if (place.geometry.viewport) {
           // Set the viewport if available. This makes the map display more mobile-friendly. Only for geocodes.
           bounds.union(place.geometry.viewport);
@@ -69,137 +111,104 @@ function MapsService ($http, ChartsService, NgMap) {
           bounds.extend(place.geometry.location);
         }
       });
-      map.fitBounds(bounds);
+      vm.map.fitBounds(bounds);
     });
   }
 
-  function getTrailList(){
-    return $http.get(`${SERVER}trails`)
-  }
+// ------------------------------------------------------------------------
 
-  function getMap(id){
-     return NgMap.getMap(id)
-  }
+  // Load Markers
 
-  function getTrail(id, map, blaze, point, draggable){
-    return new Promise(function (resolve, reject) {
-        $http.get(`${SERVER}trails/${id}`).then((resp) => {
-          let path = google.maps.geometry.encoding.decodePath(resp.data.path);
-          if (blaze){
-            path.forEach(function (waypoint) {
-              loadTrailMarker(waypoint, path, map, draggable)
-            });
-          }
-          if (point){
-            $http.get(`${SERVER}trails/${id}/points`).then((resp) =>{
-              var points = resp.data
-              console.log(resp.data)
-              points.forEach(function (waypoint){
-                loadPointMarker(waypoint, path, map, draggable)
-              })
-            })
-          }
-          createLine(path, map);
-          centerMap(map, path);
-          ChartsService.chart(path);
-          var Trail = {path: path, title: resp.data.title}
-          resolve(Trail);
-        }, (reject) => {
-          console.log(reject)
-        })
-    })
-  }
-
-  function createLine(path, map) {
-    if (vm.line){
-      vm.line.setMap(null);
-    }
-    var trailPoly = new google.maps.Polyline({
-        path: path,
-        geodesic: true,
-        strokeColor: '#FF0000',
-        strokeOpacity: 1.0,
-        strokeWeight: 2
-      });
-    trailPoly.setMap(map);
-    vm.line = trailPoly;
-    return trailPoly;
-  }
-
-  function loadTrailMarker(waypoint, path, map, draggable){
+  function loadTrailMarker(waypoint){
     var marker = new google.maps.Marker({
-        map: map,
-        animation: google.maps.Animation.DROP,
+        map: vm.map,
         position: waypoint,
-        icon: trailIcon,
-        draggable: draggable
+        icon: icons.blaze,
+        draggable: true
     });
-    dragListener(marker, waypoint, path, map, false)
-    deleteListener(marker, waypoint, path, map, false)
+    return marker;
   }
 
-  function loadPointMarker(waypoint, path, map, draggable){
+  function loadPointMarker(waypoint){
+    let position = new google.maps.LatLng(waypoint.lat, waypoint.lng)
+    let insert = closestPath(position)
     var marker = new google.maps.Marker({
-        map: map,
-        animation: google.maps.Animation.DROP,
-        position: {lat: waypoint.lat, lng: waypoint.lng},
-        icon: savedIcon,
-        draggable: draggable
+        map: vm.map,
+        position: position,
+        icon: icons.pointSaved,
+        draggable: true
     });
-    dragListener(marker, waypoint, path, map, true)
-    deleteListener(marker, waypoint, path, map, true)
+    marker.distance = insert[2]
+    marker.id = waypoint.id;
+    vm.markerArray.push(marker)
+    return marker;
   }
 
-  // Listeners ---------------------------------------------------------
+// ----------------------------------------------------------------------
+  
+  // Listeners 
 
-  function dragListener (marker, waypoint, path, map, snap){
+  function dragListener (marker, waypoint, $scope){
       google.maps.event.addListener(marker, 'dragend', function (event){
-        if (!snap){
-          var index = path.indexOf(waypoint);
+        if (!vm.snap){
+          var index = vm.trailPath.indexOf(waypoint);
           waypoint = marker.getPosition();
-          path[index] = waypoint;
-          vm.line.setPath(path);
+          vm.trailPath[index] = waypoint;
+          vm.trailPoly.setPath(vm.trailPath);
         } else {
-          let insert = closestPath(marker.getPosition(), path)
-          waypoint = google.maps.geometry.spherical.interpolate(path[insert[0]-1], path[insert[0]], insert[1])
+          waypoint = marker.getPosition();
+          let insert = closestPath(waypoint)
+          console.log(insert)
+          waypoint = spherical.interpolate(vm.trailPath[insert[0]-1], vm.trailPath[insert[0]], insert[1])
           marker.setPosition(waypoint);
-          marker.setIcon(pointIcon)
+          marker.setIcon(icons.pointUnsaved)
+          marker.distance = insert[2];
           vm.currentMarker = marker;
-          updateController(waypoint, path, insert);
         }
-        if(path.length > 1) {
-          ChartsService.chart(path);
+        if(vm.trailPath.length > 1) {
+          ChartsService.chart(vm.trailPath);
         }
+
+        $scope.$apply(updatePanel());
     })
   }
 
-  function deleteListener (marker, waypoint, path, map, snap){
+  function clickListener (marker, waypoint, $scope){
       google.maps.event.addListener(marker, 'click', function (event){
+        console.log($scope)
+        waypoint = marker.getPosition();
         if (vm.delete){
-          if (!snap){
-            var index = path.indexOf(waypoint);
-            path.splice(index, 1);
-            vm.line.setPath(path);
+          if (!vm.snap){
+            var index = vm.trailPath.indexOf(waypoint);
+            vm.trailPath.splice(index, 1);
+            vm.trailPoly.setPath(vm.trailPath);
           }
+          var markIndex = vm.markerArray.indexOf(marker);
+          vm.markerArray.splice(markIndex, 1);
           marker.setMap(null);
-          if(path.length !== 1) {
-            ChartsService.chart(path);
+          if(vm.trailPath.length > 1) {
+            ChartsService.chart(vm.trailPath);
           }
-          vm.newMarker = true;
+          vm.currentMarker = null;
+          vm.newMarkerAllow = true;
+        } else {
+          vm.currentMarker = marker;
         }
+        $scope.$apply(updatePanel());
     })
   }
 
-  // --------------------------------------------------------------------
+// -----------------------------------------------------------------------
 
+  //Closest Path (snap function)
 
-function closestPath(waypoint, path){
+function closestPath(waypoint){
   var pathDistances = [];
   var percentage = [];
-  for (var i=0; i<path.length-1; i++){
-    let a = google.maps.geometry.spherical.computeDistanceBetween(waypoint, path[i+1]);
-    let b = google.maps.geometry.spherical.computeDistanceBetween(waypoint, path[i]);
-    let c = google.maps.geometry.spherical.computeDistanceBetween(path[i], path[i+1]);
+  for (var i=0; i<vm.trailPath.length-1; i++){
+    let a = spherical.computeDistanceBetween(waypoint, vm.trailPath[i+1]);
+    let b = spherical.computeDistanceBetween(waypoint, vm.trailPath[i]);
+    let c = spherical.computeDistanceBetween(vm.trailPath[i], vm.trailPath[i+1]);
     let A = Math.acos((Math.pow(b,2)+Math.pow(c,2)-Math.pow(a,2))/(2*b*c))
     let B = Math.acos((Math.pow(c,2)+Math.pow(a,2)-Math.pow(b,2))/(2*a*c))
     let C = Math.PI-B-A;
@@ -215,103 +224,108 @@ function closestPath(waypoint, path){
       percentage[i]=Math.sqrt(Math.pow(b,2) - Math.pow(pathDistances[i],2))/c;
     }
   }
-  var minIndex = pathDistances.reduce((iMin, x, i, arr) => x < arr[iMin] ? i : iMin, 0) + 1;
-  return [minIndex, percentage[minIndex-1]];
+  let minIndex = pathDistances.reduce((iMin, x, i, arr) => x < arr[iMin] ? i : iMin, 0) + 1;
+  let finalPercentage = percentage[minIndex-1];
+  let path1 = vm.trailPath.slice(0, [minIndex]);
+  let path2 = vm.trailPath.slice(0, [minIndex+1]);
+  let distance = (spherical.computeLength(path1)+ (spherical.computeLength(path2) - spherical.computeLength(path1))*finalPercentage)
+  * metersMilesConversion;
+
+  return [minIndex, finalPercentage, distance];
 }
 
-  //  Place Marker -----------------------------------------------------
+  // --------------------------------------------------------------
 
-  function placeMarker(event, path, map, snap) {
-    var waypoint = event.latLng
+    //Place marker
+
+  function placeMarker(waypoint) {
     if (!vm.delete){
-      if ((vm.insert === "midInsert" || snap) && path.length>0){
-        let insert = closestPath(waypoint, path)
-        var snapWaypoint = google.maps.geometry.spherical.interpolate(path[insert[0]-1], path[insert[0]], insert[1])
-        if (snap){
+      var markerDistance;
+      //change path and change waypoint if snap
+      if ((vm.insert === "midInsert" || vm.snap) && vm.trailPath.length>0){
+        var insert = closestPath(waypoint)
+        markerDistance = insert[2];
+        if (vm.snap){
+          var snapWaypoint = spherical.interpolate(vm.trailPath[insert[0]-1], vm.trailPath[insert[0]], insert[1])
           waypoint = snapWaypoint;
         } else {
-          path.splice(insert[0], 0, waypoint);
-          vm.line.setPath(path);
+          vm.trailPath.splice(insert[0], 0, waypoint);
+          vm.trailPoly.setPath(vm.trailPath);
         }
-      updateController(waypoint, path, insert);
-
 
       } else if (vm.insert === "frontInsert") {
-        path.unshift(waypoint);
-        vm.line.setPath(path);
+        vm.trailPath.unshift(waypoint);
+        vm.trailPoly.setPath(vm.trailPath);
+        markerDistance = 0;
       } else {
-        path.push(waypoint);
-        vm.line.setPath(path);
+        vm.trailPath.push(waypoint);
+        vm.trailPoly.setPath(vm.trailPath);
+        markerDistance = spherical.computeLength(vm.trailPath)*metersMilesConversion;
       }
-      //
+      //create marker
       var marker = new google.maps.Marker({
           position: waypoint,
-          map: map,
+          map: vm.map,
           draggable: true,
-          icon: trailIcon
+          icon: icons.blaze
       });
-      if (!vm.newMarker){
+      if (!vm.newMarkerAllow && vm.currentMarker){
+        console.log(vm.currentMarker)
+        let index = vm.markerArray.indexOf(vm.currentMarker);
+        console.log(index);
+        vm.markerArray.splice(index, 1);
         vm.currentMarker.setMap(null);
       }
+      vm.newMarkerAllow = false;
+      //set to unsaved icon if snap
+      if (vm.snap){
+        marker.setIcon(icons.pointUnsaved);
+      }
+      //re-chart
+      if(vm.trailPath.length > 1) {
+        ChartsService.chart(vm.trailPath);
+      }
+      marker.distance = markerDistance;
+      vm.markerArray.push(marker)
       vm.currentMarker = marker;
-      if (snap){
-        marker.setIcon(pointIcon);
-      }
-      dragListener(marker, waypoint, path, map, snap)
-      deleteListener(marker, waypoint, path, map, snap)
-      if(path.length > 1) {
-        ChartsService.chart(path);
-      }
+      updatePanel();
+      return marker;
     }
-  }
-
-  function updateController(waypoint, path, insert){
-          vm.waypoint.lat=waypoint.lat();
-          vm.waypoint.lng=waypoint.lng();
-          let path1 = path.slice(0, [insert[0]])
-          let path2 = path.slice(0, [insert[0]+1])
-          vm.waypoint.distance = (google.maps.geometry.spherical.computeLength(path1)
-          + (google.maps.geometry.spherical.computeLength(path2) - google.maps.geometry.spherical.computeLength(path1))*insert[1])
-          * metersMilesConversion;
-          vm.trailLength = google.maps.geometry.spherical.computeLength(path)*metersMilesConversion;
-          console.log(vm.waypoint)
-          console.log(vm)
 
   }
 
-//  Place Marker -----------------------------------------------------
+  // ----------------------------------------------------------------------------------
+
+    // update Panel
+
+  function updatePanel(){
+    console.log(vm.currentMarker)
+    console.log(vm.markerArray)
+
+    if (vm.currentMarker){
+      let waypoint = vm.currentMarker.getPosition();
+      vm.panel.lat=waypoint.lat();
+      vm.panel.lng=waypoint.lng();
+      vm.panel.distance = vm.currentMarker.distance;
+      console.log(vm.panel)
+    } else {
+      vm.panel.lat = "";
+      vm.panel.lng = "";
+      vm.panel.distance = "";
+    }
+      vm.trailLength = spherical.computeLength(vm.trailPath)*metersMilesConversion;
+  }
+
+// ---------------------------------------------------------------------
 
   // --- Button Section -------
 
-  function newTrail (path, trailTitle){
-    return new Promise(function (resolve, reject) {
-      let newTrail = {};
-      let path = vm.line.getPath();
-      let encodeString = google.maps.geometry.encoding.encodePath(path);
-      newTrail.path = encodeString;
-      newTrail.title = trailTitle;
-      $http.post(`${SERVER}trails`, newTrail).then((resp) => {
-          resolve();
-        }, (reject) => {
-          console.log(reject)
-        });
-    })
+  function newTrail (newTrail){
+    return $http.post(`${SERVER}trails`, newTrail);
   }
 
-  function editTrail (path, trailTitle, id){
-    return new Promise(function (resolve, reject) {
-      let newTrail = {};
-      let path = vm.line.getPath();
-      let encodeString = google.maps.geometry.encoding.encodePath(path);
-      newTrail.path = encodeString;
-      newTrail.title = trailTitle;
-      $http.patch(`${SERVER}trails/${id}`, newTrail).then((resp) => {
-          console.log(resp)
-          resolve();
-        }, (reject) => {
-          console.log(reject)
-        });
-    })
+  function editTrail (id, newTrail){
+    return $http.patch(`${SERVER}trails/${id}`, newTrail);
   }
 
   function deleteTrail(id){
@@ -319,24 +333,27 @@ function closestPath(waypoint, path){
   }
 
   function savePoint(waypoint){
-    vm.currentMarker.setIcon(savedIcon)
+    vm.currentMarker.setIcon(icons.pointSaved)
     return $http.post(`${SERVER}points`, waypoint)
   }
 
-  // -----------------------
-
-  // -- Jack's section ------
-
-  function centerMap(map, path) {
-    var latlngbounds = new google.maps.LatLngBounds();
-    path.forEach(function (marker) {
-      latlngbounds.extend(marker)
-      map.fitBounds(latlngbounds);
-    })
+  function editPoint(waypoint){
+    vm.currentMarker.setIcon(icons.pointSaved)
+    return $http.patch(`${SERVER}points/${vm.currentMarker.id}`, waypoint)
   }
 
-  // ---------------------------
+  // ---------------------------------------------------------------------------
+
+    //Trail List
+  
+  function getTrailList(){
+    return $http.get(`${SERVER}trails`)
+  }
+
+  function initChart(){
+    ChartsService.chart(vm.trailPath);
+  }
 };
 
-MapsService.$inject = ['$http', 'ChartsService', 'NgMap'];
+MapsService.$inject = ['$http', 'ChartsService', 'NgMap', 'icons', '$rootScope'];
 export { MapsService };
