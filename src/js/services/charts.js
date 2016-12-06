@@ -126,7 +126,7 @@ function ChartsService ($http, $cookies) {
 										console.log('data', data);
 									}
 									else if (item.datasetIndex === 1) {
-										tip = 'Water Source'
+										tip = 'Water Source';
 									}
 								})
 								debugger
@@ -166,8 +166,8 @@ function ChartsService ($http, $cookies) {
 		          }],
 		      },
 					hover: {
-						intersect: false,
-						mode: 'dataset'
+						intersect: true,
+						mode: 'point'
 					}
 		}
 		vm.myLineChart = new Chart(ctx, {
