@@ -12,6 +12,7 @@ function MarkController (MapsService, UsersService, $stateParams, $scope) {
   MapsService.snap = true;
   MapsService.markerArray = [];
   MapsService.panel={};
+  MapsService.regraphElevation = false;
 
   vm.MapsService = MapsService;
   vm.placeMarker = placeMarker;
@@ -44,7 +45,7 @@ function MarkController (MapsService, UsersService, $stateParams, $scope) {
             MapsService.dragListener(marker, waypoint, $scope)
             MapsService.clickListener(marker, waypoint, $scope)
           });
-          MapsService.initChart(MapsService.trailPath, MapsService.markerArray)
+          MapsService.initChart(MapsService.trailPath, MapsService.markerArray, true)
         })
 
 

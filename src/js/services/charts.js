@@ -8,22 +8,22 @@ function ChartsService ($http, $cookies) {
 	const metersMilesConversion = 0.000621371;
 
 
-	function chart(path, markers){
-			// var sortedObject = sortMarks(markers)
-			var waypoints = []
-			markers.forEach(function (marker){
-				waypoints.push(marker.position)
-			})
-			// console.log(sortedObject)
+	function chart(path, markers, regraph){
+		var waypoints = []
 	    vm.elevator = new google.maps.ElevationService;
 	    var pathElevations = [];
 	    var waypointElevations = [];
 	   	vm.pathLength = google.maps.geometry.spherical.computeLength(path)
-	    getPathElevations(path).then(function (pathElevations) {
-	      getWaypointElevations(waypoints, markers).then(function (waypointElevations) {
-	        drawChart(pathElevations, waypointElevations, markers);
-	      })
-	    });
+	   	getWaypointElevations(waypoints, markers).then(function (waypointElevations) {
+	    	if (regraph){
+	    		getPathElevations(path).then(function (pathElevations) {
+		    		vm.pathElevations = pathElevations;
+		    		drawChart(vm.pathElevations, waypointElevations, markers);
+		    	})
+	    	} else {
+	        	drawChart(vm.pathElevations, waypointElevations, markers);
+	        }
+		})
 	}
 
 	function getPathElevations(path){
@@ -33,6 +33,7 @@ function ChartsService ($http, $cookies) {
 		      'path': path,
 		      'samples': 200
 		    }, function (elevations, status){
+		    	console.log(status)
 		        var pathElevations = [];
 		        pathElevations[0]={x: 0, y: elevations[0].elevation*metersFeetConversion};
 		        var resolution = vm.pathLength/(elevations.length-1)* metersMilesConversion;
@@ -92,86 +93,84 @@ function ChartsService ($http, $cookies) {
 
 		var data = {
 		    datasets: [
-					{
-						type: 'line',
-						label: 'Campsite',
+			{
+				type: 'line',
+				label: 'Campsite',
 		        data: marksSorted.campsite,
 		        fill: false,
 		        borderColor: 'rgba(255,255,255,0)',
 		        pointBorderColor: 'rgba(255, 0, 0, 1)',
 		        pointBackgroundColor: 'rgba(255, 0, 0, 1)',
-						pointStyle: campgroundImg,
+				pointStyle: campgroundImg,
+		    },
 
-		      },
-					{
-						type: 'line',
-						label: 'Water Source',
+			{
+				type: 'line',
+				label: 'Water Source',
 		        data: marksSorted.water,
 		        fill: false,
 		        borderColor: 'rgba(255,255,255,0)',
 		        pointBorderColor: 'rgba(255, 0, 0, 1)',
 		        pointBackgroundColor: 'rgba(255, 0, 0, 1)',
-						pointStyle: waterImg,
+				pointStyle: waterImg,
+		    },
 
-		      },
+			{
+				type: 'line',
+				label: 'Parking',
+				data: marksSorted.parking,
+				fill: false,
+				borderColor: 'rgba(255,255,255,0)',
+				pointBorderColor: 'rgba(255, 0, 0, 1)',
+				pointBackgroundColor: 'rgba(255, 0, 0, 1)',
+				pointStyle: parkingImg,
+			},
+			{
+				type: 'line',
+				label: 'Resupply',
+				data: marksSorted.resupply,
+				fill: false,
+				borderColor: 'rgba(255,255,255,0)',
+				pointBorderColor: 'rgba(255, 0, 0, 1)',
+				pointBackgroundColor: 'rgba(255, 0, 0, 1)',
+				pointStyle: resupplyImg,
 
-					{
-						type: 'line',
-						label: 'Parking',
-						data: marksSorted.parking,
-						fill: false,
-						borderColor: 'rgba(255,255,255,0)',
-						pointBorderColor: 'rgba(255, 0, 0, 1)',
-						pointBackgroundColor: 'rgba(255, 0, 0, 1)',
-						pointStyle: parkingImg,
+			},
+			{
+				type: 'line',
+				label: 'Road',
+				data: marksSorted.road,
+				fill: false,
+				borderColor: 'rgba(255,255,255,0)',
+				pointBorderColor: 'rgba(255, 0, 0, 1)',
+				pointBackgroundColor: 'rgba(255, 0, 0, 1)',
+				pointStyle: roadImg,
 
-					},
-					{
-						type: 'line',
-						label: 'Resupply',
-						data: marksSorted.resupply,
-						fill: false,
-						borderColor: 'rgba(255,255,255,0)',
-						pointBorderColor: 'rgba(255, 0, 0, 1)',
-						pointBackgroundColor: 'rgba(255, 0, 0, 1)',
-						pointStyle: resupplyImg,
+			},
+			{
+				type: 'line',
+				label: 'Shelter',
+				data: marksSorted.shelter,
+				fill: false,
+				borderColor: 'rgba(255,255,255,0)',
+				pointBorderColor: 'rgba(255, 0, 0, 1)',
+				pointBackgroundColor: 'rgba(255, 0, 0, 1)',
+				pointStyle: shelterImg,
 
-					},
-					{
-						type: 'line',
-						label: 'Road',
-						data: marksSorted.road,
-						fill: false,
-						borderColor: 'rgba(255,255,255,0)',
-						pointBorderColor: 'rgba(255, 0, 0, 1)',
-						pointBackgroundColor: 'rgba(255, 0, 0, 1)',
-						pointStyle: roadImg,
+			},
+			{
+				type: 'line',
+				label: 'View',
+				data: marksSorted.view,
+				fill: false,
+				borderColor: 'rgba(255,255,255,0)',
+				pointBorderColor: 'rgba(255, 0, 0, 1)',
+				pointBackgroundColor: 'rgba(255, 0, 0, 1)',
+				pointStyle: viewImg,
 
-					},
-					{
-						type: 'line',
-						label: 'Shelter',
-						data: marksSorted.shelter,
-						fill: false,
-						borderColor: 'rgba(255,255,255,0)',
-						pointBorderColor: 'rgba(255, 0, 0, 1)',
-						pointBackgroundColor: 'rgba(255, 0, 0, 1)',
-						pointStyle: shelterImg,
-
-					},
-					{
-						type: 'line',
-						label: 'View',
-						data: marksSorted.view,
-						fill: false,
-						borderColor: 'rgba(255,255,255,0)',
-						pointBorderColor: 'rgba(255, 0, 0, 1)',
-						pointBackgroundColor: 'rgba(255, 0, 0, 1)',
-						pointStyle: viewImg,
-
-					},
-					{
-						type: 'line',
+			},
+			{
+				type: 'line',
 		        label: 'Elevation',
 		        data: pathElevations,
 		        fill: true,
@@ -179,67 +178,38 @@ function ChartsService ($http, $cookies) {
 		        pointBackgroundColor: 'rgba(0, 0, 0, 0)',
 		        backgroundColor : 'rgba(155,122,61, .8)',
 
-		      },
-
+		     },
 		    ]
 		}
+
 		var options = {
-					// tooltips: {
-					//
-					// 	callbacks: {
-					// 		title: function (tooltipItem, data) {
-					// 			let tip = '';
-					// 			tooltipItem.forEach(function (item) {
-					// 				if (item.datasetIndex === 0) {
-					// 					tip = 'Campground';
-					// 					console.log('tooltipItem', tooltipItem);
-					// 					console.log('data', data);
-					// 				}
-					// 				else if (item.datasetIndex === 1) {
-					// 					tip = 'Water Source';
-					// 				}
-					// 			})
-					// 			debugger
-					// 			return tip;
-					// 			// console.log(tooltipItem[0])
-					// 			// return data.datasets[0].title;
-					// 	},
-					// 		afterTitle: function (tooltipItem, data) {
-					// 			let tipLabel ='';
-					// 			tooltipItem.forEach(function (item) {
-					// 				if (item.datasetIndex === 0) {
-					// 					tipLabel = 'This is the description for a campground'
-					// 				} else if (item.datasetIndex === 1){
-					// 					tipLabel = 'This is the description for a water source'
-					// 				}
-					// 			})
-					// 			return tipLabel;
-					// 		}
-					// }
-				// },
-		      scales: {
-		          xAxes: [{
-		              type: 'linear',
-		              position: 'bottom',
-		              ticks: {
-		                min: 0,
-		                max: 20,
-		                beginAtZero: true
-		              }
-		          }],
-		          yAxes: [{
-		              ticks: {
-		                min: 0,
-		                max: 6600,
-		                beginAtZero: true
-		              }
-		          }],
-		      },
-					// hover: {
-					// 	intersect: true,
-					// 	mode: 'point'
-					// }
+			scales: {
+				xAxes: [{
+					type: 'linear',
+					position: 'bottom',
+					ticks: {
+						min: 0,
+						max: 20,
+						beginAtZero: true
+					}
+				}],
+				yAxes: [{
+					ticks: {
+						min: 0,
+						max: 6600,
+						beginAtZero: true
+					}
+				}],
+			},
+			// hover: {
+			// 	intersect: true,
+			// 	mode: 'point'
+			// }
 		}
+		
+		var ctx=document.getElementById('myChart');
+		ctx.width = 800;
+		ctx.height = 125;
 		vm.myLineChart = new Chart(ctx, {
 		    type: 'bar',
 		    data: data,
