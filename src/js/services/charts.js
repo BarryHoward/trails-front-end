@@ -129,9 +129,9 @@ function ChartsService ($http, $cookies) {
 										tip = 'Water Source'
 									}
 								})
+								debugger
 								return tip;
 								// console.log(tooltipItem[0])
-								// debugger
 								// return data.datasets[0].title;
 						},
 							afterTitle: function (tooltipItem, data) {
