@@ -13,7 +13,7 @@ function ChartsService ($http, $cookies) {
 	    vm.elevator = new google.maps.ElevationService;
 	    var pathElevations = [];
 	    var waypointElevations = [];
-
+			console.log('markerarray', vm.markerArray)
 	   	vm.pathLength = google.maps.geometry.spherical.computeLength(path)
 	    getPathElevations(path).then(function (pathElevations) {
 				console.log(path);
@@ -63,11 +63,23 @@ function ChartsService ($http, $cookies) {
 		var ctx = document.getElementById('myChart');
 		ctx.width = 800;
 		ctx.height = 125;
+
 		const campgroundImg = new Image();
-		campgroundImg.src = '../app/images/png/tent.png';
-		console.log(campgroundImg)
 		const waterImg = new Image();
-		waterImg.src = 'http://arcskoru.com/sites/default/files/water.png';
+		const parkingImg = new Image();
+		const roadImg = new Image();
+		const shelterImg = new Image();
+		const viewImg = new Image();
+		const resupplyImg = new Image();
+
+		campgroundImg.src = 'images/png/tent.png';
+		waterImg.src = 'images/png/water-drop.png';
+		parkingImg.src = 'images/png/parking.png';
+		roadImg.src = 'images/png/road.png';
+		shelterImg.src = 'images/png/shelter.png';
+		viewImg.src = 'images/png/binoculars.png';
+		resupplyImg.src = 'images/png/list.png';
+
 		if(vm.myLineChart){
 	        vm.myLineChart.destroy();
 	    }
@@ -77,7 +89,7 @@ function ChartsService ($http, $cookies) {
 					{
 						type: 'line',
 						label: 'Campsite',
-		        data: [{x: 10, y: 2000}],
+		        data: [{x: 5, y: 2000}],
 		        fill: false,
 		        borderColor: 'rgba(255,255,255,0)',
 		        pointBorderColor: 'rgba(255, 0, 0, 1)',
@@ -88,7 +100,7 @@ function ChartsService ($http, $cookies) {
 					{
 						type: 'line',
 						label: 'Water Source',
-		        data: marksSorted.water,
+		        data: [{x: 10, y: 2000}],
 		        fill: false,
 		        borderColor: 'rgba(255,255,255,0)',
 		        pointBorderColor: 'rgba(255, 0, 0, 1)',
@@ -104,7 +116,7 @@ function ChartsService ($http, $cookies) {
 						borderColor: 'rgba(255,255,255,0)',
 						pointBorderColor: 'rgba(255, 0, 0, 1)',
 						pointBackgroundColor: 'rgba(255, 0, 0, 1)',
-						pointStyle: 'rect',
+						pointStyle: parkingImg,
 
 					},
 					{
@@ -115,7 +127,7 @@ function ChartsService ($http, $cookies) {
 						borderColor: 'rgba(255,255,255,0)',
 						pointBorderColor: 'rgba(255, 0, 0, 1)',
 						pointBackgroundColor: 'rgba(255, 0, 0, 1)',
-						pointStyle: 'circle',
+						pointStyle: resupplyImg,
 
 					},
 					{
@@ -126,7 +138,7 @@ function ChartsService ($http, $cookies) {
 						borderColor: 'rgba(255,255,255,0)',
 						pointBorderColor: 'rgba(255, 0, 0, 1)',
 						pointBackgroundColor: 'rgba(255, 0, 0, 1)',
-						pointStyle: 'dash',
+						pointStyle: roadImg,
 
 					},
 					{
@@ -137,7 +149,7 @@ function ChartsService ($http, $cookies) {
 						borderColor: 'rgba(255,255,255,0)',
 						pointBorderColor: 'rgba(255, 0, 0, 1)',
 						pointBackgroundColor: 'rgba(255, 0, 0, 1)',
-						pointStyle: 'triangle',
+						pointStyle: shelterImg,
 
 					},
 					{
@@ -148,7 +160,7 @@ function ChartsService ($http, $cookies) {
 						borderColor: 'rgba(255,255,255,0)',
 						pointBorderColor: 'rgba(255, 0, 0, 1)',
 						pointBackgroundColor: 'rgba(255, 0, 0, 1)',
-						pointStyle: 'cross',
+						pointStyle: viewImg,
 
 					},
 					{
