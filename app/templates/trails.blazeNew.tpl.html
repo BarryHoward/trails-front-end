@@ -1,40 +1,54 @@
-<h2>{{blazeNew.status}}</h2>
 
 <h1 class="title">Add a New Trail</h1>
+<h2>{{blazeNew.status}}</h2>
 
   <form name="new-trail" ng-submit="blazeNew.newTrail()">
       <input class="title-input" name="title" type="text" placeholder="Trail Name..."
              ng-model="blazeNew.MapsService.trailTitle" />
-			<button class="add-trail-button">Add New Trail!</button>
+			<button class="add-trail-button">Create Trail</button>
 	</form>
 
-	<div class="marker-buttons">
-    <div class="add-delete">
-  		<input type="radio" ng-model="blazeNew.MapsService.delete" name="delete" ng-value="false"></input>
-  	    <span>Add Points</span>
-  	    <input type="radio" ng-model="blazeNew.MapsService.delete" name="delete" ng-value="true"></input>
-  	    <span>Delete Points</span>
-  	</div>
-
-  	<div class="insert-buttons">
-  		<input type="radio" ng-model="blazeNew.MapsService.insert" name="insert" value="frontInsert"></input>
-  	    <span>Add to Beginning</span>
-  	    <input type="radio" ng-model="blazeNew.MapsService.insert" name="insert" value="midInsert"></input>
-  	    <span>Insert Between</span>
-  	    <input type="radio" ng-model="blazeNew.MapsService.insert" name="insert" value="backInsert"></input>
-  	    <span>Add to End</span>
-  	</div>
-  </div>
 
   <!-- <form name="map-center" ng-submit="blazeNew.geocodeAddress()">
     <input type="text" name="address" ng-model="blazeNew.address"></input>
     <button class="geocode" ng-click="blazeNew.geocodeAddress()" type="button">Geocode</button>
   </form> -->
+<div class="map-controls-container">
 
 <div class="map-container">
   <input id="pac-input" class="controls" type="text" placeholder="Search...">
   <ng-map class="map" id="blazeNewMap" on-click="blazeNew.placeMarker($event)">
   </ng-map>
+</div>
+<div class="marker-buttons">
+  <div class="add-delete">
+      <span><strong>Add/Remove Points</strong></span>
+      <span>
+        <input type="radio" ng-model="blazeNew.MapsService.delete" name="delete" ng-value="false"></input>
+        Add Points
+      </span>
+      <span>
+        <input type="radio" ng-model="blazeNew.MapsService.delete" name="delete" ng-value="true"></input>
+        Delete Points
+      </span>
+  </div>
+
+  <div class="insert-buttons">
+      <span><strong>Precision Point Placement</strong></span>
+      <span>
+        <input type="radio" ng-model="blazeNew.MapsService.insert" name="insert" value="frontInsert"></input>
+        Add to Beginning
+      </span>
+      <span>
+        <input type="radio" ng-model="blazeNew.MapsService.insert" name="insert" value="midInsert"></input>
+        Insert Between
+      </span>
+      <span>
+        <input type="radio" ng-model="blazeNew.MapsService.insert" name="insert" value="backInsert"></input>
+        Add to End
+      </span>
+  </div>
+</div>
 </div>
 
 <div class="elevation-header"><h2>Elevation Information</h2></div>

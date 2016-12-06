@@ -2,22 +2,24 @@
 
 // Add Trail template
 #blazeNewMap {
-  height: 400px;
-  width: 550px;
+  height: 550px;
+  width: 650px;
   margin: 20px 0px;
+  border: 1px solid #CCCCC3;
 }
 
 // Update Trail template
 #blazeEditMap {
-  height: 400px;
-  width: 550px;
+  height: 500px;
+  width: 650px;
   margin: 20px 0px;
+  border: 1px solid #CCCCC3;
 }
 
 .map-container {
-  border: 3px solid black;
-  height: 470px;
-  width: 650px;
+  border: 2px solid black;
+  height: 675px;
+  width: 750px;
   margin: 10px 0px;
   padding: 20px;
   display: flex;

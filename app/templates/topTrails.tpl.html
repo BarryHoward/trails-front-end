@@ -1,5 +1,6 @@
 <h1>Top Trails</h1>
 
 <div ng-repeat="trail in topTrails.trailList">
-<a href="#/trails/blaze/{{trail.id}}">{{trail.title}}</a>
+  <span>{{trail.title}}   <a href="#/trails/blaze/{{trail.id}}">(Update)</a> <a href="#trails/mark/{{trail.id}}">(POI-marker)</a></span>
+
 </div>

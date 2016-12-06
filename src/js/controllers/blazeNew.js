@@ -31,7 +31,7 @@ function BlazeNewController (MapsService, UsersService, $scope) {
   function init(){
     //initial variables
     vm.loggedIn = UsersService.isLoggedIn();
-    vm.status = "Make a Trail!";
+    vm.status = "";
 
     MapsService.getMap(mapId).then(function (map){
       MapsService.map=map;
