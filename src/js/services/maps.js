@@ -1,4 +1,4 @@
-function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootScope) {
+function MapsService ($http, ChartsService, NgMap, icons, $rootScope) {
 
   const SERVER = "https://trails-back-end.herokuapp.com/";
 
@@ -23,12 +23,9 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
   vm.getTrailList = getTrailList;
   vm.savePoint = savePoint;
   vm.editPoint = editPoint;
-  vm.deletePoint = deletePoint;
   vm.initChart = initChart;
-  vm.updateMarker = updateMarker;
-  vm.updatePanel = updatePanel;
 
- 
+
   vm.waypoint = {};
 
   const metersFeetConversion = 3.28084;
@@ -52,8 +49,8 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
   }
 
 // -----------------------------------------------------------------------
-  
-  // Get existing Trail 
+
+  // Get existing Trail
 
   function getTrail(){
     return $http.get(`${SERVER}trails/${vm.trail_id}`);
@@ -64,7 +61,7 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
   }
 
 // -----------------------------------------------------------------------
-  
+
   //Create line and Center map
 
   function createTrailPoly() {
@@ -145,16 +142,6 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
         icon: icons.pointSaved,
         draggable: true
     });
-    marker.title = waypoint.title;
-    marker.description = waypoint.description;
-    marker.img_url = waypoint.img_url;
-    marker.shelter = waypoint.shelter;
-    marker.campsite = waypoint.campsite;
-    marker.water = waypoint.water;
-    marker.view = waypoint.view;
-    marker.road = waypoint.road;
-    marker.parking = waypoint.parking;
-    marker.resupply = waypoint.resupply;
     marker.distance = insert[2]
     marker.id = waypoint.id;
     vm.markerArray.push(marker)
@@ -162,8 +149,8 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
   }
 
 // ----------------------------------------------------------------------
-  
-  // Listeners 
+
+  // Listeners
 
   function dragListener (marker, waypoint, $scope){
       google.maps.event.addListener(marker, 'dragend', function (event){
@@ -175,6 +162,7 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
         } else {
           waypoint = marker.getPosition();
           let insert = closestPath(waypoint)
+          console.log(insert)
           waypoint = spherical.interpolate(vm.trailPath[insert[0]-1], vm.trailPath[insert[0]], insert[1])
           marker.setPosition(waypoint);
           marker.setIcon(icons.pointUnsaved)
@@ -191,6 +179,7 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
 
   function clickListener (marker, waypoint, $scope){
       google.maps.event.addListener(marker, 'click', function (event){
+        console.log($scope)
         waypoint = marker.getPosition();
         if (vm.delete){
           if (!vm.snap){
@@ -285,14 +274,16 @@ function closestPath(waypoint){
           icon: icons.blaze
       });
       if (!vm.newMarkerAllow && vm.currentMarker){
+        console.log(vm.currentMarker)
         let index = vm.markerArray.indexOf(vm.currentMarker);
+        console.log(index);
         vm.markerArray.splice(index, 1);
         vm.currentMarker.setMap(null);
       }
+      vm.newMarkerAllow = false;
       //set to unsaved icon if snap
       if (vm.snap){
         marker.setIcon(icons.pointUnsaved);
-        vm.newMarkerAllow = false;
       }
       //re-chart
       if(vm.trailPath.length > 1) {
@@ -312,58 +303,21 @@ function closestPath(waypoint){
     // update Panel
 
   function updatePanel(){
+    console.log(vm.currentMarker)
+    console.log(vm.markerArray)
+
     if (vm.currentMarker){
       let waypoint = vm.currentMarker.getPosition();
-      vm.panel.lat = waypoint.lat();
-      vm.panel.lng = waypoint.lng();
-      vm.panel.title = vm.currentMarker.title;
-      vm.panel.description = vm.currentMarker.description;
-      vm.panel.img_url = vm.currentMarker.img_url;
+      vm.panel.lat=waypoint.lat();
+      vm.panel.lng=waypoint.lng();
       vm.panel.distance = vm.currentMarker.distance;
-      vm.panel.shelter = vm.currentMarker.shelter;
-      vm.panel.campsite = vm.currentMarker.campsite;
-      vm.panel.water = vm.currentMarker.water;
-      vm.panel.view = vm.currentMarker.view;
-      vm.panel.road = vm.currentMarker.road;
-      vm.panel.parking = vm.currentMarker.parking;
-      vm.panel.resupply = vm.currentMarker.resupply;
-
+      console.log(vm.panel)
     } else {
       vm.panel.lat = "";
       vm.panel.lng = "";
-      vm.panel.title = "";
-      vm.panel.description = "";
-      vm.panel.img_url = "";
-      vm.panel.shelter = false;
-      vm.panel.campsite = false;
-      vm.panel.water = false;
-      vm.panel.view = false;
-      vm.panel.road = false;
-      vm.panel.parking = false;
-      vm.panel.resupply = false;
+      vm.panel.distance = "";
     }
       vm.trailLength = spherical.computeLength(vm.trailPath)*metersMilesConversion;
-  }
-
-  function updateMarker(){
-      if (vm.currentMarker){
-        vm.currentMarker.setIcon(icons.pointUnsaved)
-        vm.currentMarker.lat = vm.panel.lat;
-        vm.currentMarker.lng = vm.panel.lng;
-        vm.currentMarker.title = vm.panel.title;
-        vm.currentMarker.description = vm.panel.description;
-        vm.currentMarker.img_url = vm.currentMarker.img_url;
-        vm.currentMarker.distance = vm.panel.distance;
-        vm.currentMarker.shelter = vm.panel.shelter;
-        vm.currentMarker.campsite = vm.panel.campsite;
-        vm.currentMarker.water = vm.panel.water;
-        vm.currentMarker.view = vm.panel.view;
-        vm.currentMarker.road = vm.panel.road;
-        vm.currentMarker.parking = vm.panel.parking;
-        vm.currentMarker.resupply = vm.panel.resupply;
-      } else {
-        vm.currentMarker = {};
-      }
   }
 
 // ---------------------------------------------------------------------
@@ -371,72 +325,31 @@ function closestPath(waypoint){
   // --- Button Section -------
 
   function newTrail (newTrail){
-      let req = {
-      url: `${SERVER}trails`,
-      data: newTrail,
-      method: 'POST',
-      headers: UsersService.getHeaders()
-    };
-    return $http(req);
+    return $http.post(`${SERVER}trails`, newTrail);
   }
 
   function editTrail (id, newTrail){
-    let req = {
-      url: `${SERVER}trails/${id}`,
-      data: newTrail,
-      method: 'PATCH',
-      headers: UsersService.getHeaders()
-    };
-
-    return $http(req);
+    return $http.patch(`${SERVER}trails/${id}`, newTrail);
   }
 
   function deleteTrail(id){
-    let req = {
-      url: `${SERVER}trails/${id}`,
-      method: 'DELETE',
-      headers: UsersService.getHeaders()
-    };
-    return $http(req);
-  }
-
-  function deletePoint(){
-    let req = {
-      url: `${SERVER}points/${vm.currentMarker.id}`,
-      method: 'DELETE',
-      headers: UsersService.getHeaders()
-    };
-    return $http(req);
+    return $http.delete(`${SERVER}trails/${id}`);
   }
 
   function savePoint(waypoint){
-    updateMarker();
     vm.currentMarker.setIcon(icons.pointSaved)
-    let req = {
-      url: `${SERVER}points`,
-      data: waypoint,
-      method: 'POST',
-      headers: UsersService.getHeaders()
-    };
-    return $http(req);
+    return $http.post(`${SERVER}points`, waypoint)
   }
 
   function editPoint(waypoint){
-    updateMarker();
     vm.currentMarker.setIcon(icons.pointSaved)
-    let req = {
-      url: `${SERVER}points/${vm.currentMarker.id}`,
-      data: waypoint,
-      method: 'PATCH',
-      headers: UsersService.getHeaders()
-    };
-    return $http(req);
+    return $http.patch(`${SERVER}points/${vm.currentMarker.id}`, waypoint)
   }
 
   // ---------------------------------------------------------------------------
 
     //Trail List
-  
+
   function getTrailList(){
     return $http.get(`${SERVER}trails`)
   }
@@ -446,5 +359,5 @@ function closestPath(waypoint){
   }
 };
 
-MapsService.$inject = ['$http', 'ChartsService', 'UsersService', 'NgMap', 'icons', '$rootScope'];
+MapsService.$inject = ['$http', 'ChartsService', 'NgMap', 'icons', '$rootScope'];
 export { MapsService };
