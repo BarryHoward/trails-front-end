@@ -114,6 +114,7 @@ function ChartsService ($http, $cookies) {
 						pointStyle: waterImg,
 
 		      },
+					
 					{
 						type: 'line',
 						label: 'Parking',
