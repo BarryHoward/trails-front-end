@@ -2,7 +2,6 @@ function ChartsService ($http, $cookies) {
 
 	let vm = this;
 	vm.chart = chart;
-	vm.sortMarks = sortMarks;
 
 	const metersFeetConversion = 3.28084;
 	const metersMilesConversion = 0.000621371;
@@ -13,10 +12,9 @@ function ChartsService ($http, $cookies) {
 	    vm.elevator = new google.maps.ElevationService;
 	    var pathElevations = [];
 	    var waypointElevations = [];
-			console.log('markerarray', vm.markerArray)
+
 	   	vm.pathLength = google.maps.geometry.spherical.computeLength(path)
 	    getPathElevations(path).then(function (pathElevations) {
-				console.log(path);
 	      getWaypointElevations(path).then(function (waypointElevations) {
 	        drawChart(pathElevations, waypointElevations);
 	      })
@@ -59,27 +57,15 @@ function ChartsService ($http, $cookies) {
 	}
 
 
-	function drawChart(pathElevations, marksSorted){
+	function drawChart(pathElevations, waypointElevations){
 		var ctx = document.getElementById('myChart');
 		ctx.width = 800;
 		ctx.height = 125;
-
+		// ctx.defaults.global.tooltipTemplate = "<%= label + '-' + %> <%= description %>";
 		const campgroundImg = new Image();
+		campgroundImg.src = 'http://pngimages.net/sites/default/files/camping-small-png-image-62261.png';
 		const waterImg = new Image();
-		const parkingImg = new Image();
-		const roadImg = new Image();
-		const shelterImg = new Image();
-		const viewImg = new Image();
-		const resupplyImg = new Image();
-
-		campgroundImg.src = 'images/png/tent.png';
-		waterImg.src = 'images/png/water-drop.png';
-		parkingImg.src = 'images/png/parking.png';
-		roadImg.src = 'images/png/road.png';
-		shelterImg.src = 'images/png/shelter.png';
-		viewImg.src = 'images/png/binoculars.png';
-		resupplyImg.src = 'images/png/list.png';
-
+		waterImg.src = 'http://arcskoru.com/sites/default/files/water.png';
 		if(vm.myLineChart){
 	        vm.myLineChart.destroy();
 	    }
@@ -88,81 +74,32 @@ function ChartsService ($http, $cookies) {
 		    datasets: [
 					{
 						type: 'line',
-						label: 'Campsite',
-		        data: [{x: 5, y: 2000}],
+						label: 'POI Elevation',
+		        data: [{x: 2, y: 3505.8}, {x: 10, y: 5500}, {x: 50, y: 50}],
 		        fill: false,
 		        borderColor: 'rgba(255,255,255,0)',
 		        pointBorderColor: 'rgba(255, 0, 0, 1)',
 		        pointBackgroundColor: 'rgba(255, 0, 0, 1)',
 						pointStyle: campgroundImg,
+						// description: 'This is the description from Waypoints Label',
+						// title: 'hello from dataset object waypoints'
+
 
 		      },
 					{
 						type: 'line',
-						label: 'Water Source',
-		        data: [{x: 10, y: 2000}],
+						label: 'POI Elevation',
+		        data: [{x: 6, y: 4130}, {x: 15, y: 5248.19}, {x: 50, y: 50}],
 		        fill: false,
 		        borderColor: 'rgba(255,255,255,0)',
 		        pointBorderColor: 'rgba(255, 0, 0, 1)',
 		        pointBackgroundColor: 'rgba(255, 0, 0, 1)',
 						pointStyle: waterImg,
+						// description: 'This is the description from Waypoints Label',
+						// title: 'hello from dataset object waypoints'
+
 
 		      },
-					{
-						type: 'line',
-						label: 'Parking',
-						data: marksSorted.parking,
-						fill: false,
-						borderColor: 'rgba(255,255,255,0)',
-						pointBorderColor: 'rgba(255, 0, 0, 1)',
-						pointBackgroundColor: 'rgba(255, 0, 0, 1)',
-						pointStyle: parkingImg,
-
-					},
-					{
-						type: 'line',
-						label: 'Resupply',
-						data: marksSorted.resupply,
-						fill: false,
-						borderColor: 'rgba(255,255,255,0)',
-						pointBorderColor: 'rgba(255, 0, 0, 1)',
-						pointBackgroundColor: 'rgba(255, 0, 0, 1)',
-						pointStyle: resupplyImg,
-
-					},
-					{
-						type: 'line',
-						label: 'Road',
-						data: marksSorted.road,
-						fill: false,
-						borderColor: 'rgba(255,255,255,0)',
-						pointBorderColor: 'rgba(255, 0, 0, 1)',
-						pointBackgroundColor: 'rgba(255, 0, 0, 1)',
-						pointStyle: roadImg,
-
-					},
-					{
-						type: 'line',
-						label: 'Shelter',
-						data: marksSorted.shelter,
-						fill: false,
-						borderColor: 'rgba(255,255,255,0)',
-						pointBorderColor: 'rgba(255, 0, 0, 1)',
-						pointBackgroundColor: 'rgba(255, 0, 0, 1)',
-						pointStyle: shelterImg,
-
-					},
-					{
-						type: 'line',
-						label: 'View',
-						data: marksSorted.view,
-						fill: false,
-						borderColor: 'rgba(255,255,255,0)',
-						pointBorderColor: 'rgba(255, 0, 0, 1)',
-						pointBackgroundColor: 'rgba(255, 0, 0, 1)',
-						pointStyle: viewImg,
-
-					},
 					{
 						type: 'line',
 		        label: 'Elevation',
@@ -171,45 +108,45 @@ function ChartsService ($http, $cookies) {
 		        pointBorderColor: 'rgba(0, 0, 0, 0)',
 		        pointBackgroundColor: 'rgba(0, 0, 0, 0)',
 		        backgroundColor : 'rgba(155,122,61, .8)',
+						// description: 'This is the description from Elevation Label',
+						// title: 'hello from dataset object'
 
-		      },
-
+		      }
 		    ]
 		}
 		var options = {
-					// tooltips: {
-					//
-					// 	callbacks: {
-					// 		title: function (tooltipItem, data) {
-					// 			let tip = '';
-					// 			tooltipItem.forEach(function (item) {
-					// 				if (item.datasetIndex === 0) {
-					// 					tip = 'Campground';
-					// 					console.log('tooltipItem', tooltipItem);
-					// 					console.log('data', data);
-					// 				}
-					// 				else if (item.datasetIndex === 1) {
-					// 					tip = 'Water Source';
-					// 				}
-					// 			})
-					// 			debugger
-					// 			return tip;
-					// 			// console.log(tooltipItem[0])
-					// 			// return data.datasets[0].title;
-					// 	},
-					// 		afterTitle: function (tooltipItem, data) {
-					// 			let tipLabel ='';
-					// 			tooltipItem.forEach(function (item) {
-					// 				if (item.datasetIndex === 0) {
-					// 					tipLabel = 'This is the description for a campground'
-					// 				} else if (item.datasetIndex === 1){
-					// 					tipLabel = 'This is the description for a water source'
-					// 				}
-					// 			})
-					// 			return tipLabel;
-					// 		}
-					// }
-				// },
+					tooltips: {
+						callbacks: {
+							title: function (tooltipItem, data) {
+								let tip = '';
+								tooltipItem.forEach(function (item) {
+									if (item.datasetIndex === 0) {
+										tip = 'Campground';
+										console.log('tooltipItem', tooltipItem);
+										console.log('data', data);
+									}
+									else if (item.datasetIndex === 1) {
+										tip = 'Water Source';
+									}
+								})
+								debugger
+								return tip;
+								// console.log(tooltipItem[0])
+								// return data.datasets[0].title;
+						},
+							afterTitle: function (tooltipItem, data) {
+								let tipLabel ='';
+								tooltipItem.forEach(function (item) {
+									if (item.datasetIndex === 0) {
+										tipLabel = 'This is the description for a campground'
+									} else if (item.datasetIndex === 1){
+										tipLabel = 'This is the description for a water source'
+									}
+								})
+								return tipLabel;
+							}
+					}
+				},
 		      scales: {
 		          xAxes: [{
 		              type: 'linear',
@@ -228,10 +165,10 @@ function ChartsService ($http, $cookies) {
 		              }
 		          }],
 		      },
-					// hover: {
-					// 	intersect: true,
-					// 	mode: 'point'
-					// }
+					hover: {
+						intersect: true,
+						mode: 'point'
+					}
 		}
 		vm.myLineChart = new Chart(ctx, {
 		    type: 'bar',
@@ -242,41 +179,6 @@ function ChartsService ($http, $cookies) {
 	}
 
 
-	function sortMarks (array) {
-		let sortedMarks = {};
-		sortedMarks.campsite = array.filter(isCampsite);
-		sortedMarks.parking = array.filter(isParking);
-		sortedMarks.resupply = array.filter(isResupply);
-		sortedMarks.road = array.filter(isRoad);
-		sortedMarks.shelter = array.filter(isShelter);
-		sortedMarks.view = array.filter(isView);
-		sortedMarks.water = array.filter(isWater);
-
-		function isCampsite(mark) {
-			return mark.campsite === true;
-		}
-		function isParking(mark) {
-			return mark.parking === true;
-		}
-		function isResupply(mark) {
-			return mark.resupply === true;
-		}
-		function isRoad (mark) {
-			return mark.road === true;
-		}
-		function isShelter(mark) {
-			return mark.shelter === true;
-		}
-		function isView(mark) {
-			return mark.view === true;
-		}
-		function isWater(mark) {
-			return mark.water === true;
-		}
-
-		return sortedMarks;
-
-	}
 
 }
 
