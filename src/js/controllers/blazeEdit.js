@@ -70,16 +70,16 @@ function BlazeEditController (MapsService, $stateParams, $scope) {
     newTrail.length = spherical.computeLength(MapsService.trailPath)*metersMilesConversion;
     newTrail.description = vm.trailDescription;
     newTrail.image_url = vm.trailImage_url;
-    MapsService.editTrail($stateParams.id, newTrail).then(function (resp) {
+    MapsService.editTrail($stateParams.id, newTrail).then(function (resp) {    
+        // $scope.$apply(function (){vm.status = "Update Completed";});
         vm.status = "Update Completed";
-        $scope.$apply();
       })
   }
 
   function deleteTrail(){
     MapsService.deleteTrail($stateParams.id).then((resp) => {
+      // $scope.$apply(function(){vm.status = "Trail Deleted!"});
       vm.status = "Trail Deleted!"
-      $scope.$apply();
     }, (reject) => {
         console.log(reject)
       });
