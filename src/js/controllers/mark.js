@@ -1,7 +1,7 @@
 
 const mapId = "markMap"
 
-function MarkController (MapsService, $stateParams, $scope) {
+function MarkController (MapsService, UsersService, $stateParams, $scope) {
   let vm = this;
 
   //params specific to page
@@ -28,7 +28,7 @@ function MarkController (MapsService, $stateParams, $scope) {
 
 
   function init(){
-    console.log($scope)
+    vm.loggedIn = UsersService.isLoggedIn();
     //initial variables
     vm.status = "Add Points to a Trail!";
 
@@ -73,9 +73,9 @@ function MarkController (MapsService, $stateParams, $scope) {
   function savePoint(){
     MapsService.newMarkerAllow = true;
     MapsService.panel.trail_id = Number($stateParams.id);
-    console.log(MapsService.panel.trail_id);
     MapsService.savePoint(MapsService.panel).then((resp) => {
       console.log(resp)
+      vm.MapsService.currentMarker.id = resp.data.id;
     })
   }
 
@@ -89,12 +89,15 @@ function MarkController (MapsService, $stateParams, $scope) {
   }
 
   function deletePoint(){
-    vm.MapsService.newMarker = true;
-    vm.MapsService.currentMarker.setMap(null);
-    vm.MapsService.currentMarker = null;
+    MapsService.deletePoint().then((resp) => {
+      vm.MapsService.newMarker = true;
+      vm.MapsService.currentMarker.setMap(null);
+      vm.MapsService.currentMarker = null;
+      vm.MapsService.updatePanel();
+    })
   }
   
 }
 
-MarkController.$inject = ['MapsService', '$stateParams', '$scope'];
+MarkController.$inject = ['MapsService', 'UsersService', '$stateParams', '$scope'];
 export {MarkController}

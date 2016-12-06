@@ -1,4 +1,4 @@
-function BlazeNewController (MapsService, $scope) {
+function BlazeNewController (MapsService, UsersService, $scope) {
 
   const mapId = "blazeNewMap"
   let vm =this;
@@ -22,8 +22,15 @@ function BlazeNewController (MapsService, $scope) {
   const spherical = google.maps.geometry.spherical;
   const Geocoder = new google.maps.Geocoder();
 
+
+  init();
+
+
+
+
   function init(){
     //initial variables
+    vm.loggedIn = UsersService.isLoggedIn();
     vm.status = "Make a Trail!";
 
     MapsService.getMap(mapId).then(function (map){
@@ -35,7 +42,6 @@ function BlazeNewController (MapsService, $scope) {
         someFunction(infoWindow);
     })
   }
-  init();
 
   function newTrail(){
     vm.status = "Trail Saving...";
@@ -102,5 +108,5 @@ function BlazeNewController (MapsService, $scope) {
 
 }
 
-BlazeNewController.$inject = ['MapsService', '$scope'];
+BlazeNewController.$inject = ['MapsService', 'UsersService', '$scope'];
 export { BlazeNewController }
