@@ -47,7 +47,8 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
     vm.markerArray.forEach(function (marker){
       marker.setMap(null);
     })
-     return NgMap.getMap(id)
+    vm.trailTitle = "";
+    return NgMap.getMap(id)
   }
 
 // -----------------------------------------------------------------------

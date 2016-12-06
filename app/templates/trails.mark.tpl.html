@@ -4,13 +4,6 @@
 
 <input class="title-input" name="title" type="text" placeholder="Trail Name..."
        ng-model="mark.trailTitle" /></input>
-<div class="marker-buttons">
-
-      <div class="update-delete">
-        <button class="update-trail-button" type="button" name="edit" ng-click="mark.savePoint()">Save Point</button>
-        <button class="delete-trail-button" type="button" name="delete" ng-click="mark.deletePoint()">Delete Point</button>
-      </div>
-</div>
 <div class="map-container">
   <input id="pac-input" class="controls" type="text" placeholder="Search...">
   <ng-map class="map" id="markMap" on-click="mark.placeMarker($event)">

@@ -74,7 +74,7 @@ function MarkController (MapsService, UsersService, $stateParams, $scope) {
     MapsService.newMarkerAllow = true;
     MapsService.panel.trail_id = Number($stateParams.id);
     MapsService.savePoint(MapsService.panel).then((resp) => {
-      console.log(resp)
+      // console.log(resp)
       vm.MapsService.currentMarker.id = resp.data.id;
     })
   }
@@ -83,7 +83,7 @@ function MarkController (MapsService, UsersService, $stateParams, $scope) {
     MapsService.newMarkerAllow = true;
     MapsService.panel.id = MapsService.currentMarker.id;
     MapsService.editPoint(MapsService.panel).then((resp) => {
-      console.log(resp)
+      // console.log(resp)
 
     })
   }
