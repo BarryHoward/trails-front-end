@@ -8,17 +8,20 @@ function ChartsService ($http, $cookies) {
 	const metersMilesConversion = 0.000621371;
 
 
-	function chart(path){
-
+	function chart(path, markers){
+			// var sortedObject = sortMarks(markers)
+			var waypoints = []
+			markers.forEach(function (marker){
+				waypoints.push(marker.position)
+			})
+			// console.log(sortedObject)
 	    vm.elevator = new google.maps.ElevationService;
 	    var pathElevations = [];
 	    var waypointElevations = [];
-			console.log('markerarray', vm.markerArray)
 	   	vm.pathLength = google.maps.geometry.spherical.computeLength(path)
 	    getPathElevations(path).then(function (pathElevations) {
-				console.log(path);
-	      getWaypointElevations(path).then(function (waypointElevations) {
-	        drawChart(pathElevations, waypointElevations);
+	      getWaypointElevations(waypoints, markers).then(function (waypointElevations) {
+	        drawChart(pathElevations, waypointElevations, markers);
 	      })
 	    });
 	}
@@ -43,14 +46,15 @@ function ChartsService ($http, $cookies) {
 	  })
 	}
 
-	function getWaypointElevations(path){
+	function getWaypointElevations(waypoints, markers){
+
 	  return new Promise(function (resolve, reject) {
 	    vm.elevator.getElevationForLocations({
-	    'locations': path, //change this to the set when we have it
+	    'locations': waypoints, //change this to the set when we have it
 	  }, function (elevations, status){
 	      var waypointElevations = [];
-	      for (var i=0; i<path.length; i++){
-	      waypointElevations[i] = {x: path[i].totalDistance*metersMilesConversion,
+	      for (var i=0; i<waypoints.length; i++){
+	      waypointElevations[i] = {x: markers[i].distance,
 	                  y: elevations[i].elevation*metersFeetConversion}
 	    }
 	      resolve(waypointElevations);
@@ -59,7 +63,9 @@ function ChartsService ($http, $cookies) {
 	}
 
 
-	function drawChart(pathElevations, marksSorted){
+	function drawChart(pathElevations, waypointElevations, markers){
+		var marksSorted = sortMarks(waypointElevations, markers);
+		console.log(marksSorted)
 		var ctx = document.getElementById('myChart');
 		ctx.width = 800;
 		ctx.height = 125;
@@ -89,7 +95,7 @@ function ChartsService ($http, $cookies) {
 					{
 						type: 'line',
 						label: 'Campsite',
-		        data: [{x: 5, y: 2000}],
+		        data: marksSorted.campsite,
 		        fill: false,
 		        borderColor: 'rgba(255,255,255,0)',
 		        pointBorderColor: 'rgba(255, 0, 0, 1)',
@@ -100,7 +106,7 @@ function ChartsService ($http, $cookies) {
 					{
 						type: 'line',
 						label: 'Water Source',
-		        data: [{x: 10, y: 2000}],
+		        data: marksSorted.water,
 		        fill: false,
 		        borderColor: 'rgba(255,255,255,0)',
 		        pointBorderColor: 'rgba(255, 0, 0, 1)',
@@ -242,36 +248,36 @@ function ChartsService ($http, $cookies) {
 	}
 
 
-	function sortMarks (array) {
+	function sortMarks (waypoints, markers) {
 		let sortedMarks = {};
-		sortedMarks.campsite = array.filter(isCampsite);
-		sortedMarks.parking = array.filter(isParking);
-		sortedMarks.resupply = array.filter(isResupply);
-		sortedMarks.road = array.filter(isRoad);
-		sortedMarks.shelter = array.filter(isShelter);
-		sortedMarks.view = array.filter(isView);
-		sortedMarks.water = array.filter(isWater);
+		sortedMarks.campsite = waypoints.filter(isCampsite);
+		sortedMarks.parking = waypoints.filter(isParking);
+		sortedMarks.resupply = waypoints.filter(isResupply);
+		sortedMarks.road = waypoints.filter(isRoad);
+		sortedMarks.shelter = waypoints.filter(isShelter);
+		sortedMarks.view = waypoints.filter(isView);
+		sortedMarks.water = waypoints.filter(isWater);
 
-		function isCampsite(mark) {
-			return mark.campsite === true;
+		function isCampsite(mark, index) {
+			return markers[index].campsite === true;
 		}
-		function isParking(mark) {
-			return mark.parking === true;
+		function isParking(mark, index) {
+			return markers[index].parking === true;
 		}
-		function isResupply(mark) {
-			return mark.resupply === true;
+		function isResupply(mark, index) {
+			return markers[index].resupply === true;
 		}
-		function isRoad (mark) {
-			return mark.road === true;
+		function isRoad (mark, index) {
+			return markers[index].road === true;
 		}
-		function isShelter(mark) {
-			return mark.shelter === true;
+		function isShelter(mark, index) {
+			return markers[index].shelter === true;
 		}
-		function isView(mark) {
-			return mark.view === true;
+		function isView(mark, index) {
+			return markers[index].view === true;
 		}
-		function isWater(mark) {
-			return mark.water === true;
+		function isWater(mark, index) {
+			return markers[index].water === true;
 		}
 
 		return sortedMarks;

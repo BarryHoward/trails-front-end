@@ -49,8 +49,9 @@ function BlazeEditController (MapsService, UsersService, $stateParams, $scope) {
           let marker = MapsService.loadTrailMarker(waypoint)
           MapsService.dragListener(marker, waypoint, $scope)
           MapsService.clickListener(marker, waypoint, $scope)
+          MapsService.initChart(MapsService.trailPath, MapsService.markerArray)
         });
-        MapsService.initChart(MapsService.trailPath)
+
       })
     })
   }
@@ -72,7 +73,7 @@ function BlazeEditController (MapsService, UsersService, $stateParams, $scope) {
     newTrail.length = spherical.computeLength(MapsService.trailPath)*metersMilesConversion;
     newTrail.description = vm.trailDescription;
     newTrail.image_url = vm.trailImage_url;
-    MapsService.editTrail($stateParams.id, newTrail).then(function (resp) {    
+    MapsService.editTrail($stateParams.id, newTrail).then(function (resp) {
         // $scope.$apply(function (){vm.status = "Update Completed";});
         vm.status = "Update Completed";
       })

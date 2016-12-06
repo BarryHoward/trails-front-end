@@ -25,10 +25,11 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
   vm.editPoint = editPoint;
   vm.deletePoint = deletePoint;
   vm.initChart = initChart;
+  vm.chartMark = chartMark;
   vm.updateMarker = updateMarker;
   vm.updatePanel = updatePanel;
 
- 
+
   vm.waypoint = {};
 
   const metersFeetConversion = 3.28084;
@@ -52,8 +53,8 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
   }
 
 // -----------------------------------------------------------------------
-  
-  // Get existing Trail 
+
+  // Get existing Trail
 
   function getTrail(){
     return $http.get(`${SERVER}trails/${vm.trail_id}`);
@@ -64,7 +65,7 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
   }
 
 // -----------------------------------------------------------------------
-  
+
   //Create line and Center map
 
   function createTrailPoly() {
@@ -162,8 +163,8 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
   }
 
 // ----------------------------------------------------------------------
-  
-  // Listeners 
+
+  // Listeners
 
   function dragListener (marker, waypoint, $scope){
       google.maps.event.addListener(marker, 'dragend', function (event){
@@ -182,7 +183,7 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
           vm.currentMarker = marker;
         }
         if(vm.trailPath.length > 1) {
-          ChartsService.chart(vm.trailPath);
+          ChartsService.chart(vm.trailPath, vm.markerArray);
         }
 
         $scope.$apply(updatePanel());
@@ -202,7 +203,7 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
           vm.markerArray.splice(markIndex, 1);
           marker.setMap(null);
           if(vm.trailPath.length > 1) {
-            ChartsService.chart(vm.trailPath);
+            ChartsService.chart(vm.trailPath, vm.markerArray);
           }
           vm.currentMarker = null;
           vm.newMarkerAllow = true;
@@ -296,7 +297,7 @@ function closestPath(waypoint){
       }
       //re-chart
       if(vm.trailPath.length > 1) {
-        ChartsService.chart(vm.trailPath);
+        ChartsService.chart(vm.trailPath, vm.markerArray);
       }
       marker.distance = markerDistance;
       vm.markerArray.push(marker)
@@ -343,6 +344,11 @@ function closestPath(waypoint){
       vm.panel.resupply = false;
     }
       vm.trailLength = spherical.computeLength(vm.trailPath)*metersMilesConversion;
+  }
+
+  function chartMark(){
+    ChartsService.chart(vm.trailPath, vm.markerArray);
+    updateMarker();
   }
 
   function updateMarker(){
@@ -411,6 +417,7 @@ function closestPath(waypoint){
 
   function savePoint(waypoint){
     updateMarker();
+    chart(vm.trailPath, vm.markerArray)
     vm.currentMarker.setIcon(icons.pointSaved)
     let req = {
       url: `${SERVER}points`,
@@ -423,6 +430,7 @@ function closestPath(waypoint){
 
   function editPoint(waypoint){
     updateMarker();
+    chart(vm.trailPath, vm.markerArray)
     vm.currentMarker.setIcon(icons.pointSaved)
     let req = {
       url: `${SERVER}points/${vm.currentMarker.id}`,
@@ -436,13 +444,13 @@ function closestPath(waypoint){
   // ---------------------------------------------------------------------------
 
     //Trail List
-  
+
   function getTrailList(){
     return $http.get(`${SERVER}trails`)
   }
 
   function initChart(){
-    ChartsService.chart(vm.trailPath);
+    ChartsService.chart(vm.trailPath, vm.markerArray);
   }
 };
 

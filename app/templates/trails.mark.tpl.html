@@ -26,16 +26,16 @@
 		</span>
 	</div>
 	<div class="type-container">
-		<label>shelter: </label><input type="checkbox" ng-change="mark.MapsService.updateMarker()" ng-model="mark.MapsService.panel.shelter">
-		<label>campsite: </label><input type="checkbox" ng-change="mark.MapsService.updateMarker()" ng-model="mark.MapsService.panel.campsite">
+		<label>shelter: </label><input type="checkbox" ng-change="mark.MapsService.chartMark()" ng-model="mark.MapsService.panel.shelter">
+		<label>campsite: </label><input type="checkbox" ng-change="mark.MapsService.chartMark()" ng-model="mark.MapsService.panel.campsite">
 		<br>
-		<label>water: </label><input type="checkbox" ng-change="mark.MapsService.updateMarker()" ng-model="mark.MapsService.panel.water">
-		<label>view: </label><input type="checkbox" ng-change="mark.MapsService.updateMarker()" ng-model="mark.MapsService.panel.view">
+		<label>water: </label><input type="checkbox" ng-change="mark.MapsService.chartMark()" ng-model="mark.MapsService.panel.water">
+		<label>view: </label><input type="checkbox" ng-change="mark.MapsService.chartMark()" ng-model="mark.MapsService.panel.view">
 		<br>
-		<label>road: </label><input type="checkbox" ng-change="mark.MapsService.updateMarker()" ng-model="mark.MapsService.panel.road">
-		<label>parking: </label><input type="checkbox" ng-change="mark.MapsService.updateMarker()" ng-model="mark.MapsService.panel.parking">
+		<label>road: </label><input type="checkbox" ng-change="mark.MapsService.chartMark()" ng-model="mark.MapsService.panel.road">
+		<label>parking: </label><input type="checkbox" ng-change="mark.MapsService.chartMark()" ng-model="mark.MapsService.panel.parking">
 		<br>
-		<label>resupply: </label><input type="checkbox" ng-change="mark.MapsService.updateMarker()" ng-model="mark.MapsService.panel.resupply">
+		<label>resupply: </label><input type="checkbox" ng-change="mark.MapsService.chartMark()" ng-model="mark.MapsService.panel.resupply">
 	</div>
 	<div class="title-container">
 		<label>Title: </label><input type="text" ng-keyup="mark.MapsService.updateMarker()" ng-model="mark.MapsService.panel.title"></input>
@@ -59,4 +59,3 @@
 <div class="chart-box">
 	<canvas class="chart" id="myChart"></canvas>
 </div>
-
