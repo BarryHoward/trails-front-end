@@ -44,6 +44,7 @@ function MarkController (MapsService, UsersService, $stateParams, $scope) {
             MapsService.dragListener(marker, waypoint, $scope)
             MapsService.clickListener(marker, waypoint, $scope)
           });
+          MapsService.initChart(MapsService.trailPath, MapsService.markerArray)
         })
 
 
@@ -56,8 +57,9 @@ function MarkController (MapsService, UsersService, $stateParams, $scope) {
         MapsService.createTrailPoly();
         MapsService.centerMap();
         MapsService.initSearch();
+        console.log(MapsService)
 
-        MapsService.initChart(MapsService.trailPath)
+
       })
     })
   }
@@ -96,7 +98,7 @@ function MarkController (MapsService, UsersService, $stateParams, $scope) {
       vm.MapsService.updatePanel();
     })
   }
-  
+
 }
 
 MarkController.$inject = ['MapsService', 'UsersService', '$stateParams', '$scope'];
