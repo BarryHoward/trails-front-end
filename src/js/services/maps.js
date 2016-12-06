@@ -183,7 +183,7 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
           vm.currentMarker = marker;
         }
         if(vm.trailPath.length > 1) {
-          ChartsService.chart(vm.trailPath, vm.markerArray);
+          ChartsService.chart(vm.trailPath, vm.markerArray, vm.regraphElevation);
         }
 
         $scope.$apply(updatePanel());
@@ -203,7 +203,7 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
           vm.markerArray.splice(markIndex, 1);
           marker.setMap(null);
           if(vm.trailPath.length > 1) {
-            ChartsService.chart(vm.trailPath, vm.markerArray);
+            ChartsService.chart(vm.trailPath, vm.markerArray, vm.regraphElevation);
           }
           vm.currentMarker = null;
           vm.newMarkerAllow = true;
@@ -297,7 +297,9 @@ function closestPath(waypoint){
       }
       //re-chart
       if(vm.trailPath.length > 1) {
-        ChartsService.chart(vm.trailPath, vm.markerArray);
+        console.log('hi')
+        console.log(vm)
+        ChartsService.chart(vm.trailPath, vm.markerArray, vm.regraphElevation);
       }
       marker.distance = markerDistance;
       vm.markerArray.push(marker)
@@ -347,7 +349,7 @@ function closestPath(waypoint){
   }
 
   function chartMark(){
-    ChartsService.chart(vm.trailPath, vm.markerArray);
+    ChartsService.chart(vm.trailPath, vm.markerArray, vm.regraphElevation);
     updateMarker();
   }
 
@@ -417,7 +419,7 @@ function closestPath(waypoint){
 
   function savePoint(waypoint){
     updateMarker();
-    chart(vm.trailPath, vm.markerArray)
+    chart(vm.trailPath, vm.markerArray, vm.regraphElevation)
     vm.currentMarker.setIcon(icons.pointSaved)
     let req = {
       url: `${SERVER}points`,
@@ -430,7 +432,7 @@ function closestPath(waypoint){
 
   function editPoint(waypoint){
     updateMarker();
-    chart(vm.trailPath, vm.markerArray)
+    chart(vm.trailPath, vm.markerArray, fm.regraphElevation)
     vm.currentMarker.setIcon(icons.pointSaved)
     let req = {
       url: `${SERVER}points/${vm.currentMarker.id}`,
@@ -450,7 +452,7 @@ function closestPath(waypoint){
   }
 
   function initChart(){
-    ChartsService.chart(vm.trailPath, vm.markerArray);
+    ChartsService.chart(vm.trailPath, vm.markerArray, true);
   }
 };
 

@@ -11,6 +11,7 @@ function BlazeNewController (MapsService, UsersService, $scope) {
   MapsService.markerArray = [];
   MapsService.panel={};
   MapsService.trailPath = [];
+  MapsService.regraphElevation = true;
 
   vm.MapsService = MapsService;
   vm.placeMarker = placeMarker;
@@ -21,6 +22,7 @@ function BlazeNewController (MapsService, UsersService, $scope) {
   const encoding = google.maps.geometry.encoding;
   const spherical = google.maps.geometry.spherical;
   const Geocoder = new google.maps.Geocoder();
+
 
 
   init();

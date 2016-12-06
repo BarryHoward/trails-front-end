@@ -12,6 +12,7 @@ function BlazeEditController (MapsService, UsersService, $stateParams, $scope) {
   MapsService.snap = false;
   MapsService.markerArray = [];
   MapsService.panel={};
+  MapsService.regraphElevation = true;
 
   vm.MapsService = MapsService;
   vm.placeMarker = placeMarker;
@@ -48,9 +49,9 @@ function BlazeEditController (MapsService, UsersService, $stateParams, $scope) {
         MapsService.trailPath.forEach(function (waypoint) {
           let marker = MapsService.loadTrailMarker(waypoint)
           MapsService.dragListener(marker, waypoint, $scope)
-          MapsService.clickListener(marker, waypoint, $scope)
-          MapsService.initChart(MapsService.trailPath, MapsService.markerArray)
+          MapsService.clickListener(marker, waypoint, $scope)      
         });
+        MapsService.initChart(MapsService.trailPath, MapsService.markerArray)
 
       })
     })
