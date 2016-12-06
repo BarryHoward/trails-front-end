@@ -9,11 +9,7 @@ function ChartsService ($http, $cookies) {
 
 
 	function chart(path, markers, regraph){
-		console.log(regraph)
 		var waypoints = []
-		markers.forEach(function (marker){
-			waypoints.push(marker.position)
-		})
 	    vm.elevator = new google.maps.ElevationService;
 	    var pathElevations = [];
 	    var waypointElevations = [];
@@ -70,6 +66,10 @@ function ChartsService ($http, $cookies) {
 
 	function drawChart(pathElevations, waypointElevations, markers){
 		var marksSorted = sortMarks(waypointElevations, markers);
+		console.log(marksSorted)
+		var ctx = document.getElementById('myChart');
+		ctx.width = 800;
+		ctx.height = 125;
 
 		const campgroundImg = new Image();
 		const waterImg = new Image();
@@ -88,7 +88,7 @@ function ChartsService ($http, $cookies) {
 		resupplyImg.src = 'images/png/list.png';
 
 		if(vm.myLineChart){
-			vm.myLineChart.destroy();
+	        vm.myLineChart.destroy();
 	    }
 
 		var data = {
@@ -214,7 +214,7 @@ function ChartsService ($http, $cookies) {
 		    type: 'bar',
 		    data: data,
 		    options: options
-		})
+		});
 
 	}
 
