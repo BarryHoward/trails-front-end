@@ -9,12 +9,10 @@ function ChartsService ($http, $cookies) {
 
 
 	function chart(path, markers){
-			// var sortedObject = sortMarks(markers)
 			var waypoints = []
 			markers.forEach(function (marker){
 				waypoints.push(marker.position)
 			})
-			// console.log(sortedObject)
 	    vm.elevator = new google.maps.ElevationService;
 	    var pathElevations = [];
 	    var waypointElevations = [];
@@ -65,10 +63,8 @@ function ChartsService ($http, $cookies) {
 
 	function drawChart(pathElevations, waypointElevations, markers){
 		var marksSorted = sortMarks(waypointElevations, markers);
-		console.log(marksSorted)
-		var ctx = document.getElementById('myChart');
-		ctx.width = 800;
-		ctx.height = 125;
+		console.log("myChart" + 1)
+
 
 		const campgroundImg = new Image();
 		const waterImg = new Image();
@@ -87,7 +83,9 @@ function ChartsService ($http, $cookies) {
 		resupplyImg.src = 'images/png/list.png';
 
 		if(vm.myLineChart){
-	        vm.myLineChart.destroy();
+					vm.myLineChart.forEach(function(linechart){
+						linechart.destroy();
+					})
 	    }
 
 		var data = {
@@ -114,7 +112,7 @@ function ChartsService ($http, $cookies) {
 						pointStyle: waterImg,
 
 		      },
-					
+
 					{
 						type: 'line',
 						label: 'Parking',
@@ -183,71 +181,47 @@ function ChartsService ($http, $cookies) {
 
 		    ]
 		}
-		var options = {
-					// tooltips: {
-					//
-					// 	callbacks: {
-					// 		title: function (tooltipItem, data) {
-					// 			let tip = '';
-					// 			tooltipItem.forEach(function (item) {
-					// 				if (item.datasetIndex === 0) {
-					// 					tip = 'Campground';
-					// 					console.log('tooltipItem', tooltipItem);
-					// 					console.log('data', data);
-					// 				}
-					// 				else if (item.datasetIndex === 1) {
-					// 					tip = 'Water Source';
-					// 				}
-					// 			})
-					// 			debugger
-					// 			return tip;
-					// 			// console.log(tooltipItem[0])
-					// 			// return data.datasets[0].title;
-					// 	},
-					// 		afterTitle: function (tooltipItem, data) {
-					// 			let tipLabel ='';
-					// 			tooltipItem.forEach(function (item) {
-					// 				if (item.datasetIndex === 0) {
-					// 					tipLabel = 'This is the description for a campground'
-					// 				} else if (item.datasetIndex === 1){
-					// 					tipLabel = 'This is the description for a water source'
-					// 				}
-					// 			})
-					// 			return tipLabel;
-					// 		}
-					// }
-				// },
-		      scales: {
-		          xAxes: [{
-		              type: 'linear',
-		              position: 'bottom',
-		              ticks: {
-		                min: 0,
-		                max: 20,
-		                beginAtZero: true
-		              }
-		          }],
-		          yAxes: [{
-		              ticks: {
-		                min: 0,
-		                max: 6600,
-		                beginAtZero: true
-		              }
-		          }],
-		      },
-					// hover: {
-					// 	intersect: true,
-					// 	mode: 'point'
-					// }
+
+		var options = [];
+		for (var j=0; j<5; j++){
+			options[j] = {
+						scales: {
+								xAxes: [{
+										type: 'linear',
+										position: 'bottom',
+										ticks: {
+											min: j*20,
+											max: (j+1)*20,
+											beginAtZero: true
+										}
+								}],
+								yAxes: [{
+										ticks: {
+											min: 0,
+											max: 6600,
+											beginAtZero: true
+										}
+								}],
+						},
+						// hover: {
+						// 	intersect: true,
+						// 	mode: 'point'
+						// }
+			}
 		}
-		vm.myLineChart = new Chart(ctx, {
+
+		for (var i=0; i<5; i++){
+			var ctx=document.getElementById('myChart' + i);
+			ctx.width = 800;
+			ctx.height = 125;
+			vm.myLineChart[i] = new Chart(ctx, {
 		    type: 'bar',
 		    data: data,
-		    options: options
+		    options: options[i]
 		});
 
 	}
-
+}
 
 	function sortMarks (waypoints, markers) {
 		let sortedMarks = {};
