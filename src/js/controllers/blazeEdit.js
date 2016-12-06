@@ -1,7 +1,7 @@
 
 const mapId = "blazeEditMap"
 
-function BlazeEditController (MapsService, $stateParams, $scope) {
+function BlazeEditController (MapsService, UsersService, $stateParams, $scope) {
   let vm = this;
 
   //params specific to page
@@ -26,6 +26,8 @@ function BlazeEditController (MapsService, $stateParams, $scope) {
   init();
 
   function init(){
+
+    vm.loggedIn = UsersService.isLoggedIn();
     //initial variables
     vm.status = "Edit a Trail!";
 
@@ -57,7 +59,7 @@ function BlazeEditController (MapsService, $stateParams, $scope) {
     let waypoint = event.latLng;
     let marker = MapsService.placeMarker(waypoint);
     MapsService.dragListener(marker, waypoint, $scope)
-    MapsService.clickListener(marker, wayoint, $scope)
+    MapsService.clickListener(marker, waypoint, $scope)
   }
 
 
@@ -86,5 +88,5 @@ function BlazeEditController (MapsService, $stateParams, $scope) {
   }
 }
 
-BlazeEditController.$inject = ['MapsService', '$stateParams', '$scope'];
+BlazeEditController.$inject = ['MapsService', 'UsersService', '$stateParams', '$scope'];
 export {BlazeEditController}
