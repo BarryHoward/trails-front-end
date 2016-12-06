@@ -6,13 +6,14 @@ function MapsService ($http, ChartsService, NgMap, icons, $rootScope) {
 
   vm.getMap = getMap;
   vm.getTrail = getTrail;
+  vm.getPoints = getPoints;
   vm.createTrailPoly = createTrailPoly;
   vm.centerMap = centerMap;
   vm.initSearch = initSearch;
   vm.loadTrailMarker = loadTrailMarker;
   vm.loadPointMarker = loadPointMarker;
   vm.dragListener = dragListener;
-  vm.deleteListener = deleteListener;
+  vm.clickListener = clickListener;
   vm.closestPath = closestPath;
   vm.placeMarker = placeMarker;
 
@@ -21,6 +22,7 @@ function MapsService ($http, ChartsService, NgMap, icons, $rootScope) {
   vm.newTrail = newTrail;
   vm.getTrailList = getTrailList;
   vm.savePoint = savePoint;
+  vm.editPoint = editPoint;
   vm.initChart = initChart;
 
  
@@ -48,6 +50,10 @@ function MapsService ($http, ChartsService, NgMap, icons, $rootScope) {
 
   function getTrail(){
     return $http.get(`${SERVER}trails/${vm.trail_id}`);
+  }
+
+  function getPoints(){
+    return $http.get(`${SERVER}trails/${vm.trail_id}/points`);
   }
 
 // -----------------------------------------------------------------------
@@ -124,12 +130,16 @@ function MapsService ($http, ChartsService, NgMap, icons, $rootScope) {
   }
 
   function loadPointMarker(waypoint){
+    let position = new google.maps.LatLng(waypoint.lat, waypoint.lng)
+    let insert = closestPath(position)
     var marker = new google.maps.Marker({
         map: vm.map,
-        position: {lat: waypoint.lat, lng: waypoint.lng},
+        position: position,
         icon: icons.pointSaved,
         draggable: true
     });
+    marker.distance = insert[2]
+    marker.id = waypoint.id;
     vm.markerArray.push(marker)
     return marker;
   }
@@ -138,33 +148,35 @@ function MapsService ($http, ChartsService, NgMap, icons, $rootScope) {
   
   // Listeners 
 
-  function dragListener (marker, scope){
-      let waypoint = marker.getPosition();
+  function dragListener (marker, waypoint, $scope){
       google.maps.event.addListener(marker, 'dragend', function (event){
-        let newWaypoint = event.latLng;
         if (!vm.snap){
           var index = vm.trailPath.indexOf(waypoint);
-          vm.trailPath[index] = newWaypoint;
+          waypoint = marker.getPosition();
+          vm.trailPath[index] = waypoint;
           vm.trailPoly.setPath(vm.trailPath);
         } else {
-          let insert = closestPath(newWaypoint)
-          newWaypoint = spherical.interpolate(vm.trailPath[insert[0]-1], vm.trailPath[insert[0]], insert[1])
-          marker.setPosition(newWaypoint);
+          waypoint = marker.getPosition();
+          let insert = closestPath(waypoint)
+          console.log(insert)
+          waypoint = spherical.interpolate(vm.trailPath[insert[0]-1], vm.trailPath[insert[0]], insert[1])
+          marker.setPosition(waypoint);
           marker.setIcon(icons.pointUnsaved)
           marker.distance = insert[2];
           vm.currentMarker = marker;
-          updatePanel();
         }
         if(vm.trailPath.length > 1) {
           ChartsService.chart(vm.trailPath);
         }
-        scope.apply;
+
+        $scope.$apply(updatePanel());
     })
   }
 
-  function deleteListener (marker, scope){
+  function clickListener (marker, waypoint, $scope){
       google.maps.event.addListener(marker, 'click', function (event){
-        let waypoint = marker.getPosition();
+        console.log($scope)
+        waypoint = marker.getPosition();
         if (vm.delete){
           if (!vm.snap){
             var index = vm.trailPath.indexOf(waypoint);
@@ -179,9 +191,10 @@ function MapsService ($http, ChartsService, NgMap, icons, $rootScope) {
           }
           vm.currentMarker = null;
           vm.newMarkerAllow = true;
-          updatePanel();
+        } else {
+          vm.currentMarker = marker;
         }
-        scope.apply;
+        $scope.$apply(updatePanel());
     })
   }
 
@@ -257,8 +270,13 @@ function closestPath(waypoint){
           icon: icons.blaze
       });
       if (!vm.newMarkerAllow && vm.currentMarker){
+        console.log(vm.currentMarker)
+        let index = vm.markerArray.indexOf(vm.currentMarker);
+        console.log(index);
+        vm.markerArray.splice(index, 1);
         vm.currentMarker.setMap(null);
       }
+      vm.newMarkerAllow = false;
       //set to unsaved icon if snap
       if (vm.snap){
         marker.setIcon(icons.pointUnsaved);
@@ -281,12 +299,15 @@ function closestPath(waypoint){
     // update Panel
 
   function updatePanel(){
+    console.log(vm.currentMarker)
+    console.log(vm.markerArray)
 
     if (vm.currentMarker){
       let waypoint = vm.currentMarker.getPosition();
       vm.panel.lat=waypoint.lat();
       vm.panel.lng=waypoint.lng();
       vm.panel.distance = vm.currentMarker.distance;
+      console.log(vm.panel)
     } else {
       vm.panel.lat = "";
       vm.panel.lng = "";
@@ -312,8 +333,13 @@ function closestPath(waypoint){
   }
 
   function savePoint(waypoint){
-    vm.currentMarker.setIcon(icons.pointUnsaved)
+    vm.currentMarker.setIcon(icons.pointSaved)
     return $http.post(`${SERVER}points`, waypoint)
+  }
+
+  function editPoint(waypoint){
+    vm.currentMarker.setIcon(icons.pointSaved)
+    return $http.patch(`${SERVER}points/${vm.currentMarker.id}`, waypoint)
   }
 
   // ---------------------------------------------------------------------------

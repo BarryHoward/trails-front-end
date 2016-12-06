@@ -2,9 +2,9 @@
 
 <h1 class="title">Add a New Trail</h1>
 
-  <form name="new-trail" ng-submit="blazeNew.addNewTrail(trail)">
+  <form name="new-trail" ng-submit="blazeNew.newTrail()">
       <input class="title-input" name="title" type="text" placeholder="Trail Name..."
-             ng-model="blazeNew.trailTitle" />
+             ng-model="blazeNew.MapsService.trailTitle" />
 			<button class="add-trail-button">Add New Trail!</button>
 	</form>
 

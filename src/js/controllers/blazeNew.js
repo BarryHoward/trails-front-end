@@ -39,7 +39,7 @@
 //     let waypoint = event.latLng;
 //     let marker = MapsService.placeMarker(waypoint);
 //     MapsService.dragListener(marker, waypoint, $scope)
-//     MapsService.deleteListener(marker, waypoint, $scope)
+//     MapsService.clickListener(marker, waypoint, $scope)
 //   }
 
 
@@ -123,8 +123,8 @@ function BlazeNewController (MapsService, $scope) {
   function placeMarker(event){
     let waypoint = event.latLng;
     let marker = MapsService.placeMarker(waypoint);
-    MapsService.dragListener(marker, $scope)
-    MapsService.deleteListener(marker, $scope)
+    MapsService.dragListener(marker, waypoint, $scope)
+    MapsService.clickListener(marker, waypoint, $scope)
   }
 
 

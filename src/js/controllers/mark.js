@@ -3,52 +3,88 @@ const mapId = "markMap"
 
 function MarkController (MapsService, $stateParams, $scope) {
   let vm = this;
-  const blaze = false;
-  const draggable = true;
-  const snap = true;
 
-  vm.placeMarker = placeMarker;
-  // vm.editTrail = editTrail;
-  // vm.deleteTrail = deleteTrail;
+  //params specific to page
+  MapsService.trail_id = $stateParams.id;
+  MapsService.delete = false;
+  // MapsService.insert = "backInsert";
+  MapsService.newMarkerAllow = true;
+  MapsService.snap = true;
+  MapsService.markerArray = [];
+  MapsService.panel={};
+
   vm.MapsService = MapsService;
+  vm.placeMarker = placeMarker;
   vm.savePoint = savePoint;
+  vm.editPoint = editPoint;
   vm.deletePoint = deletePoint;
-  // vm.chartWidth = 600;
-  // vm.chartHeight = 300;
 
-
-  function init () {
-    let trail_id = $stateParams.id
-    vm.status = "Add Points to a Trail"
-    vm.trailTitle = "Trail Title"
-    vm.MapsService.delete = false;
-    vm.MapsService.newMarker = true;
-
-
-    MapsService.getMap(mapId).then(function (map) {
-      MapsService.getTrail(trail_id, map, blaze, snap, draggable).then(function (MapInfo){
-        vm.path = MapInfo.path;
-        vm.trailTitle = MapInfo.title;
-        vm.map = map;
-        vm.map.setMapTypeId('terrain');
-        $scope.$apply();
-      });
-    })
-  }
+  const metersFeetConversion = 3.28084;
+  const metersMilesConversion = 0.000621371;
+  const encoding = google.maps.geometry.encoding;
+  const spherical = google.maps.geometry.spherical;
 
   init();
 
+
+  function init(){
+    console.log($scope)
+    //initial variables
+    vm.status = "Add Points to a Trail!";
+
+    MapsService.getMap(mapId).then(function (map){
+      MapsService.map=map;
+      MapsService.getTrail(map).then(function (resp){
+
+        //add trail Markers and add listeners;
+        MapsService.getPoints().then(function(resp){
+          let points = resp.data;
+          points.forEach(function (waypoint) {
+            let marker = MapsService.loadPointMarker(waypoint)
+            MapsService.dragListener(marker, waypoint, $scope)
+            MapsService.clickListener(marker, waypoint, $scope)
+          });
+        })
+
+
+        //set trail data
+        MapsService.trailPath = encoding.decodePath(resp.data.path);
+        MapsService.trailTitle = resp.data.title;
+        MapsService.trailDistance = spherical.computeLength(MapsService.trailPath);
+
+        //create line, center map, and initialize search bar
+        MapsService.createTrailPoly();
+        MapsService.centerMap();
+        MapsService.initSearch();
+
+        MapsService.initChart(MapsService.trailPath)
+      })
+    })
+  }
+
+
   function placeMarker(event){
-      MapsService.placeMarker(event, vm.path, vm.map, snap);
-      vm.MapsService.newMarker = false;
+    let waypoint = event.latLng;
+    let marker = MapsService.placeMarker(waypoint);
+    MapsService.dragListener(marker, waypoint, $scope)
+    MapsService.clickListener(marker, waypoint, $scope)
   }
 
   function savePoint(){
-    vm.MapsService.newMarker = true;
-    console.log(vm.MapsService.waypoint)
-    vm.MapsService.waypoint.trail_id = $stateParams.id
-    MapsService.savePoint(vm.MapsService.waypoint).then((resp) => {
+    MapsService.newMarkerAllow = true;
+    MapsService.panel.trail_id = Number($stateParams.id);
+    console.log(MapsService.panel.trail_id);
+    MapsService.savePoint(MapsService.panel).then((resp) => {
       console.log(resp)
+    })
+  }
+
+  function editPoint(){
+    MapsService.newMarkerAllow = true;
+    MapsService.panel.id = MapsService.currentMarker.id;
+    MapsService.editPoint(MapsService.panel).then((resp) => {
+      console.log(resp)
+
     })
   }
 
@@ -58,23 +94,6 @@ function MarkController (MapsService, $stateParams, $scope) {
     vm.MapsService.currentMarker = null;
   }
   
-  // function editTrail(){
-  //   vm.status = "Trail Updating...";
-  //   MapsService.editTrail(vm.path, vm.trailTitle, $stateParams.id)
-  //     .then(function (resp) {
-  //       vm.status = "edit Completed";
-  //       $scope.$apply();
-  //     })
-  // }
-
-  // function deleteTrail(){
-  //   MapsService.deleteTrail($stateParams.id).then((resp) => {
-  //     vm.status = "Trail Deleted!"
-  //     $scope.$apply();
-  //   }, (reject) => {
-  //       console.log(reject)
-  //     });
-  // }
 }
 
 MarkController.$inject = ['MapsService', '$stateParams', '$scope'];

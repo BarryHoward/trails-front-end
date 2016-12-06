@@ -45,8 +45,8 @@ function BlazeEditController (MapsService, $stateParams, $scope) {
         //add trail Markers and add listeners;
         MapsService.trailPath.forEach(function (waypoint) {
           let marker = MapsService.loadTrailMarker(waypoint)
-          MapsService.dragListener(marker, $scope)
-          MapsService.deleteListener(marker, $scope)
+          MapsService.dragListener(marker, waypoint, $scope)
+          MapsService.clickListener(marker, waypoint, $scope)
         });
         MapsService.initChart(MapsService.trailPath)
       })
@@ -56,8 +56,8 @@ function BlazeEditController (MapsService, $stateParams, $scope) {
   function placeMarker(event){
     let waypoint = event.latLng;
     let marker = MapsService.placeMarker(waypoint);
-    MapsService.dragListener(marker, $scope)
-    MapsService.deleteListener(marker, $scope)
+    MapsService.dragListener(marker, waypoint, $scope)
+    MapsService.clickListener(marker, wayoint, $scope)
   }
 
 
