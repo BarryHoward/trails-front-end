@@ -1,41 +1,50 @@
 <div class="trail-info-container">
   <img src="{{blazeEdit.MapsService.trailInfo.saved_url}}">
-  <input type="text" placeholder="Image url" ng-model="blazeEdit.MapsService.trailInfo.img_url">
-  <input type="text" placeholder="Trail Name" ng-model="blazeEdit.MapsService.trailInfo.title">
-  <textarea placeholder="Trail description" ng-model="blazeEdit.MapsService.trailInfo.description"></textarea>
+  <label>Edit Trail Name:</label>
+  <input class='trail-info-input' type="text" placeholder="Image url" ng-model="blazeEdit.MapsService.trailInfo.img_url">
+  <label>Edit Trail Image:</label>
+  <input class='trail-info-input' type="text" placeholder="Trail Name" ng-model="blazeEdit.MapsService.trailInfo.title">
+  <textarea class="trail-description" placeholder="Trail description" ng-model="blazeEdit.MapsService.trailInfo.description"></textarea>
+
   <div class="static-info-container">
     <div>Distance: {{blazeEdit.MapsService.trailInfo.distance}}</div>
     <div>Max Elevation: {{blazeEdit.MapsService.trailInfo.max_elevation}}</div>
     <div>Min Elevation: {{blazeEdit.MapsService.trailInfo.min_elevation}}</div>
     <div>Created by: {{blazeEdit.MapsService.trailInfo.username}}</div>
   </div>
+  <div class="update-delete">
+    <button class="update-trail-button" type="button" name="edit" ng-click="blazeEdit.editTrail()">Save Changes</button>
+    <button class="delete-trail-button" type="button" name="delete" ng-click="blazeEdit.deleteTrail()">Delete Trail</button>
+  </div>
 </div>
 
-	<div class="add-delete">
-		<input type="radio" ng-model="blazeEdit.MapsService.delete" name="delete" ng-value="false"></input>
-	    <span>Add Points</span>
-	    <input type="radio" ng-model="blazeEdit.MapsService.delete" name="delete" ng-value="true"></input>
-	    <span>Delete Points</span>
 	</div>
-	<div class="insert-buttons">
-		<input type="radio" ng-model="blazeEdit.MapsService.insert" name="insert" value="frontInsert"></input>
-	    <span>Add to Beginning</span>
-	    <input type="radio" ng-model="blazeEdit.MapsService.insert" name="insert" value="midInsert"></input>
-	    <span>Insert Between</span>
-	    <input type="radio" ng-model="blazeEdit.MapsService.insert" name="insert" value="backInsert"></input>
-	    <span>Add to End</span>
-      <div class="update-delete">
-        <button class="update-trail-button" type="button" name="edit" ng-click="blazeEdit.editTrail()">Save Changes</button>
-        <button class="delete-trail-button" type="button" name="delete" ng-click="blazeEdit.deleteTrail()">Delete Trail</button>
-      </div>
-	</div>
-</div>
-<div class="map-container">
-  <input id="pac-input" class="controls" type="text" placeholder="Search...">
-  <ng-map class="map" id="blazeEditMap" on-click="blazeEdit.placeMarker($event)">
-  </ng-map>
 </div>
 
+<div class="map-controls-container">
+  <div class="map-container">
+    <input id="pac-input" class="controls" type="text" placeholder="Search...">
+    <ng-map class="map" id="blazeEditMap" on-click="blazeEdit.placeMarker($event)">
+    </ng-map>
+  </div>
+  <div class="marker-buttons">
+
+    <div class="add-delete">
+      <input type="radio" ng-model="blazeEdit.MapsService.delete" name="delete" ng-value="false"></input>
+        <span>Add Points</span>
+        <input type="radio" ng-model="blazeEdit.MapsService.delete" name="delete" ng-value="true"></input>
+        <span>Delete Points</span>
+    </div>
+    <div class="insert-buttons">
+      <input type="radio" ng-model="blazeEdit.MapsService.insert" name="insert" value="frontInsert"></input>
+        <span>Add to Beginning</span>
+        <input type="radio" ng-model="blazeEdit.MapsService.insert" name="insert" value="midInsert"></input>
+        <span>Insert Between</span>
+        <input type="radio" ng-model="blazeEdit.MapsService.insert" name="insert" value="backInsert"></input>
+        <span>Add to End</span>
+    </div>
+</div>
+</div>
 <div class="elevation-header"><h2>Elevation Information</h2></div>
 <div class="chart-box">
 	<canvas class="chart" id="myChart"></canvas>

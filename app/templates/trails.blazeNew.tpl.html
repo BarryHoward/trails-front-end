@@ -1,21 +1,22 @@
 <div class="trail-info-container">
-  <img src="{{blazeNew.MapsService.trailInfo.saved_url}}">
-  <input type="text" placeholder="Image url" ng-model="blazeNew.MapsService.trailInfo.img_url">
-  <input type="text" placeholder="Trail Name" ng-model="blazeNew.MapsService.trailInfo.title">
-  <textarea placeholder="Trail description" ng-model="blazeNew.MapsService.trailInfo.description"></textarea>
+  <form name="new-trail" ng-submit="blazeNew.newTrail()">
+    <img src="{{blazeNew.MapsService.trailInfo.saved_url}}">
+    <label>Name Your Trail</label>
+    <input class='trail-info-input' type="text" placeholder="Trail Name..." ng-model="blazeNew.MapsService.trailInfo.title">
+    <label>Add a Custom Trail Image (optional)</label>
+    <input class='trail-info-input' type="text" placeholder="Image url..." ng-model="blazeNew.MapsService.trailInfo.img_url">
+    <textarea name='trail-description' class='trail-description' placeholder="Trail description..." ng-model="blazeNew.MapsService.trailInfo.description"></textarea>
+    <button class="add-trail-button">Create Trail</button>
+  </form>
+
   <div class="static-info-container">
-    <div>Distance: {{blazeNew.MapsService.trailInfo.distance}}</div>
-    <div>Max Elevation: {{blazeNew.MapsService.trailInfo.max_elevation}}</div>
-    <div>Min Elevation: {{blazeNew.MapsService.trailInfo.min_elevation}}</div>
-    <div>Created by: {{blazeNew.MapsService.trailInfo.username}}</div>
+    <div>Distance: <span class='static-info'>{{blazeNew.MapsService.trailInfo.distance}}</span></div>
+    <div>Max Elevation: <span class='static-info'>{{blazeNew.MapsService.trailInfo.max_elevation}}</span></div>
+    <div>Min Elevation: <span class='static-info'>{{blazeNew.MapsService.trailInfo.min_elevation}}</span></div>
+    <div>Created by: <span class='static-info'>{{blazeNew.MapsService.trailInfo.username}}</span></div>
   </div>
 </div>
 
-  <form name="new-trail" ng-submit="blazeNew.newTrail()">
-      <input class="title-input" name="title" type="text" placeholder="Trail Name..."
-             ng-model="blazeNew.MapsService.trailTitle" />
-			<button class="add-trail-button">Create Trail</button>
-	</form>
 
 <div class="map-controls-container">
 
@@ -25,33 +26,22 @@
   </ng-map>
 </div>
 <div class="marker-buttons">
-  <div class="add-delete">
-      <span><strong>Add/Remove Points</strong></span>
-      <span>
-        <input type="radio" ng-model="blazeNew.MapsService.delete" name="delete" ng-value="false"></input>
-        Add Points
-      </span>
-      <span>
-        <input type="radio" ng-model="blazeNew.MapsService.delete" name="delete" ng-value="true"></input>
-        Delete Points
-      </span>
-  </div>
 
-  <div class="insert-buttons">
-      <span><strong>Precision Point Placement</strong></span>
-      <span>
-        <input type="radio" ng-model="blazeNew.MapsService.insert" name="insert" value="frontInsert"></input>
-        Add to Beginning
-      </span>
-      <span>
-        <input type="radio" ng-model="blazeNew.MapsService.insert" name="insert" value="midInsert"></input>
-        Insert Between
-      </span>
-      <span>
-        <input type="radio" ng-model="blazeNew.MapsService.insert" name="insert" value="backInsert"></input>
-        Add to End
-      </span>
+  <div class="add-delete">
+    <input type="radio" ng-model="blazeEdit.MapsService.delete" name="delete" ng-value="false"></input>
+      <span>Add Points</span>
+      <input type="radio" ng-model="blazeEdit.MapsService.delete" name="delete" ng-value="true"></input>
+      <span>Delete Points</span>
   </div>
+  <div class="insert-buttons">
+    <input type="radio" ng-model="blazeEdit.MapsService.insert" name="insert" value="frontInsert"></input>
+      <span>Add to Beginning</span>
+      <input type="radio" ng-model="blazeEdit.MapsService.insert" name="insert" value="midInsert"></input>
+      <span>Insert Between</span>
+      <input type="radio" ng-model="blazeEdit.MapsService.insert" name="insert" value="backInsert"></input>
+      <span>Add to End</span>
+  </div>
+</div>
 
   {{blazeNew.status}}
 </div>
