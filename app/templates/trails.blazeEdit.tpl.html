@@ -6,17 +6,17 @@
   <input class='trail-info-input' type="text" placeholder="Trail Name" ng-model="blazeEdit.MapsService.trailInfo.title">
   <label>Edit Trail Image:</label>
   <input class='trail-info-input' type="text" placeholder="Image url" ng-model="blazeEdit.MapsService.trailInfo.img_url">
- 
+
   <textarea class="trail-description" placeholder="Trail description" ng-model="blazeEdit.MapsService.trailInfo.description"></textarea>
 
   <div class="static-info-container">
-    <div>Distance: {{blazeEdit.MapsService.trailInfo.distance}} mi</div>
-    <div>Max Elevation: {{blazeEdit.MapsService.trailInfo.max_elevation}} ft</div>
-    <div>Min Elevation: {{blazeEdit.MapsService.trailInfo.min_elevation}} ft</div>
-    <div>Created by: {{blazeEdit.MapsService.trailInfo.username}}</div>
+    <div>Distance: <span class='static-info'>{{blazeEdit.MapsService.trailInfo.distance}} mi</span></div>
+    <div>Max Elevation: <span class='static-info'>{{blazeEdit.MapsService.trailInfo.max_elevation}} ft</span></div>
+    <div>Min Elevation: <span class='static-info'>{{blazeEdit.MapsService.trailInfo.min_elevation}} ft</span></div>
+    <div>Created by: <span class='static-info'>{{blazeEdit.MapsService.trailInfo.username}}</span></div>
   </div>
   <div class="update-delete">
-    <button class="update-trail-button" type="button" name="edit" ng-click="blazeEdit.editTrail()">Save Changes</button>
+    <button class="update-trail-button" type="button" name="edit" ng-click="blazeEdit.editTrail()">{{blazeEdit.status}}</button>
     <button class="delete-trail-button" type="button" name="delete" ng-click="blazeEdit.deleteTrail()">Delete Trail</button>
   </div>
 </div>
