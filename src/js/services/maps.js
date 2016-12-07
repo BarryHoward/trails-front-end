@@ -185,7 +185,7 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
           marker.setPosition(waypoint);
           marker.setIcon(icons.pointUnsaved);
           $scope.$apply(function (){
-            marker.distance = insert[2];
+            marker.distance = Number(insert[2].toFixed(2));
             vm.currentMarker = marker;
             updatePanel()
           });

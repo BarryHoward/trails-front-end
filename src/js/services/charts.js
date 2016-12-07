@@ -211,8 +211,8 @@ function ChartsService ($http, $cookies) {
 				}],
 				yAxes: [{
 					ticks: {
-						min: 0,
-						max: 6600,
+						min: Math.floor(vm.min_elevation/1000)*1000,
+						max: Math.ceil(vm.max_elevation/1000)*1000,
 						beginAtZero: true
 					}
 				}],
