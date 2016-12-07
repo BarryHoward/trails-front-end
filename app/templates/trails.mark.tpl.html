@@ -1,9 +1,14 @@
-<h2>{{mark.status}}</h2>
-
-<h3>{{mark.trailTitle}}</h3>
-
-<input class="title-input" name="title" type="text" placeholder="Trail Name..."
-       ng-model="mark.trailTitle" /></input>
+<div class="trail-info-container">
+  <img src="{{mark.MapsService.trailInfo.img_url}}">
+  <div>Title: {{mark.MapsService.trailInfo.title}}</div>
+  <div> Descriptiion: {{mark.MapsService.trailInfo.description}}</div>
+  <div class="static-info-container">
+    <div>Distance: {{mark.MapsService.trailInfo.distance}}</div>
+    <div>Max Elevation: {{mark.MapsService.trailInfo.max_elevation}}</div>
+    <div>Min Elevation: {{mark.MapsService.trailInfo.min_elevation}}</div>
+    <div>Created by: {{mark.MapsService.trailInfo.username}}</div>
+  </div>
+</div>
 <div class="map-container">
   <input id="pac-input" class="controls" type="text" placeholder="Search...">
   <ng-map class="map" id="markMap" on-click="mark.placeMarker($event)">
