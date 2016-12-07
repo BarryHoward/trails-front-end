@@ -5,6 +5,7 @@ function TopTrailsController (MapsService) {
 	function init(){
 		MapsService.getTrailList().then((resp)=>{
 			vm.trailList = resp.data;
+			console.log(vm.trailList)
 		});
 	};
 
