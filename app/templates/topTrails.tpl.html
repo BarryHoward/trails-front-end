@@ -1,6 +1,14 @@
 <h1>Top Trails</h1>
 
 <div ng-repeat="trail in topTrails.trailList">
-  <span>{{trail.title}}   <a href="#/trails/blaze/{{trail.id}}">(Update)</a> <a href="#trails/mark/{{trail.id}}">(POI-marker)</a></span>
-
+  <div class="top-trail-container">
+    <img src="http://www.placecage.com/100/100" alt="">
+    <span class='top-trail-info'>
+      <span id="top-trail-title">{{trail.title}}</span>
+    </span>
+    <div class="top-trail-buttons">
+      <a id="update-link" href="#/trails/blaze/{{trail.id}}"><button class='add-trail-button' type="button" id='blaze-link' name="button">Blaze</button></a>
+      <a id="marker-link" href="#trails/mark/{{trail.id}}"><button class='add-trail-button' type="button" id='mark-link' name="button">Mark</button></a>
+    </div>
+  </div>
 </div>

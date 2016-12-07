@@ -5,9 +5,10 @@
 @import 'trailUpdate';
 @import 'register';
 @import 'login';
+@import 'topTrails';
 
 html {
-	background-color: #F3F8D7;
+	background-color: #748491;
 }
 * {
 	box-sizing: border-box;
@@ -15,6 +16,7 @@ html {
 
 h1 {
 	font-family: 'Nunito', sans-serif;
+	color: lightgrey;
 }
 
 h2 {
@@ -29,7 +31,7 @@ h3 {
 
 .container {
   padding: 20px;
-  width: 80%;
+  width: 1240px;
   height: 500px;
 }
 

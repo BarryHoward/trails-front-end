@@ -419,7 +419,7 @@ function closestPath(waypoint){
 
   function savePoint(waypoint){
     updateMarker();
-    chart(vm.trailPath, vm.markerArray, vm.regraphElevation)
+    ChartsService.chart(vm.trailPath, vm.markerArray, vm.regraphElevation)
     vm.currentMarker.setIcon(icons.pointSaved)
     let req = {
       url: `${SERVER}points`,
@@ -432,7 +432,7 @@ function closestPath(waypoint){
 
   function editPoint(waypoint){
     updateMarker();
-    chart(vm.trailPath, vm.markerArray, fm.regraphElevation)
+    ChartsService.chart(vm.trailPath, vm.markerArray, fm.regraphElevation)
     vm.currentMarker.setIcon(icons.pointSaved)
     let req = {
       url: `${SERVER}points/${vm.currentMarker.id}`,
