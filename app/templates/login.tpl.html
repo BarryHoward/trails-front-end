@@ -3,10 +3,10 @@
 
 <form class="login" ng-submit="login.login(user)" method="post">
   <span class="login-labels"><label>Username: </label></span>
-  <input type="text" name="username" value=""
+  <input class="register-login-input" type="text" name="username" value=""
     ng-model="user.username">
     <span class="login-labels"><label>Password: </label></span>
-  <input type="password" name="password" value=""
+  <input class="register-login-input" type="password" name="password" value=""
     ng-model="user.password">
   <button class="login-button" type="button" name="loginButton" ng-click="login.login(user)">Log in</button>
 </form>

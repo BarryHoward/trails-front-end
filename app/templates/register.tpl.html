@@ -3,15 +3,15 @@
 <div class="register-main">
   <form class="registration" ng-submit="register.create(user)" method="post">
     <span class="register-labels"><label>Username</label></span>
-    <input class="register-input" type="text" name="username"
+    <input class="register-login-input" type="text" name="username"
       required ng-model="user.username">
     <br>
     <span class="register-labels"><label>Password</label></span>
-    <input class="register-input" type="password" name="password"
+    <input class="register-login-input" type="password" name="password"
       required ng-model="user.password">
     <br>
     <span class="register-labels"><label>Email Address</label></span>
-    <input class="register-input" type="text" name="email"
+    <input class="register-login-input" type="text" name="email"
       required ng-model="user.email">
     <br>
     <button class="register-button" type="button" name="registerButton" ng-click="register.create(user)">Register</button>

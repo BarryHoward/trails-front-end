@@ -1,8 +1,7 @@
 
 .register-main {
-  .register-input {
-    margin: 5px 0px;
-  }
+
+
   .register-labels {
     display: block;
     width: 200px;
@@ -11,11 +10,20 @@
 }
 
 .register-button {
-    background-color: #88BE5B;
+    background-color: #EA643C;
     color: white;
     border-style: none;
     padding: 5px;
     font-family: 'Nunito', sans-serif;
     border-radius: 10px;
     margin: 10px 0px;
+}
+
+.register-login-input {
+border-style: none;
+border-radius: 5px;
+padding: 5px;
+height: 30px;
+width: 300px;
+margin: 5px 0px;
 }

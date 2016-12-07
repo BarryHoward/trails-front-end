@@ -3,14 +3,89 @@
 	display: flex;
 	align-items: center;
 	flex-direction: column;
-	width: 500px;
-	height: 300px;
+	width: 400px;
+	height: 600px;
 	background: #F4F2F2;
 	border: 2px solid black;
   margin: 10px;
   padding: 5px;
+	div {
+		margin: 10px auto;
+	}
 }
 
 .lat-lng {
   display: block;
+	margin: 5px auto;
+}
+
+.title-description {
+	padding: 5px;
+	div {
+		margin: 10px 0px;
+	}
+}
+
+.point-control-input {
+	height: 30px;
+	width: 50px;
+	border-radius: 10px;
+	border-style: none;
+}
+
+.type-container {
+	border: 2px solid grey;
+	background-color: #D7D5D5;
+	margin: 10px auto;
+	padding: 10px;
+	display: flex;
+	flex-direction: column;
+	.type-row {
+		display: flex;
+		margin: 5px auto;
+		input {
+			margin: 0px 5px;
+		}
+	}
+}
+
+.title-container {
+	text-align: center;
+	label {
+		display: block;
+	}
+	input {
+		border-radius: 5px;
+		border-style: none;
+
+	}
+}
+
+.description-container {
+	text-align: center;
+
+	label {
+		display: block;
+	}
+	textarea {
+		border-radius: 5px;
+		border-style: none;
+
+	}
+}
+
+.img-url-container {
+	text-align: center;
+
+	label {
+		display: block;
+	}
+	input {
+		border-radius: 5px;
+		border-style: none;
+	}
+}
+
+.distance-input-container {
+	width: 200px;
 }
