@@ -32,7 +32,7 @@ function ChartsService ($http, $cookies) {
 	  	if (path.length >1){
 		    vm.elevator.getElevationAlongPath({
 		      'path': path,
-		      'samples': 400
+		      'samples': 200
 		    }, function (elevations, status){
 		        var pathElevations = [];
 		        let minObject = elevations.reduce(function (min, newNum){

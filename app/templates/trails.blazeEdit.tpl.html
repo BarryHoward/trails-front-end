@@ -1,9 +1,12 @@
 <div class="trail-info-container">
-  <img src="{{blazeEdit.MapsService.trailInfo.saved_url}}">
+    <div class="trail-image-container">
+    <img src="{{blazeEdit.MapsService.trailInfo.saved_url}}">
+  </div>
   <label>Edit Trail Name:</label>
-  <input class='trail-info-input' type="text" placeholder="Image url" ng-model="blazeEdit.MapsService.trailInfo.img_url">
-  <label>Edit Trail Image:</label>
   <input class='trail-info-input' type="text" placeholder="Trail Name" ng-model="blazeEdit.MapsService.trailInfo.title">
+  <label>Edit Trail Image:</label>
+  <input class='trail-info-input' type="text" placeholder="Image url" ng-model="blazeEdit.MapsService.trailInfo.img_url">
+ 
   <textarea class="trail-description" placeholder="Trail description" ng-model="blazeEdit.MapsService.trailInfo.description"></textarea>
 
   <div class="static-info-container">
