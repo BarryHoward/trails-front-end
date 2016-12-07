@@ -6,6 +6,7 @@
 @import 'register';
 @import 'login';
 @import 'topTrails';
+@import 'mark';
 
 html {
 	background-color: #748491;
@@ -45,13 +46,3 @@ h3 {
 }
 
 // IGNORE ME!
-.point-control-container{
-	display: flex;
-	align-items: center;
-	flex-direction: column;
-	width: 500px;
-	height: 300px;
-	background: white;
-	border: 4px solid black;
-	margin-top: 20px;
-}
