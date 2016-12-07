@@ -35,15 +35,20 @@ function BlazeEditController (MapsService, UsersService, $stateParams, $scope) {
     MapsService.getMap(mapId).then(function (map){
       MapsService.map=map;
       MapsService.getTrail(map).then(function (resp){
+        console.log(resp)
         //set trail data
         MapsService.trailPath = encoding.decodePath(resp.data.path);
         MapsService.trailInfo = resp.data;
+        MapsService.trailInfo.distance = Number(resp.data.distance.toFixed(2));
+        MapsService.trailInfo.max_elevation = Number(resp.data.max_elevation.toFixed(2));
+        MapsService.trailInfo.min_elevation = Number(resp.data.min_elevation.toFixed(2));
         MapsService.trailInfo.saved_url = resp.data.img_url;
 
         //create line, center map, and initialize search bar
         MapsService.createTrailPoly();
         MapsService.centerMap();
         MapsService.initSearch();
+        MapsService.map.setMapTypeId('terrain');
 
         //add trail Markers and add listeners;
         MapsService.trailPath.forEach(function (waypoint) {
@@ -70,7 +75,7 @@ function BlazeEditController (MapsService, UsersService, $stateParams, $scope) {
     let encodeString = encoding.encodePath(MapsService.trailPath);
     let newTrail = MapsService.trailInfo;
     newTrail.path = encodeString;
-    newTrail.distance = spherical.computeLength(MapsService.trailPath)*metersMilesConversion;
+    newTrail.distance = Number((spherical.computeLength(MapsService.trailPath)*metersMilesConversion).toFixed(2));;
     MapsService.trailInfo.saved_url = MapsService.trailInfo.img_url;
     MapsService.editTrail($stateParams.id, newTrail).then(function (resp) {
         // $scope.$apply(function (){vm.status = "Update Completed";});

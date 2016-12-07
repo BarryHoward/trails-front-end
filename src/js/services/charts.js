@@ -32,7 +32,7 @@ function ChartsService ($http, $cookies) {
 	  	if (path.length >1){
 		    vm.elevator.getElevationAlongPath({
 		      'path': path,
-		      'samples': 200
+		      'samples': 400
 		    }, function (elevations, status){
 		        var pathElevations = [];
 		        let minObject = elevations.reduce(function (min, newNum){
@@ -50,8 +50,9 @@ function ChartsService ($http, $cookies) {
 		        	}
 		        });
 
-		        vm.max_elevation = maxObject.elevation*metersFeetConversion;
-		        vm.min_elevation = minObject.elevation*metersFeetConversion; 
+		        vm.max_elevation = Number((maxObject.elevation*metersFeetConversion).toFixed(2));
+		        vm.min_elevation = Number((minObject.elevation*metersFeetConversion).toFixed(2));
+		        console.log(vm.max_elevation)
 		        pathElevations[0]={x: 0, y: elevations[0].elevation*metersFeetConversion};
 		        var resolution = vm.pathLength/(elevations.length-1)* metersMilesConversion;
 		        for (var i=1; i<elevations.length; i++){
@@ -210,8 +211,8 @@ function ChartsService ($http, $cookies) {
 				}],
 				yAxes: [{
 					ticks: {
-						min: 0,
-						max: 6600,
+						min: Math.floor(vm.min_elevation/1000)*1000,
+						max: Math.ceil(vm.max_elevation/1000)*1000,
 						beginAtZero: true
 					}
 				}],

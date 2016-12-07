@@ -185,7 +185,7 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
           marker.setPosition(waypoint);
           marker.setIcon(icons.pointUnsaved);
           $scope.$apply(function (){
-            marker.distance = insert[2];
+            marker.distance = Number(insert[2].toFixed(2));
             vm.currentMarker = marker;
             updatePanel()
           });
@@ -317,7 +317,8 @@ function closestPath(waypoint){
       if(vm.trailPath.length > 1) {
         chartMark();
       }
-      marker.distance = markerDistance;
+      marker.distance = Number(markerDistance.toFixed(2));
+      console.log(marker.distance)
       vm.markerArray.push(marker)
       vm.currentMarker = marker;
       updatePanel();
@@ -474,7 +475,7 @@ function closestPath(waypoint){
     ChartsService.chart(vm.trailPath, vm.markerArray, vm.regraphElevation);
     vm.trailInfo.min_elevation = ChartsService.min_elevation;
     vm.trailInfo.max_elevation = ChartsService.max_elevation;
-    vm.trailInfo.distance = spherical.computeLength(vm.trailPath)*metersMilesConversion;
+    vm.trailInfo.distance = Number((spherical.computeLength(vm.trailPath)*metersMilesConversion).toFixed(2));
     updateMarker();
   }
 };
