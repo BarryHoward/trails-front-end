@@ -1,9 +1,58 @@
-<h2>{{mark.status}}</h2>
-
-<h3>{{mark.trailTitle}}</h3>
-
-<input class="title-input" name="title" type="text" placeholder="Trail Name..."
-       ng-model="mark.trailTitle" /></input>
+<div class="trail-info-container">
+  <img src="{{mark.MapsService.trailInfo.img_url}}">
+  <div>Title: {{mark.MapsService.trailInfo.title}}</div>
+  <div> Descriptiion: {{mark.MapsService.trailInfo.description}}</div>
+  <div class="static-info-container">
+    <div>Distance: {{mark.MapsService.trailInfo.distance}}</div>
+    <div>Max Elevation: {{mark.MapsService.trailInfo.max_elevation}}</div>
+    <div>Min Elevation: {{mark.MapsService.trailInfo.min_elevation}}</div>
+    <div>Created by: {{mark.MapsService.trailInfo.username}}</div>
+  </div>
+</div>
+<div class="map-container">
+  <input id="pac-input" class="controls" type="text" placeholder="Search...">
+  <ng-map class="map" id="markMap" on-click="mark.placeMarker($event)">
+  </ng-map>
+</div>
+<div class="point-control-container">
+	<div class="distance-input-container">
+		<span>
+			<label>Distance: </label>
+			<input type="text" ng-model="mark.MapsService.panel.distance"></input>
+						mi. out of {{mark.MapsService.trailLength}}
+		</span>
+	</div>
+	<div class="lat-lng-input-container">
+		<span>
+			<label>Lat: </label>
+			<input type="text" ng-model="mark.MapsService.panel.lat"></input>
+			<label>Lng: </label>
+			<input type="text" ng-model="mark.MapsService.panel.lng"></input>
+		</span>
+	</div>
+	<div class="type-container">
+		<label>shelter: </label><input type="checkbox" ng-change="mark.MapsService.chartMark()" ng-model="mark.MapsService.panel.shelter">
+		<label>campsite: </label><input type="checkbox" ng-change="mark.MapsService.chartMark()" ng-model="mark.MapsService.panel.campsite">
+		<br>
+		<label>water: </label><input type="checkbox" ng-change="mark.MapsService.chartMark()" ng-model="mark.MapsService.panel.water">
+		<label>view: </label><input type="checkbox" ng-change="mark.MapsService.chartMark()" ng-model="mark.MapsService.panel.view">
+		<br>
+		<label>road: </label><input type="checkbox" ng-change="mark.MapsService.chartMark()" ng-model="mark.MapsService.panel.road">
+		<label>parking: </label><input type="checkbox" ng-change="mark.MapsService.chartMark()" ng-model="mark.MapsService.panel.parking">
+		<br>
+		<label>resupply: </label><input type="checkbox" ng-change="mark.MapsService.chartMark()" ng-model="mark.MapsService.panel.resupply">
+	</div>
+	<div class="title-container">
+		<label>Title: </label><input type="text" ng-keyup="mark.MapsService.updateMarker()" ng-model="mark.MapsService.panel.title"></input>
+	</div>
+	<div class="description-container">
+		<label>Description: </label>
+		<textarea ng-keyup="mark.MapsService.updateMarker()" ng-model="mark.MapsService.panel.description"></textarea>
+	</div>
+	<div class="img-url-container">
+		<label>Image Url: </label>
+		<input type="text" ng-keyup="mark.MapsService.updateMarker()" ng-model="mark.MapsService.panel.img_url"></input>
+	</div>
 
 <div class="map-controls-container">
   <div class="map-container">

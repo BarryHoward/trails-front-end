@@ -175,20 +175,26 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
           waypoint = marker.getPosition();
           vm.trailPath[index] = waypoint;
           vm.trailPoly.setPath(vm.trailPath);
+          $scope.$apply(function (){
+            updatePanel()
+          });
         } else {
           waypoint = marker.getPosition();
-          let insert = closestPath(waypoint)
+          let insert = closestPath(waypoint);
           waypoint = spherical.interpolate(vm.trailPath[insert[0]-1], vm.trailPath[insert[0]], insert[1])
           marker.setPosition(waypoint);
-          marker.setIcon(icons.pointUnsaved)
-          marker.distance = insert[2];
-          vm.currentMarker = marker;
+          marker.setIcon(icons.pointUnsaved);
+          $scope.$apply(function (){
+            marker.distance = insert[2];
+            vm.currentMarker = marker;
+            updatePanel()
+          });
         }
         if(vm.trailPath.length > 1) {
           chartMark();
         }
 
-        $scope.$apply(updatePanel());
+
     })
   }
 
@@ -207,12 +213,21 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
           if(vm.trailPath.length > 1) {
             chartMark();
           }
-          vm.currentMarker = null;
-          vm.newMarkerAllow = true;
+          $scope.$apply(function(){
+            vm.currentMarker = null;
+            vm.newMarkerAllow = true;
+            updatePanel()
+          });
         } else {
-          vm.currentMarker = marker;
+          $scope.$apply(function(){
+            vm.currentMarker = marker;
+            updatePanel()
+        });
+
         }
-        $scope.$apply(updatePanel());
+        $scope.$apply(function(){
+          updatePanel()
+        });
     })
   }
 
@@ -331,8 +346,8 @@ function closestPath(waypoint){
       vm.panel.road = vm.currentMarker.road;
       vm.panel.parking = vm.currentMarker.parking;
       vm.panel.resupply = vm.currentMarker.resupply;
-
     } else {
+      vm.panel.distance = "";
       vm.panel.lat = "";
       vm.panel.lng = "";
       vm.panel.title = "";
@@ -406,6 +421,7 @@ function closestPath(waypoint){
   }
 
   function deletePoint(){
+    MapsService.currentMarker = null; 
     let req = {
       url: `${SERVER}points/${vm.currentMarker.id}`,
       method: 'DELETE',
@@ -454,6 +470,7 @@ function closestPath(waypoint){
   }
 
   function chartMark(){
+    console.log("hi")
     ChartsService.chart(vm.trailPath, vm.markerArray, vm.regraphElevation);
     vm.trailInfo.min_elevation = ChartsService.min_elevation;
     vm.trailInfo.max_elevation = ChartsService.max_elevation;

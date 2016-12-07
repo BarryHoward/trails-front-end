@@ -38,30 +38,24 @@ function MarkController (MapsService, UsersService, $stateParams, $scope) {
       MapsService.getTrail(map).then(function (resp){
 
         //add trail Markers and add listeners;
-        MapsService.getPoints().then(function(resp){
-          let points = resp.data;
+        MapsService.getPoints().then(function(pointsResp){
+          let points = pointsResp.data;
           points.forEach(function (waypoint) {
             let marker = MapsService.loadPointMarker(waypoint)
             MapsService.dragListener(marker, waypoint, $scope)
             MapsService.clickListener(marker, waypoint, $scope)
           });
-          console.log(MapsService.markerArray)
           MapsService.initChart(MapsService.trailPath, MapsService.markerArray, true)
         })
 
 
         //set trail data
         MapsService.trailPath = encoding.decodePath(resp.data.path);
-        MapsService.trailInfo.title = resp.data.title;
-        MapsService.trailInfo.distance = spherical.computeLength(MapsService.trailPath);
-        MapsService.trailInfo.img_url = resp.data.img_url;
-        MapsService.trailInfo.description = resp.data.description;
-        MapsService.trailInfo.maxElevation = resp.data.max_elevation;
-        MapsService.trailInfo.minElevation = resp.data.min_elevation;
-        MapsService.trailInfo.owner = resp.data.username;
+        MapsService.trailInfo = resp.data;
 
         //create line, center map, and initialize search bar
         MapsService.createTrailPoly();
+        MapsService.map.setMapTypeId('terrain');
         MapsService.centerMap();
         MapsService.initSearch();
         console.log(MapsService)
@@ -99,10 +93,12 @@ function MarkController (MapsService, UsersService, $stateParams, $scope) {
 
   function deletePoint(){
     MapsService.deletePoint().then((resp) => {
-      vm.MapsService.newMarker = true;
-      vm.MapsService.currentMarker.setMap(null);
-      vm.MapsService.currentMarker = null;
-      vm.MapsService.updatePanel();
+      MapsService.newMarker = true;
+      let markIndex = MapsService.markerArray.indexOf(MapsService.markerArray);
+      MapsService.markerArray.splice(markIndex, 1);
+      MapsService.currentMarker.setMap(null); 
+      MapsService.chartMark();
+      MapsService.updatePanel();
     })
   }
 

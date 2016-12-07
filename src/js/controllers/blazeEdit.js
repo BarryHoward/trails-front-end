@@ -38,6 +38,7 @@ function BlazeEditController (MapsService, UsersService, $stateParams, $scope) {
         //set trail data
         MapsService.trailPath = encoding.decodePath(resp.data.path);
         MapsService.trailInfo = resp.data;
+        MapsService.trailInfo.saved_url = resp.data.img_url;
 
         //create line, center map, and initialize search bar
         MapsService.createTrailPoly();
@@ -66,17 +67,18 @@ function BlazeEditController (MapsService, UsersService, $stateParams, $scope) {
 
   function editTrail(){
     vm.status = "Trail Updating...";
-    let newTrail = {};
     let encodeString = encoding.encodePath(MapsService.trailPath);
+    let newTrail = MapsService.trailInfo;
     newTrail.path = encodeString;
-    newTrail.title = MapsService.trailTitle;
     newTrail.distance = spherical.computeLength(MapsService.trailPath)*metersMilesConversion;
-    newTrail.description = vm.trailDescription;
-    newTrail.image_url = vm.trailImage_url;
+    MapsService.trailInfo.saved_url = MapsService.trailInfo.img_url;
     MapsService.editTrail($stateParams.id, newTrail).then(function (resp) {
         // $scope.$apply(function (){vm.status = "Update Completed";});
+        console.log(resp)
         vm.status = "Update Completed";
-      })
+      }, (reject) => {
+        console.log(reject)
+      });
   }
 
   function deleteTrail(){
