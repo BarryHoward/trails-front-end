@@ -17,7 +17,6 @@ function ChartsService ($http, $cookies) {
 	   	vm.pathLength = google.maps.geometry.spherical.computeLength(path)
 	   	getWaypointElevations(waypoints, markers).then(function (waypointElevations) {
 	    	if (regraph){
-	    		console.log("hi")
 	    		getPathElevations(path).then(function (pathElevations) {
 		    		vm.pathElevations = pathElevations;
 		    		drawChart(vm.pathElevations, waypointElevations, markers);
@@ -82,9 +81,7 @@ function ChartsService ($http, $cookies) {
 
 
 	function drawChart(pathElevations, waypointElevations, markers){
-		console.log(waypointElevations)
 		var marksSorted = sortMarks(waypointElevations, markers);
-		console.log(marksSorted)
 		var ctx = document.getElementById('myChart');
 		ctx.width = 800;
 		ctx.height = 125;
