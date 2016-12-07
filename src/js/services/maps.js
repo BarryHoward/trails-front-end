@@ -31,6 +31,7 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
 
 
   vm.waypoint = {};
+  vm.trailInfo = {};
 
   const metersFeetConversion = 3.28084;
   const metersMilesConversion = 0.000621371;
@@ -48,7 +49,7 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
     vm.markerArray.forEach(function (marker){
       marker.setMap(null);
     })
-    vm.trailTitle = "";
+    vm.trailInfo = {};
     return NgMap.getMap(id)
   }
 
@@ -159,6 +160,7 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
     marker.distance = insert[2]
     marker.id = waypoint.id;
     vm.markerArray.push(marker)
+    console.log(vm.markerArray)
     return marker;
   }
 
@@ -183,7 +185,7 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
           vm.currentMarker = marker;
         }
         if(vm.trailPath.length > 1) {
-          ChartsService.chart(vm.trailPath, vm.markerArray, vm.regraphElevation);
+          chartMark();
         }
 
         $scope.$apply(updatePanel());
@@ -203,7 +205,7 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
           vm.markerArray.splice(markIndex, 1);
           marker.setMap(null);
           if(vm.trailPath.length > 1) {
-            ChartsService.chart(vm.trailPath, vm.markerArray, vm.regraphElevation);
+            chartMark();
           }
           vm.currentMarker = null;
           vm.newMarkerAllow = true;
@@ -292,14 +294,13 @@ function closestPath(waypoint){
       }
       //set to unsaved icon if snap
       if (vm.snap){
+        console.log(marker)
         marker.setIcon(icons.pointUnsaved);
         vm.newMarkerAllow = false;
       }
       //re-chart
       if(vm.trailPath.length > 1) {
-        console.log('hi')
-        console.log(vm)
-        ChartsService.chart(vm.trailPath, vm.markerArray, vm.regraphElevation);
+        chartMark();
       }
       marker.distance = markerDistance;
       vm.markerArray.push(marker)
@@ -348,14 +349,10 @@ function closestPath(waypoint){
       vm.trailLength = spherical.computeLength(vm.trailPath)*metersMilesConversion;
   }
 
-  function chartMark(){
-    ChartsService.chart(vm.trailPath, vm.markerArray, vm.regraphElevation);
-    updateMarker();
-  }
+
 
   function updateMarker(){
       if (vm.currentMarker){
-        vm.currentMarker.setIcon(icons.pointUnsaved)
         vm.currentMarker.lat = vm.panel.lat;
         vm.currentMarker.lng = vm.panel.lng;
         vm.currentMarker.title = vm.panel.title;
@@ -419,7 +416,7 @@ function closestPath(waypoint){
 
   function savePoint(waypoint){
     updateMarker();
-    ChartsService.chart(vm.trailPath, vm.markerArray, vm.regraphElevation)
+    chartMark();
     vm.currentMarker.setIcon(icons.pointSaved)
     let req = {
       url: `${SERVER}points`,
@@ -432,7 +429,7 @@ function closestPath(waypoint){
 
   function editPoint(waypoint){
     updateMarker();
-    ChartsService.chart(vm.trailPath, vm.markerArray, fm.regraphElevation)
+    chartMark();
     vm.currentMarker.setIcon(icons.pointSaved)
     let req = {
       url: `${SERVER}points/${vm.currentMarker.id}`,
@@ -452,7 +449,16 @@ function closestPath(waypoint){
   }
 
   function initChart(){
+    console.log(vm.markerArray)
     ChartsService.chart(vm.trailPath, vm.markerArray, true);
+  }
+
+  function chartMark(){
+    ChartsService.chart(vm.trailPath, vm.markerArray, vm.regraphElevation);
+    vm.trailInfo.min_elevation = ChartsService.min_elevation;
+    vm.trailInfo.max_elevation = ChartsService.max_elevation;
+    vm.trailInfo.distance = spherical.computeLength(vm.trailPath)*metersMilesConversion;
+    updateMarker();
   }
 };
 

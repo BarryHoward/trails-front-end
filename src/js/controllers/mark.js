@@ -45,14 +45,20 @@ function MarkController (MapsService, UsersService, $stateParams, $scope) {
             MapsService.dragListener(marker, waypoint, $scope)
             MapsService.clickListener(marker, waypoint, $scope)
           });
+          console.log(MapsService.markerArray)
           MapsService.initChart(MapsService.trailPath, MapsService.markerArray, true)
         })
 
 
         //set trail data
         MapsService.trailPath = encoding.decodePath(resp.data.path);
-        MapsService.trailTitle = resp.data.title;
-        MapsService.trailDistance = spherical.computeLength(MapsService.trailPath);
+        MapsService.trailInfo.title = resp.data.title;
+        MapsService.trailInfo.distance = spherical.computeLength(MapsService.trailPath);
+        MapsService.trailInfo.img_url = resp.data.img_url;
+        MapsService.trailInfo.description = resp.data.description;
+        MapsService.trailInfo.maxElevation = resp.data.max_elevation;
+        MapsService.trailInfo.minElevation = resp.data.min_elevation;
+        MapsService.trailInfo.owner = resp.data.username;
 
         //create line, center map, and initialize search bar
         MapsService.createTrailPoly();

@@ -1,10 +1,15 @@
-<h2>{{blazeEdit.status}}</h2>
-
-<h3>{{blazeEdit.MapsService.trailTitle}}</h3>
-
-<input class="title-input" name="title" type="text" placeholder="Trail Name..."
-       ng-model="blazeEdit.MapsService.trailTitle" /></input>
-<div class="marker-buttons">
+<div class="trail-info-container">
+  <img src="{{blazeEdit.MapsService.trailInfo.saved_url}}">
+  <input type="text" placeholder="Image url" ng-model="blazeEdit.MapsService.trailInfo.img_url">
+  <input type="text" placeholder="Trail Name" ng-model="blazeEdit.MapsService.trailInfo.title">
+  <textarea placeholder="Trail description" ng-model="blazeEdit.MapsService.trailInfo.description"></textarea>
+  <div class="static-info-container">
+    <div>Distance: {{blazeEdit.MapsService.trailInfo.distance}}</div>
+    <div>Max Elevation: {{blazeEdit.MapsService.trailInfo.max_elevation}}</div>
+    <div>Min Elevation: {{blazeEdit.MapsService.trailInfo.min_elevation}}</div>
+    <div>Created by: {{blazeEdit.MapsService.trailInfo.username}}</div>
+  </div>
+</div>
 
 	<div class="add-delete">
 		<input type="radio" ng-model="blazeEdit.MapsService.delete" name="delete" ng-value="false"></input>

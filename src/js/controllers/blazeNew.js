@@ -12,6 +12,7 @@ function BlazeNewController (MapsService, UsersService, $scope) {
   MapsService.panel={};
   MapsService.trailPath = [];
   MapsService.regraphElevation = true;
+  MapsService.trailInfo ={};
 
   vm.MapsService = MapsService;
   vm.placeMarker = placeMarker;
@@ -33,7 +34,7 @@ function BlazeNewController (MapsService, UsersService, $scope) {
   function init(){
     //initial variables
     vm.loggedIn = UsersService.isLoggedIn();
-    vm.status = "";
+    vm.status = "Make a trail!";
 
     MapsService.getMap(mapId).then(function (map){
       MapsService.map=map;
@@ -47,13 +48,11 @@ function BlazeNewController (MapsService, UsersService, $scope) {
 
   function newTrail(){
     vm.status = "Trail Saving...";
-    let newTrail = {};
+    MapsService.trailInfo.saved_url = MapsService.trailInfo.img_url;
+    let newTrail = MapsService.trailInfo;
     let encodeString = encoding.encodePath(MapsService.trailPath);
     newTrail.path = encodeString;
-    newTrail.title = MapsService.trailTitle;
-    newTrail.length = spherical.computeLength(MapsService.trailPath)*metersMilesConversion;
-    newTrail.description = vm.trailDescription;
-    newTrail.image_url = vm.trailImage_url;
+    newTrail.distance = spherical.computeLength(MapsService.trailPath)*metersMilesConversion;
     MapsService.newTrail(newTrail).then(function (resp) {
         // $scope.$apply(function(){vm.status = "Trail Saved"});
         vm.status = "Trail Saved";

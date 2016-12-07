@@ -37,8 +37,7 @@ function BlazeEditController (MapsService, UsersService, $stateParams, $scope) {
       MapsService.getTrail(map).then(function (resp){
         //set trail data
         MapsService.trailPath = encoding.decodePath(resp.data.path);
-        MapsService.trailTitle = resp.data.title;
-        MapsService.trailDistance = spherical.computeLength(MapsService.trailPath);
+        MapsService.trailInfo = resp.data;
 
         //create line, center map, and initialize search bar
         MapsService.createTrailPoly();
@@ -71,7 +70,7 @@ function BlazeEditController (MapsService, UsersService, $stateParams, $scope) {
     let encodeString = encoding.encodePath(MapsService.trailPath);
     newTrail.path = encodeString;
     newTrail.title = MapsService.trailTitle;
-    newTrail.length = spherical.computeLength(MapsService.trailPath)*metersMilesConversion;
+    newTrail.distance = spherical.computeLength(MapsService.trailPath)*metersMilesConversion;
     newTrail.description = vm.trailDescription;
     newTrail.image_url = vm.trailImage_url;
     MapsService.editTrail($stateParams.id, newTrail).then(function (resp) {

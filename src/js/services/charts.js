@@ -10,12 +10,14 @@ function ChartsService ($http, $cookies) {
 
 	function chart(path, markers, regraph){
 		var waypoints = []
+		markers.forEach(function(marker){
+			waypoints.push(marker.position)
+		})
 	    vm.elevator = new google.maps.ElevationService;
-	    var pathElevations = [];
-	    var waypointElevations = [];
 	   	vm.pathLength = google.maps.geometry.spherical.computeLength(path)
 	   	getWaypointElevations(waypoints, markers).then(function (waypointElevations) {
 	    	if (regraph){
+	    		console.log("hi")
 	    		getPathElevations(path).then(function (pathElevations) {
 		    		vm.pathElevations = pathElevations;
 		    		drawChart(vm.pathElevations, waypointElevations, markers);
@@ -33,8 +35,24 @@ function ChartsService ($http, $cookies) {
 		      'path': path,
 		      'samples': 200
 		    }, function (elevations, status){
-		    	console.log(status)
 		        var pathElevations = [];
+		        let minObject = elevations.reduce(function (min, newNum){
+		        	if (newNum.elevation<min.elevation){
+		        		return newNum;
+		        	} else {
+		        		return min;
+		        	}
+		        });
+		        let maxObject = elevations.reduce(function (max, newNum){
+		        	if (newNum.elevation>max.elevation){
+		        		return newNum;
+		        	} else {
+		        		return max;
+		        	}
+		        });
+
+		        vm.max_elevation = maxObject.elevation*metersFeetConversion;
+		        vm.min_elevation = minObject.elevation*metersFeetConversion; 
 		        pathElevations[0]={x: 0, y: elevations[0].elevation*metersFeetConversion};
 		        var resolution = vm.pathLength/(elevations.length-1)* metersMilesConversion;
 		        for (var i=1; i<elevations.length; i++){
@@ -48,7 +66,6 @@ function ChartsService ($http, $cookies) {
 	}
 
 	function getWaypointElevations(waypoints, markers){
-
 	  return new Promise(function (resolve, reject) {
 	    vm.elevator.getElevationForLocations({
 	    'locations': waypoints, //change this to the set when we have it
@@ -65,6 +82,7 @@ function ChartsService ($http, $cookies) {
 
 
 	function drawChart(pathElevations, waypointElevations, markers){
+		console.log(waypointElevations)
 		var marksSorted = sortMarks(waypointElevations, markers);
 		console.log(marksSorted)
 		var ctx = document.getElementById('myChart');
@@ -230,25 +248,25 @@ function ChartsService ($http, $cookies) {
 		sortedMarks.water = waypoints.filter(isWater);
 
 		function isCampsite(mark, index) {
-			return markers[index].campsite === true;
+			return markers[index].campsite;
 		}
 		function isParking(mark, index) {
-			return markers[index].parking === true;
+			return markers[index].parking;
 		}
 		function isResupply(mark, index) {
-			return markers[index].resupply === true;
+			return markers[index].resupply;
 		}
 		function isRoad (mark, index) {
-			return markers[index].road === true;
+			return markers[index].road;
 		}
 		function isShelter(mark, index) {
-			return markers[index].shelter === true;
+			return markers[index].shelter;
 		}
 		function isView(mark, index) {
-			return markers[index].view === true;
+			return markers[index].view;
 		}
 		function isWater(mark, index) {
-			return markers[index].water === true;
+			return markers[index].water;
 		}
 
 		return sortedMarks;
