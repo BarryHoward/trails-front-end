@@ -30,7 +30,7 @@ function BlazeEditController (MapsService, UsersService, $stateParams, $scope, $
 
     vm.loggedIn = UsersService.isLoggedIn();
     //initial variables
-    vm.status = "Edit a Trail!";
+    vm.status = "Save Changes";
 
     MapsService.getMap(mapId).then(function (map){
       MapsService.map=map;
@@ -54,7 +54,7 @@ function BlazeEditController (MapsService, UsersService, $stateParams, $scope, $
         MapsService.trailPath.forEach(function (waypoint) {
           let marker = MapsService.loadTrailMarker(waypoint)
           MapsService.dragListener(marker, waypoint, $scope)
-          MapsService.clickListener(marker, waypoint, $scope)      
+          MapsService.clickListener(marker, waypoint, $scope)
         });
         MapsService.initChart(MapsService.trailPath, MapsService.markerArray)
 
