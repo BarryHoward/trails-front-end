@@ -52,6 +52,9 @@ function MarkController (MapsService, UsersService, $stateParams, $scope) {
         //set trail data
         MapsService.trailPath = encoding.decodePath(resp.data.path);
         MapsService.trailInfo = resp.data;
+        MapsService.trailInfo.distance = Number(resp.data.distance.toFixed(2));
+        MapsService.trailInfo.max_elevation = Number(resp.data.max_elevation.toFixed(2));
+        MapsService.trailInfo.min_elevation = Number(resp.data.min_elevation.toFixed(2));
 
         //create line, center map, and initialize search bar
         MapsService.createTrailPoly();

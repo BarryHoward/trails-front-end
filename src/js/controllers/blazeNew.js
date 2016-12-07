@@ -52,7 +52,7 @@ function BlazeNewController (MapsService, UsersService, $scope) {
     let newTrail = MapsService.trailInfo;
     let encodeString = encoding.encodePath(MapsService.trailPath);
     newTrail.path = encodeString;
-    newTrail.distance = spherical.computeLength(MapsService.trailPath)*metersMilesConversion;
+    newTrail.distance = Number((spherical.computeLength(MapsService.trailPath)*metersMilesConversion).toFixed(2));;
     MapsService.newTrail(newTrail).then(function (resp) {
       console.log(resp)
         // $scope.$apply(function(){vm.status = "Trail Saved"});
