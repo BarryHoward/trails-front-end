@@ -35,6 +35,7 @@ function BlazeEditController (MapsService, UsersService, $stateParams, $scope) {
     MapsService.getMap(mapId).then(function (map){
       MapsService.map=map;
       MapsService.getTrail(map).then(function (resp){
+        console.log(resp)
         //set trail data
         MapsService.trailPath = encoding.decodePath(resp.data.path);
         MapsService.trailInfo = resp.data;
@@ -47,6 +48,7 @@ function BlazeEditController (MapsService, UsersService, $stateParams, $scope) {
         MapsService.createTrailPoly();
         MapsService.centerMap();
         MapsService.initSearch();
+        MapsService.map.setMapTypeId('terrain');
 
         //add trail Markers and add listeners;
         MapsService.trailPath.forEach(function (waypoint) {
