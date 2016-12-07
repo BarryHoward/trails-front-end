@@ -1,6 +1,15 @@
-
-<h1 class="title">Add a New Trail</h1>
-<h2>{{blazeNew.status}}</h2>
+<div class="trail-info-container">
+  <img src="{{blazeNew.MapsService.trailInfo.saved_url}}">
+  <input type="text" placeholder="Image url" ng-model="blazeNew.MapsService.trailInfo.img_url">
+  <input type="text" placeholder="Trail Name" ng-model="blazeNew.MapsService.trailInfo.title">
+  <textarea placeholder="Trail description" ng-model="blazeNew.MapsService.trailInfo.description"></textarea>
+  <div class="static-info-container">
+    <div>Distance: {{blazeNew.MapsService.trailInfo.distance}}</div>
+    <div>Max Elevation: {{blazeNew.MapsService.trailInfo.max_elevation}}</div>
+    <div>Min Elevation: {{blazeNew.MapsService.trailInfo.min_elevation}}</div>
+    <div>Created by: {{blazeNew.MapsService.trailInfo.username}}</div>
+  </div>
+</div>
 
   <form name="new-trail" ng-submit="blazeNew.newTrail()">
       <input class="title-input" name="title" type="text" placeholder="Trail Name..."
@@ -8,11 +17,6 @@
 			<button class="add-trail-button">Create Trail</button>
 	</form>
 
-
-  <!-- <form name="map-center" ng-submit="blazeNew.geocodeAddress()">
-    <input type="text" name="address" ng-model="blazeNew.address"></input>
-    <button class="geocode" ng-click="blazeNew.geocodeAddress()" type="button">Geocode</button>
-  </form> -->
 <div class="map-controls-container">
 
 <div class="map-container">
@@ -48,6 +52,8 @@
         Add to End
       </span>
   </div>
+
+  {{blazeNew.status}}
 </div>
 </div>
 
