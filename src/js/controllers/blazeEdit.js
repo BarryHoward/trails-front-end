@@ -1,7 +1,7 @@
 
 const mapId = "blazeEditMap"
 
-function BlazeEditController (MapsService, UsersService, $stateParams, $scope) {
+function BlazeEditController (MapsService, UsersService, $stateParams, $scope, $state) {
   let vm = this;
 
   //params specific to page
@@ -76,8 +76,9 @@ function BlazeEditController (MapsService, UsersService, $stateParams, $scope) {
     let newTrail = MapsService.trailInfo;
     newTrail.path = encodeString;
     newTrail.distance = Number((spherical.computeLength(MapsService.trailPath)*metersMilesConversion).toFixed(2));;
-    MapsService.trailInfo.saved_url = MapsService.trailInfo.img_url;
+
     MapsService.editTrail($stateParams.id, newTrail).then(function (resp) {
+          MapsService.trailInfo.saved_url = MapsService.trailInfo.img_url;
         // $scope.$apply(function (){vm.status = "Update Completed";});
         console.log(resp)
         vm.status = "Update Completed";
@@ -90,11 +91,12 @@ function BlazeEditController (MapsService, UsersService, $stateParams, $scope) {
     MapsService.deleteTrail($stateParams.id).then((resp) => {
       // $scope.$apply(function(){vm.status = "Trail Deleted!"});
       vm.status = "Trail Deleted!"
+      $state.go("root.topTrails")
     }, (reject) => {
         console.log(reject)
       });
   }
 }
 
-BlazeEditController.$inject = ['MapsService', 'UsersService', '$stateParams', '$scope'];
+BlazeEditController.$inject = ['MapsService', 'UsersService', '$stateParams', '$scope', '$state'];
 export {BlazeEditController}
