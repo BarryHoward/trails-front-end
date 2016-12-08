@@ -17,6 +17,7 @@ function MarkController (MapsService, UsersService, $stateParams) {
   vm.MapsService = MapsService;
   vm.placeMarker = placeMarker;
   vm.placeLatLngMarker = placeLatLngMarker;
+  vm.placeDistanceMarker = placeDistanceMarker;
   vm.savePoint = savePoint;
   vm.editPoint = editPoint;
   vm.deletePoint = deletePoint;
@@ -69,7 +70,6 @@ function MarkController (MapsService, UsersService, $stateParams) {
 
   function placeMarker(event){
     let waypoint = event.latLng;
-    console
     let marker = MapsService.placeMarker(waypoint);
     MapsService.dragListener(marker, waypoint)
     MapsService.clickListener(marker, waypoint)
@@ -82,7 +82,27 @@ function MarkController (MapsService, UsersService, $stateParams) {
     MapsService.clickListener(marker, waypoint)
   }
 
-  // function place
+  function placeDistanceMarker(){
+    let inputDist = Number(MapsService.panel.distance);
+    let path = MapsService.trailPath;
+    var found = false;
+    for (var i=0; i<path.length; i++){
+      if (!found){
+        let pathDist = spherical.computeLength(path.slice(0, i+1))*metersMilesConversion;
+        if (pathDist>inputDist){
+          let dist1 = spherical.computeLength(path.slice(0, i))*metersMilesConversion;
+          let dist2 = inputDist;
+          let dist3 = pathDist;
+          let percentage = (dist2 - dist1)/(dist3-dist1);
+          var waypoint = spherical.interpolate(path[i-1], path[i], percentage);
+          found = true;
+        }
+      }     
+    }
+    let marker = MapsService.placeMarker(waypoint);
+    MapsService.dragListener(marker, waypoint)
+    MapsService.clickListener(marker, waypoint)
+  }
 
   function savePoint(){
     MapsService.newMarkerAllow = true;

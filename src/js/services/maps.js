@@ -217,6 +217,7 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
 function closestPath(waypoint){
   var pathDistances = [];
   var percentage = [];
+  console.log(waypoint)
   for (var i=0; i<vm.trailPath.length-1; i++){
     let a = spherical.computeDistanceBetween(waypoint, vm.trailPath[i+1]);
     let b = spherical.computeDistanceBetween(waypoint, vm.trailPath[i]);
@@ -225,6 +226,8 @@ function closestPath(waypoint){
     let B = Math.acos((Math.pow(c,2)+Math.pow(a,2)-Math.pow(b,2))/(2*a*c))
     let C = Math.PI-B-A;
 
+    console.log(a, b, c, A, B, C)
+
     if (A > (Math.PI/2)){
       pathDistances[i] = b;
       percentage[i]=0;
@@ -232,10 +235,12 @@ function closestPath(waypoint){
       pathDistances[i] = a;
       percentage[i]=1;
     } else {
+      console.log("between")
       pathDistances[i] = a*Math.sin(B);
       percentage[i]=Math.sqrt(Math.pow(b,2) - Math.pow(pathDistances[i],2))/c;
     }
   }
+  console.log(pathDistances)
   let minIndex = pathDistances.reduce((iMin, x, i, arr) => x < arr[iMin] ? i : iMin, 0) + 1;
   let finalPercentage = percentage[minIndex-1];
   let path1 = vm.trailPath.slice(0, [minIndex]);
@@ -251,6 +256,7 @@ function closestPath(waypoint){
     //Place marker
 
   function placeMarker(waypoint) {
+    console.log(waypoint.lat(), waypoint.lng(), vm.delete)
     if (!vm.delete){
       var markerDistance;
       //change path and change waypoint if snap
@@ -260,6 +266,7 @@ function closestPath(waypoint){
         if (vm.snap){
           var snapWaypoint = spherical.interpolate(vm.trailPath[insert[0]-1], vm.trailPath[insert[0]], insert[1])
           waypoint = snapWaypoint;
+          console.log(insert)
         } else {
           vm.trailPath.splice(insert[0], 0, waypoint);
           vm.trailPoly.setPath(vm.trailPath);
