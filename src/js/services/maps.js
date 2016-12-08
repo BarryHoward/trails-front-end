@@ -29,10 +29,6 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
   vm.updateMarker = updateMarker;
   vm.updatePanel = updatePanel;
 
-
-  vm.waypoint = {};
-  vm.trailInfo = {};
-
   const metersFeetConversion = 3.28084;
   const metersMilesConversion = 0.000621371;
   const encoding = google.maps.geometry.encoding;
@@ -46,10 +42,7 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
   // Get map
 
   function getMap(id){
-    vm.markerArray.forEach(function (marker){
-      marker.setMap(null);
-    })
-    vm.trailInfo = {};
+    
     return NgMap.getMap(id)
   }
 
@@ -96,6 +89,7 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
     var input = document.getElementById('pac-input')
     var searchBox = new google.maps.places.SearchBox(input);
     vm.map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+    google.maps.event.trigger(vm.map, "resize");
     //Listener for selecting an autocomplete option from the dropdown
     vm.map.addListener('bounds_changed', function() {
       searchBox.setBounds(vm.map.getBounds());
@@ -160,7 +154,6 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
     marker.distance = insert[2]
     marker.id = waypoint.id;
     vm.markerArray.push(marker)
-    console.log(vm.markerArray)
     return marker;
   }
 
@@ -168,37 +161,31 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
 
   // Listeners
 
-  function dragListener (marker, waypoint, $scope){
+  function dragListener (marker, waypoint){
       google.maps.event.addListener(marker, 'dragend', function (event){
         if (!vm.snap){
           var index = vm.trailPath.indexOf(waypoint);
           waypoint = marker.getPosition();
           vm.trailPath[index] = waypoint;
           vm.trailPoly.setPath(vm.trailPath);
-          $scope.$apply(function (){
-            updatePanel()
-          });
+          updatePanel();
         } else {
           waypoint = marker.getPosition();
           let insert = closestPath(waypoint);
           waypoint = spherical.interpolate(vm.trailPath[insert[0]-1], vm.trailPath[insert[0]], insert[1])
           marker.setPosition(waypoint);
           marker.setIcon(icons.pointUnsaved);
-          $scope.$apply(function (){
-            marker.distance = Number(insert[2].toFixed(2));
-            vm.currentMarker = marker;
-            updatePanel()
-          });
+          marker.distance = round(insert[2], 2);
+          vm.currentMarker = marker;
+          updatePanel();
         }
         if(vm.trailPath.length > 1) {
           chartMark();
         }
-
-
     })
   }
 
-  function clickListener (marker, waypoint, $scope){
+  function clickListener (marker, waypoint){
       google.maps.event.addListener(marker, 'click', function (event){
         waypoint = marker.getPosition();
         if (vm.delete){
@@ -210,24 +197,16 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
           var markIndex = vm.markerArray.indexOf(marker);
           vm.markerArray.splice(markIndex, 1);
           marker.setMap(null);
-          if(vm.trailPath.length > 1) {
+          if (vm.trailPath.length > 1) {
             chartMark();
           }
-          $scope.$apply(function(){
-            vm.currentMarker = null;
-            vm.newMarkerAllow = true;
-            updatePanel()
-          });
-        } else {
-          $scope.$apply(function(){
-            vm.currentMarker = marker;
-            updatePanel()
-        });
-
-        }
-        $scope.$apply(function(){
+          vm.currentMarker = null;
+          vm.newMarkerAllow = true;
           updatePanel()
-        });
+        } else {
+          vm.currentMarker = marker;
+          updatePanel()
+        }
     })
   }
 
@@ -238,6 +217,7 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
 function closestPath(waypoint){
   var pathDistances = [];
   var percentage = [];
+  console.log(waypoint)
   for (var i=0; i<vm.trailPath.length-1; i++){
     let a = spherical.computeDistanceBetween(waypoint, vm.trailPath[i+1]);
     let b = spherical.computeDistanceBetween(waypoint, vm.trailPath[i]);
@@ -246,17 +226,21 @@ function closestPath(waypoint){
     let B = Math.acos((Math.pow(c,2)+Math.pow(a,2)-Math.pow(b,2))/(2*a*c))
     let C = Math.PI-B-A;
 
-    if (A>B && A>C){
+    console.log(a, b, c, A, B, C)
+
+    if (A > (Math.PI/2)){
       pathDistances[i] = b;
       percentage[i]=0;
-    } else if (B>C){
+    } else if (B > (Math.PI/2)){
       pathDistances[i] = a;
       percentage[i]=1;
     } else {
+      console.log("between")
       pathDistances[i] = a*Math.sin(B);
       percentage[i]=Math.sqrt(Math.pow(b,2) - Math.pow(pathDistances[i],2))/c;
     }
   }
+  console.log(pathDistances)
   let minIndex = pathDistances.reduce((iMin, x, i, arr) => x < arr[iMin] ? i : iMin, 0) + 1;
   let finalPercentage = percentage[minIndex-1];
   let path1 = vm.trailPath.slice(0, [minIndex]);
@@ -272,6 +256,7 @@ function closestPath(waypoint){
     //Place marker
 
   function placeMarker(waypoint) {
+    console.log(waypoint.lat(), waypoint.lng(), vm.delete)
     if (!vm.delete){
       var markerDistance;
       //change path and change waypoint if snap
@@ -281,6 +266,7 @@ function closestPath(waypoint){
         if (vm.snap){
           var snapWaypoint = spherical.interpolate(vm.trailPath[insert[0]-1], vm.trailPath[insert[0]], insert[1])
           waypoint = snapWaypoint;
+          console.log(insert)
         } else {
           vm.trailPath.splice(insert[0], 0, waypoint);
           vm.trailPoly.setPath(vm.trailPath);
@@ -309,7 +295,6 @@ function closestPath(waypoint){
       }
       //set to unsaved icon if snap
       if (vm.snap){
-        console.log(marker)
         marker.setIcon(icons.pointUnsaved);
         vm.newMarkerAllow = false;
       }
@@ -317,8 +302,7 @@ function closestPath(waypoint){
       if(vm.trailPath.length > 1) {
         chartMark();
       }
-      marker.distance = Number(markerDistance.toFixed(2));
-      console.log(marker.distance)
+      marker.distance = round(markerDistance, 2);
       vm.markerArray.push(marker)
       vm.currentMarker = marker;
       updatePanel();
@@ -329,40 +313,41 @@ function closestPath(waypoint){
 
   // ----------------------------------------------------------------------------------
 
-    // update Panel
+    // update Panel/Marker
 
   function updatePanel(){
-    if (vm.currentMarker){
-      let waypoint = vm.currentMarker.getPosition();
-      vm.panel.lat = waypoint.lat();
-      vm.panel.lng = waypoint.lng();
-      vm.panel.title = vm.currentMarker.title;
-      vm.panel.description = vm.currentMarker.description;
-      vm.panel.img_url = vm.currentMarker.img_url;
-      vm.panel.distance = vm.currentMarker.distance;
-      vm.panel.shelter = vm.currentMarker.shelter;
-      vm.panel.campsite = vm.currentMarker.campsite;
-      vm.panel.water = vm.currentMarker.water;
-      vm.panel.view = vm.currentMarker.view;
-      vm.panel.road = vm.currentMarker.road;
-      vm.panel.parking = vm.currentMarker.parking;
-      vm.panel.resupply = vm.currentMarker.resupply;
-    } else {
-      vm.panel.distance = "";
-      vm.panel.lat = "";
-      vm.panel.lng = "";
-      vm.panel.title = "";
-      vm.panel.description = "";
-      vm.panel.img_url = "";
-      vm.panel.shelter = false;
-      vm.panel.campsite = false;
-      vm.panel.water = false;
-      vm.panel.view = false;
-      vm.panel.road = false;
-      vm.panel.parking = false;
-      vm.panel.resupply = false;
-    }
-      vm.trailLength = spherical.computeLength(vm.trailPath)*metersMilesConversion;
+    safeApply(function(){
+      if (vm.currentMarker){
+        let waypoint = vm.currentMarker.getPosition();
+        vm.panel.lat = waypoint.lat();
+        vm.panel.lng = waypoint.lng();
+        vm.panel.title = vm.currentMarker.title;
+        vm.panel.description = vm.currentMarker.description;
+        vm.panel.img_url = vm.currentMarker.img_url;
+        vm.panel.distance = vm.currentMarker.distance;
+        vm.panel.shelter = vm.currentMarker.shelter;
+        vm.panel.campsite = vm.currentMarker.campsite;
+        vm.panel.water = vm.currentMarker.water;
+        vm.panel.view = vm.currentMarker.view;
+        vm.panel.road = vm.currentMarker.road;
+        vm.panel.parking = vm.currentMarker.parking;
+        vm.panel.resupply = vm.currentMarker.resupply;
+      } else {
+        vm.panel.distance = "";
+        vm.panel.lat = "";
+        vm.panel.lng = "";
+        vm.panel.title = "";
+        vm.panel.description = "";
+        vm.panel.img_url = "";
+        vm.panel.shelter = false;
+        vm.panel.campsite = false;
+        vm.panel.water = false;
+        vm.panel.view = false;
+        vm.panel.road = false;
+        vm.panel.parking = false;
+        vm.panel.resupply = false;
+      }
+    })
   }
 
 
@@ -466,18 +451,34 @@ function closestPath(waypoint){
   }
 
   function initChart(){
-    console.log(vm.markerArray)
     ChartsService.chart(vm.trailPath, vm.markerArray, true);
   }
 
   function chartMark(){
-    console.log("hi")
-    ChartsService.chart(vm.trailPath, vm.markerArray, vm.regraphElevation);
-    vm.trailInfo.min_elevation = ChartsService.min_elevation;
-    vm.trailInfo.max_elevation = ChartsService.max_elevation;
-    vm.trailInfo.distance = Number((spherical.computeLength(vm.trailPath)*metersMilesConversion).toFixed(2));
+    ChartsService.chart(vm.trailPath, vm.markerArray, vm.regraphElevation).then(function(){
+      safeApply(function(){
+        vm.trailInfo.min_elevation = ChartsService.min_elevation;
+        vm.trailInfo.max_elevation = ChartsService.max_elevation;
+      })
+    })
+    vm.trailInfo.distance = round(spherical.computeLength(vm.trailPath)*metersMilesConversion, 2);
     updateMarker();
   }
+
+  function round(input, places){
+    return Number(input.toFixed(places));
+  }
+
+  function safeApply(fn) {
+    var phase = $rootScope.$$phase;
+    if(phase == '$apply' || phase == '$digest') {
+      if(fn && (typeof(fn) === 'function')) {
+        fn();
+      }
+    } else {
+      $rootScope.$apply(fn);
+    }
+  };
 };
 
 MapsService.$inject = ['$http', 'ChartsService', 'UsersService', 'NgMap', 'icons', '$rootScope'];

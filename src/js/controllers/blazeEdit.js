@@ -1,7 +1,7 @@
 
 const mapId = "blazeEditMap"
 
-function BlazeEditController (MapsService, UsersService, $stateParams, $scope, $state) {
+function BlazeEditController (MapsService, UsersService, $stateParams, $state) {
   let vm = this;
 
   //params specific to page
@@ -13,6 +13,7 @@ function BlazeEditController (MapsService, UsersService, $stateParams, $scope, $
   MapsService.markerArray = [];
   MapsService.panel={};
   MapsService.regraphElevation = true;
+  MapsService.trailInfo = {};
 
   vm.MapsService = MapsService;
   vm.placeMarker = placeMarker;
@@ -35,13 +36,10 @@ function BlazeEditController (MapsService, UsersService, $stateParams, $scope, $
     MapsService.getMap(mapId).then(function (map){
       MapsService.map=map;
       MapsService.getTrail(map).then(function (resp){
-        console.log(resp)
+
         //set trail data
         MapsService.trailPath = encoding.decodePath(resp.data.path);
         MapsService.trailInfo = resp.data;
-        MapsService.trailInfo.distance = Number(resp.data.distance.toFixed(2));
-        MapsService.trailInfo.max_elevation = Number(resp.data.max_elevation.toFixed(2));
-        MapsService.trailInfo.min_elevation = Number(resp.data.min_elevation.toFixed(2));
         MapsService.trailInfo.saved_url = resp.data.img_url;
 
         //create line, center map, and initialize search bar
@@ -52,11 +50,12 @@ function BlazeEditController (MapsService, UsersService, $stateParams, $scope, $
 
         //add trail Markers and add listeners;
         MapsService.trailPath.forEach(function (waypoint) {
-          let marker = MapsService.loadTrailMarker(waypoint)
-          MapsService.dragListener(marker, waypoint, $scope)
-          MapsService.clickListener(marker, waypoint, $scope)
+          let marker = MapsService.loadTrailMarker(waypoint);
+          MapsService.dragListener(marker, waypoint);
+          MapsService.clickListener(marker, waypoint);
         });
-        MapsService.initChart(MapsService.trailPath, MapsService.markerArray)
+        MapsService.initChart();
+              console.log(map)
 
       })
     })
@@ -65,22 +64,19 @@ function BlazeEditController (MapsService, UsersService, $stateParams, $scope, $
   function placeMarker(event){
     let waypoint = event.latLng;
     let marker = MapsService.placeMarker(waypoint);
-    MapsService.dragListener(marker, waypoint, $scope)
-    MapsService.clickListener(marker, waypoint, $scope)
+    MapsService.dragListener(marker, waypoint)
+    MapsService.clickListener(marker, waypoint)
   }
 
 
   function editTrail(){
     vm.status = "Trail Updating...";
-    let encodeString = encoding.encodePath(MapsService.trailPath);
     let newTrail = MapsService.trailInfo;
+    let encodeString = encoding.encodePath(MapsService.trailPath);
     newTrail.path = encodeString;
-    newTrail.distance = Number((spherical.computeLength(MapsService.trailPath)*metersMilesConversion).toFixed(2));;
 
     MapsService.editTrail($stateParams.id, newTrail).then(function (resp) {
-          MapsService.trailInfo.saved_url = MapsService.trailInfo.img_url;
-        // $scope.$apply(function (){vm.status = "Update Completed";});
-        console.log(resp)
+        MapsService.trailInfo.saved_url = MapsService.trailInfo.img_url;
         vm.status = "Update Completed";
       }, (reject) => {
         console.log(reject)
@@ -89,7 +85,6 @@ function BlazeEditController (MapsService, UsersService, $stateParams, $scope, $
 
   function deleteTrail(){
     MapsService.deleteTrail($stateParams.id).then((resp) => {
-      // $scope.$apply(function(){vm.status = "Trail Deleted!"});
       vm.status = "Trail Deleted!"
       $state.go("root.topTrails")
     }, (reject) => {
@@ -98,5 +93,5 @@ function BlazeEditController (MapsService, UsersService, $stateParams, $scope, $
   }
 }
 
-BlazeEditController.$inject = ['MapsService', 'UsersService', '$stateParams', '$scope', '$state'];
+BlazeEditController.$inject = ['MapsService', 'UsersService', '$stateParams', '$state'];
 export {BlazeEditController}
