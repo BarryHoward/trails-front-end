@@ -309,7 +309,7 @@ function closestPath(waypoint){
     // update Panel/Marker
 
   function updatePanel(){
-    $rootScope.$apply(function(){
+    safeApply(function(){
       if (vm.currentMarker){
         let waypoint = vm.currentMarker.getPosition();
         vm.panel.lat = waypoint.lat();
@@ -449,7 +449,7 @@ function closestPath(waypoint){
 
   function chartMark(){
     ChartsService.chart(vm.trailPath, vm.markerArray, vm.regraphElevation).then(function(){
-      $rootScope.$apply(function(){
+      safeApply(function(){
         vm.trailInfo.min_elevation = ChartsService.min_elevation;
         vm.trailInfo.max_elevation = ChartsService.max_elevation;
       })
@@ -461,6 +461,17 @@ function closestPath(waypoint){
   function round(input, places){
     return Number(input.toFixed(places));
   }
+
+  function safeApply(fn) {
+    var phase = $rootScope.$$phase;
+    if(phase == '$apply' || phase == '$digest') {
+      if(fn && (typeof(fn) === 'function')) {
+        fn();
+      }
+    } else {
+      $rootScope.$apply(fn);
+    }
+  };
 };
 
 MapsService.$inject = ['$http', 'ChartsService', 'UsersService', 'NgMap', 'icons', '$rootScope'];

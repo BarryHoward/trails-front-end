@@ -12,9 +12,11 @@ function MarkController (MapsService, UsersService, $stateParams) {
   MapsService.markerArray = [];
   MapsService.panel={};
   MapsService.regraphElevation = false;
+  MapsService.trailInfo = {};
 
   vm.MapsService = MapsService;
   vm.placeMarker = placeMarker;
+  vm.placeLatLngMarker = placeLatLngMarker;
   vm.savePoint = savePoint;
   vm.editPoint = editPoint;
   vm.deletePoint = deletePoint;
@@ -67,10 +69,20 @@ function MarkController (MapsService, UsersService, $stateParams) {
 
   function placeMarker(event){
     let waypoint = event.latLng;
+    console
     let marker = MapsService.placeMarker(waypoint);
     MapsService.dragListener(marker, waypoint)
     MapsService.clickListener(marker, waypoint)
   }
+
+  function placeLatLngMarker(){
+    let waypoint = new google.maps.LatLng(MapsService.panel.lat, MapsService.panel.lng)
+    let marker = MapsService.placeMarker(waypoint);
+    MapsService.dragListener(marker, waypoint)
+    MapsService.clickListener(marker, waypoint)
+  }
+
+  // function place
 
   function savePoint(){
     MapsService.newMarkerAllow = true;

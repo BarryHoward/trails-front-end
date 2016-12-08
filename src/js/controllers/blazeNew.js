@@ -37,16 +37,13 @@ function BlazeNewController (MapsService, UsersService, $scope, $state) {
     //initial variables
     vm.loggedIn = UsersService.isLoggedIn();
     vm.status = "Create Trail";
-    // angular.element(document.getElementById("map-kill-box")).html(`<ng-map class="map" id="${mapId}" on-click="blazeNew.placeMarker($event)"></ng-map>`);
-
 
     MapsService.getMap(mapId).then(function (map){
       MapsService.map=map;
-      console.log(map)
-        MapsService.createTrailPoly();
-        MapsService.initSearch();
-        MapsService.map.setMapTypeId('terrain');
-        centerByLocation();
+      MapsService.createTrailPoly();
+      MapsService.initSearch();
+      MapsService.map.setMapTypeId('terrain');
+      centerByLocation();
     })
   }
 
@@ -85,6 +82,14 @@ function BlazeNewController (MapsService, UsersService, $scope, $state) {
     }
   }
 
+  // function clearOldMarkers(){
+  //   let array = document.getElementsByClassName("gmnoprint");
+  //   for (var i=0; i<array.length; i++){
+  //     console.log(array[i])
+  //     let node = array[i]
+  //     console.log(node.getElementsbyTagName("img"))
+  //   }
+  // }
 
 // -----------------------------------------
 
