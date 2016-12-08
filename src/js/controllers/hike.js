@@ -1,7 +1,7 @@
 
-const mapId = "markMap"
+const mapId = "hikeMap"
 
-function MarkController (MapsService, UsersService, $stateParams) {
+function HikeController (MapsService, UsersService, $stateParams) {
   let vm = this;
 
   //params specific to page
@@ -139,5 +139,5 @@ function MarkController (MapsService, UsersService, $stateParams) {
 
 }
 
-MarkController.$inject = ['MapsService', 'UsersService', '$stateParams'];
-export {MarkController}
+HikeController.$inject = ['MapsService', 'UsersService', '$stateParams'];
+export {HikeController}

@@ -82,14 +82,6 @@ function BlazeNewController (MapsService, UsersService, $scope, $state) {
     }
   }
 
-  // function clearOldMarkers(){
-  //   let array = document.getElementsByClassName("gmnoprint");
-  //   for (var i=0; i<array.length; i++){
-  //     console.log(array[i])
-  //     let node = array[i]
-  //     console.log(node.getElementsbyTagName("img"))
-  //   }
-  // }
 
 // -----------------------------------------
 

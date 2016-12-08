@@ -41,6 +41,7 @@ function BlazeEditController (MapsService, UsersService, $stateParams, $state) {
         MapsService.trailPath = encoding.decodePath(resp.data.path);
         MapsService.trailInfo = resp.data;
         MapsService.trailInfo.saved_url = resp.data.img_url;
+        MapsService.currentPath = MapsService.trailPath;
 
         //create line, center map, and initialize search bar
         MapsService.createTrailPoly();

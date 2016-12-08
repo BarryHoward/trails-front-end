@@ -81,8 +81,9 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
   }
 
   function centerMap() {
+    console.log(vm.currentPath)
     var latlngbounds = new google.maps.LatLngBounds();
-    vm.trailPath.forEach(function (waypoint) {
+    vm.currentPath.forEach(function (waypoint) {
       latlngbounds.extend(waypoint)
     })
     vm.map.fitBounds(latlngbounds);
@@ -254,7 +255,6 @@ function closestPath(waypoint){
     //Place marker
 
   function placeMarker(waypoint) {
-    console.log(waypoint.lat(), waypoint.lng(), vm.delete)
     if (!vm.delete){
       var markerDistance;
       //change path and change waypoint if snap
@@ -264,7 +264,6 @@ function closestPath(waypoint){
         if (vm.snap){
           var snapWaypoint = spherical.interpolate(vm.trailPath[insert[0]-1], vm.trailPath[insert[0]], insert[1])
           waypoint = snapWaypoint;
-          console.log(insert)
         } else {
           vm.trailPath.splice(insert[0], 0, waypoint);
           vm.trailPoly.setPath(vm.trailPath);
@@ -449,11 +448,11 @@ function closestPath(waypoint){
   }
 
   function initChart(){
-    ChartsService.chart(vm.trailPath, vm.markerArray, true);
+    ChartsService.chart(vm.currentPath, vm.markerArray, true);
   }
 
   function chartMark(){
-    ChartsService.chart(vm.trailPath, vm.markerArray, vm.regraphElevation).then(function(){
+    ChartsService.chart(vm.currentPath, vm.markerArray, vm.regraphElevation).then(function(){
       safeApply(function(){
         vm.trailInfo.min_elevation = ChartsService.min_elevation;
         vm.trailInfo.max_elevation = ChartsService.max_elevation;
@@ -481,42 +480,66 @@ function closestPath(waypoint){
   // ----------------- Filtering -------------------------------------------------
 
   function filterPath(start, end){
+    if (start<=0 && end>=spherical.computeLength(vm.trailPath)*metersMilesConversion){
+      vm.currentPoly.setMap(null);
+      vm.currentPath = vm.trailPath;
+      vm.panel.startInt = 0;
+      vm.panel.endInt = spherical.computeLength(vm.trailPath)*metersMilesConversion;
+      vm.trailPoly.setOptions({strokeColor: '#FF0000', strokeOpacity: 1, strokeWeight: 2});
+      return vm.trailPath;
+    }
     let filteredPath = vm.trailPath.filter(function(element, index){
       let waypointDistance = spherical.computeLength(vm.trailPath.slice(0, index+1))*metersMilesConversion;
-      console.log(waypointDistance);
-      return (start<=waypointDistance && waypointDistance <=end)
+      return (start<waypointDistance && waypointDistance <end)
     })
-
     filteredPath.unshift(distToWaypoint(start));
     filteredPath.push(distToWaypoint(end));
-
+    vm.currentPath = filteredPath;
     return filteredPath;
   }
 
   function createHikePoly(path){
-    var hikePoly = new google.maps.Polyline({
-        path: path,
-        geodesic: true,
-        strokeColor: '#0000FF',
-        strokeOpacity: 1.0,
-        strokeWeight: 2
-      });
-    hikePoly.setMap(vm.map);
-    vm.hikePolys.push(hikePoly);
+    if (vm.currentPath !== vm.trailPath){
+      if (path[0] && path[1]){
+        if (vm.currentPoly){
+          vm.currentPoly.setMap(null);
+        }
+        var hikePoly = new google.maps.Polyline({
+            path: vm.currentPath,
+            geodesic: true,
+            strokeColor: "#FF00FF",
+            strokeOpacity: 1.0,
+            strokeWeight: 4
+          });
+        vm.currentPoly = hikePoly;
+        hikePoly.setMap(vm.map);
+        vm.hikePolys.push(hikePoly);
+        vm.trailPoly.setOptions({strokeColor: '#000000', strokeOpacity: 0.4, strokeWeight: 3});
+      }
+    }
   }
 
   function distToWaypoint(distance){
-    let path = vm.trailPath;
-    for (var i=0; i<path.length; i++){
-        let pathDist = spherical.computeLength(path.slice(0, i+1))*metersMilesConversion;
-        if (pathDist>distance){
-          let dist1 = spherical.computeLength(path.slice(0, i))*metersMilesConversion;
-          let dist2 = distance;
-          let dist3 = pathDist;
-          let percentage = (dist2 - dist1)/(dist3-dist1);
-          return spherical.interpolate(path[i-1], path[i], percentage);
-        }
-    }     
+    let trail = vm.trailPath;
+    let trailLength = spherical.computeLength(trail)*metersMilesConversion;
+    if (distance<=0){
+      vm.panel.startInt = 0;
+      return trail[0];
+    } else if (distance >= trailLength){
+      vm.panel.endInt = trailLength;
+      return trail[trail.length-1];
+    } else{
+      for (var i=0; i<trail.length; i++){
+          let trailDist = spherical.computeLength(trail.slice(0, i+1))*metersMilesConversion;
+          if (trailDist>=distance){
+            let dist1 = spherical.computeLength(trail.slice(0, i))*metersMilesConversion;
+            let dist2 = distance;
+            let dist3 = trailDist;
+            let percentage = (dist2 - dist1)/(dist3-dist1);
+            return spherical.interpolate(trail[i-1], trail[i], percentage);
+          }
+      }     
+    }
   }
   
 
