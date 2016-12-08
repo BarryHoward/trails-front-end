@@ -19,6 +19,7 @@ function BlazeNewController (MapsService, UsersService, $scope, $state) {
   MapsService.panel={};
   MapsService.regraphElevation = true;
   MapsService.trailPath = [];
+  MapsService.trailInfo = {};
 
   //Constants
   const metersFeetConversion = 3.28084;
@@ -42,7 +43,6 @@ function BlazeNewController (MapsService, UsersService, $scope, $state) {
         MapsService.createTrailPoly();
         MapsService.initSearch();
         MapsService.map.setMapTypeId('terrain');
-        // var infoWindow = new google.maps.InfoWindow({map: MapsService.map});
         centerByLocation();
     })
   }
@@ -53,7 +53,6 @@ function BlazeNewController (MapsService, UsersService, $scope, $state) {
     let newTrail = MapsService.trailInfo;
     let encodeString = encoding.encodePath(MapsService.trailPath);
     newTrail.path = encodeString;
-    newTrail.distance = Number((spherical.computeLength(MapsService.trailPath)*metersMilesConversion).toFixed(2));;
     MapsService.newTrail(newTrail).then(function (resp) {
         vm.status = "Trail Saved";
         $state.go("root.topTrails")

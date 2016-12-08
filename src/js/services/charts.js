@@ -6,6 +6,8 @@ function ChartsService ($http, $cookies) {
 
 	const metersFeetConversion = 3.28084;
 	const metersMilesConversion = 0.000621371;
+	const elevator = new google.maps.ElevationService;
+	const spherical = google.maps.geometry.spherical;
 
 
 	function chart(path, markers, regraph){
@@ -14,19 +16,17 @@ function ChartsService ($http, $cookies) {
 			markers.forEach(function(marker){
 				waypoints.push(marker.position)
 			})
-		    vm.elevator = new google.maps.ElevationService;
-		   	vm.pathLength = google.maps.geometry.spherical.computeLength(path)
+		   	vm.pathLength = spherical.computeLength(path)*metersMilesConversion;
 		   	getWaypointElevations(waypoints, markers).then(function (waypointElevations) {
 		    	if (regraph){
 		    		getPathElevations(path).then(function (pathElevations) {
 			    		vm.pathElevations = pathElevations;
 			    		drawChart(vm.pathElevations, waypointElevations, markers);
-			    		console.log("values returned")
-			    		chartResolve([vm.max_elevation, vm.min_elevation]);
+			    		chartResolve();
 			    	})
 		    	} else {
 		        	drawChart(vm.pathElevations, waypointElevations, markers);
-		        	chartResolve([vm.max_elevation, vm.min_elevation]);
+		        	chartResolve();
 		        }
 			})
 		})
@@ -35,9 +35,9 @@ function ChartsService ($http, $cookies) {
 	function getPathElevations(path){
 	  return new Promise(function (resolve, reject) {
 	  	if (path.length >1){
-		    vm.elevator.getElevationAlongPath({
+		    elevator.getElevationAlongPath({
 		      'path': path,
-		      'samples': 200
+		      'samples': Math.ceil(vm.pathLength*10)
 		    }, function (elevations, status){
 		        var pathElevations = [];
 		        let minObject = elevations.reduce(function (min, newNum){
@@ -55,24 +55,23 @@ function ChartsService ($http, $cookies) {
 		        	}
 		        });
 
-		        vm.max_elevation = Number((maxObject.elevation*metersFeetConversion).toFixed(2));
-		        vm.min_elevation = Number((minObject.elevation*metersFeetConversion).toFixed(2));
-		        console.log("elevations set")
+		        vm.max_elevation = round(maxObject.elevation*metersFeetConversion, 2);
+		        vm.min_elevation = round(minObject.elevation*metersFeetConversion, 2);
 		        pathElevations[0]={x: 0, y: elevations[0].elevation*metersFeetConversion};
-		        var resolution = vm.pathLength/(elevations.length-1)* metersMilesConversion;
+		        var resolution = vm.pathLength/(elevations.length-1);
 		        for (var i=1; i<elevations.length; i++){
 		          pathElevations[i] = {x: resolution * i,
 		                      y: elevations[i].elevation*metersFeetConversion}
 		        }
 		      resolve(pathElevations);
 		    });
-		} else {resolve();}
+		} else {resolve()}
 	  })
 	}
 
 	function getWaypointElevations(waypoints, markers){
 	  return new Promise(function (resolve, reject) {
-	    vm.elevator.getElevationForLocations({
+	    elevator.getElevationForLocations({
 	    'locations': waypoints, //change this to the set when we have it
 	  }, function (elevations, status){
 	      var waypointElevations = [];
@@ -222,6 +221,7 @@ function ChartsService ($http, $cookies) {
 					}
 				}],
 			},
+			animation: false
 			// hover: {
 			// 	intersect: true,
 			// 	mode: 'point'
@@ -274,6 +274,10 @@ function ChartsService ($http, $cookies) {
 
 		return sortedMarks;
 
+	}
+
+	function round(input, places){
+		return Number(input.toFixed(places));
 	}
 
 }

@@ -1,13 +1,12 @@
 
 const mapId = "markMap"
 
-function MarkController (MapsService, UsersService, $stateParams, $scope) {
+function MarkController (MapsService, UsersService, $stateParams) {
   let vm = this;
 
   //params specific to page
   MapsService.trail_id = $stateParams.id;
   MapsService.delete = false;
-  // MapsService.insert = "backInsert";
   MapsService.newMarkerAllow = true;
   MapsService.snap = true;
   MapsService.markerArray = [];
@@ -42,8 +41,8 @@ function MarkController (MapsService, UsersService, $stateParams, $scope) {
           let points = pointsResp.data;
           points.forEach(function (waypoint) {
             let marker = MapsService.loadPointMarker(waypoint)
-            MapsService.dragListener(marker, waypoint, $scope)
-            MapsService.clickListener(marker, waypoint, $scope)
+            MapsService.dragListener(marker, waypoint)
+            MapsService.clickListener(marker, waypoint)
           });
           MapsService.initChart(MapsService.trailPath, MapsService.markerArray, true)
         })
@@ -61,9 +60,6 @@ function MarkController (MapsService, UsersService, $stateParams, $scope) {
         MapsService.map.setMapTypeId('terrain');
         MapsService.centerMap();
         MapsService.initSearch();
-        console.log(MapsService)
-
-
       })
     })
   }
@@ -72,15 +68,14 @@ function MarkController (MapsService, UsersService, $stateParams, $scope) {
   function placeMarker(event){
     let waypoint = event.latLng;
     let marker = MapsService.placeMarker(waypoint);
-    MapsService.dragListener(marker, waypoint, $scope)
-    MapsService.clickListener(marker, waypoint, $scope)
+    MapsService.dragListener(marker, waypoint)
+    MapsService.clickListener(marker, waypoint)
   }
 
   function savePoint(){
     MapsService.newMarkerAllow = true;
     MapsService.panel.trail_id = Number($stateParams.id);
     MapsService.savePoint(MapsService.panel).then((resp) => {
-      // console.log(resp)
       vm.MapsService.currentMarker.id = resp.data.id;
     })
   }
@@ -89,8 +84,6 @@ function MarkController (MapsService, UsersService, $stateParams, $scope) {
     MapsService.newMarkerAllow = true;
     MapsService.panel.id = MapsService.currentMarker.id;
     MapsService.editPoint(MapsService.panel).then((resp) => {
-      // console.log(resp)
-
     })
   }
 
@@ -107,5 +100,5 @@ function MarkController (MapsService, UsersService, $stateParams, $scope) {
 
 }
 
-MarkController.$inject = ['MapsService', 'UsersService', '$stateParams', '$scope'];
+MarkController.$inject = ['MapsService', 'UsersService', '$stateParams'];
 export {MarkController}
