@@ -217,16 +217,13 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
 function closestPath(waypoint){
   var pathDistances = [];
   var percentage = [];
-  console.log(waypoint)
   for (var i=0; i<vm.trailPath.length-1; i++){
     let a = spherical.computeDistanceBetween(waypoint, vm.trailPath[i+1]);
     let b = spherical.computeDistanceBetween(waypoint, vm.trailPath[i]);
     let c = spherical.computeDistanceBetween(vm.trailPath[i], vm.trailPath[i+1]);
-    let A = Math.acos((Math.pow(b,2)+Math.pow(c,2)-Math.pow(a,2))/(2*b*c))
-    let B = Math.acos((Math.pow(c,2)+Math.pow(a,2)-Math.pow(b,2))/(2*a*c))
+    let A = Math.acos(Math.min((Math.pow(b,2)+Math.pow(c,2)-Math.pow(a,2))/(2*b*c), 1));
+    let B = Math.acos(Math.min((Math.pow(c,2)+Math.pow(a,2)-Math.pow(b,2))/(2*a*c), 1));
     let C = Math.PI-B-A;
-
-    console.log(a, b, c, A, B, C)
 
     if (A > (Math.PI/2)){
       pathDistances[i] = b;
@@ -235,12 +232,10 @@ function closestPath(waypoint){
       pathDistances[i] = a;
       percentage[i]=1;
     } else {
-      console.log("between")
       pathDistances[i] = a*Math.sin(B);
       percentage[i]=Math.sqrt(Math.pow(b,2) - Math.pow(pathDistances[i],2))/c;
     }
   }
-  console.log(pathDistances)
   let minIndex = pathDistances.reduce((iMin, x, i, arr) => x < arr[iMin] ? i : iMin, 0) + 1;
   let finalPercentage = percentage[minIndex-1];
   let path1 = vm.trailPath.slice(0, [minIndex]);
