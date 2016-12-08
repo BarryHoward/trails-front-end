@@ -65,7 +65,10 @@ function MarkController (MapsService, UsersService, $stateParams) {
         MapsService.centerMap();
         MapsService.initSearch();
 
+
+//RIGHT HERE!!!!!!!!!!
         let filteredPath = MapsService.filterPath(8, 34);
+/// -----------------------
         MapsService.createHikePoly(filteredPath);
         // console.log(filteredPath)
         // filteredPath.forEach(function(waypoint){
