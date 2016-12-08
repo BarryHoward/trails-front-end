@@ -13,7 +13,6 @@ function BlazeNewController (MapsService, UsersService, $scope, $state) {
   //params specific to page
   MapsService.delete = false;
   MapsService.insert = "backInsert";
-  MapsService.newMarkerAllow = true;
   MapsService.snap = false;
   MapsService.markerArray = [];
   MapsService.panel={};
@@ -64,6 +63,13 @@ function BlazeNewController (MapsService, UsersService, $scope, $state) {
     let marker = MapsService.placeMarker(waypoint);
     MapsService.dragListener(marker, waypoint, $scope)
     MapsService.clickListener(marker, waypoint, $scope)
+  }
+
+  function setInterval(){
+      let filteredPath = MapsService.filterPath(MapsService.panel.startInt, MapsService.panel.endInt);
+      MapsService.createHikePoly(filteredPath);
+      MapsService.centerMap();
+      MapsService.chartMark(true);
   }
 
 

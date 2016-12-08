@@ -11,17 +11,11 @@ function HikeController (MapsService, UsersService, $stateParams) {
   MapsService.snap = true;
   MapsService.markerArray = [];
   MapsService.panel={};
-  MapsService.regraphElevation = false;
+  MapsService.regraphElevation = true;
   MapsService.trailInfo = {};
   MapsService.hikePolys = [];
 
   vm.MapsService = MapsService;
-  vm.placeMarker = placeMarker;
-  vm.placeLatLngMarker = placeLatLngMarker;
-  vm.placeDistanceMarker = placeDistanceMarker;
-  vm.savePoint = savePoint;
-  vm.editPoint = editPoint;
-  vm.deletePoint = deletePoint;
   vm.setInterval = setInterval;
 
   const metersFeetConversion = 3.28084;
@@ -83,59 +77,14 @@ function HikeController (MapsService, UsersService, $stateParams) {
 
 
   function setInterval(){
-        console.log('hi')
         let filteredPath = MapsService.filterPath(MapsService.panel.startInt, MapsService.panel.endInt);
         MapsService.createHikePoly(filteredPath);
         MapsService.centerMap();
+        MapsService.chartMark();
   }
 
-  function placeMarker(event){
-    let waypoint = event.latLng;
-    let marker = MapsService.placeMarker(waypoint);
-    MapsService.dragListener(marker, waypoint)
-    MapsService.clickListener(marker, waypoint)
-  }
 
-  function placeLatLngMarker(){
-    let waypoint = new google.maps.LatLng(MapsService.panel.lat, MapsService.panel.lng)
-    let marker = MapsService.placeMarker(waypoint);
-    MapsService.dragListener(marker, waypoint)
-    MapsService.clickListener(marker, waypoint)
-  }
 
-  function placeDistanceMarker(){
-    let inputDist = Number(MapsService.panel.distance);
-    let waypoint = MapsService.distToWaypoint(inputDist);
-    let marker = MapsService.placeMarker(waypoint);
-    MapsService.dragListener(marker, waypoint)
-    MapsService.clickListener(marker, waypoint)
-  }
-
-  function savePoint(){
-    MapsService.newMarkerAllow = true;
-    MapsService.panel.trail_id = Number($stateParams.id);
-    MapsService.savePoint(MapsService.panel).then((resp) => {
-      vm.MapsService.currentMarker.id = resp.data.id;
-    })
-  }
-
-  function editPoint(){
-    MapsService.newMarkerAllow = true;
-    MapsService.panel.id = MapsService.currentMarker.id;
-    MapsService.editPoint(MapsService.panel).then((resp) => {
-    })
-  }
-
-  function deletePoint(){
-    MapsService.deletePoint().then((resp) => {
-      MapsService.newMarker = true;
-      let markIndex = MapsService.markerArray.indexOf(MapsService.markerArray);
-      MapsService.markerArray.splice(markIndex, 1);
-      MapsService.currentMarker.setMap(null); 
-      MapsService.chartMark();
-      MapsService.updatePanel();
-    })
-  }
 
 }
 

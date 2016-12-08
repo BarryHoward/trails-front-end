@@ -7,7 +7,6 @@ function MarkController (MapsService, UsersService, $stateParams) {
   //params specific to page
   MapsService.trail_id = $stateParams.id;
   MapsService.delete = false;
-  MapsService.newMarkerAllow = true;
   MapsService.snap = true;
   MapsService.markerArray = [];
   MapsService.panel={};
@@ -83,7 +82,6 @@ function MarkController (MapsService, UsersService, $stateParams) {
 
 
   function setInterval(){
-        console.log('hi')
         let filteredPath = MapsService.filterPath(MapsService.panel.startInt, MapsService.panel.endInt);
         MapsService.createHikePoly(filteredPath);
         MapsService.centerMap();
@@ -112,7 +110,6 @@ function MarkController (MapsService, UsersService, $stateParams) {
   }
 
   function savePoint(){
-    MapsService.newMarkerAllow = true;
     MapsService.panel.trail_id = Number($stateParams.id);
     MapsService.savePoint(MapsService.panel).then((resp) => {
       vm.MapsService.currentMarker.id = resp.data.id;
@@ -120,21 +117,27 @@ function MarkController (MapsService, UsersService, $stateParams) {
   }
 
   function editPoint(){
-    MapsService.newMarkerAllow = true;
     MapsService.panel.id = MapsService.currentMarker.id;
     MapsService.editPoint(MapsService.panel).then((resp) => {
     })
   }
 
   function deletePoint(){
-    MapsService.deletePoint().then((resp) => {
-      MapsService.newMarker = true;
-      let markIndex = MapsService.markerArray.indexOf(MapsService.markerArray);
-      MapsService.markerArray.splice(markIndex, 1);
-      MapsService.currentMarker.setMap(null); 
-      MapsService.chartMark();
-      MapsService.updatePanel();
-    })
+    if (MapsService.currentMarker.id){
+      MapsService.deletePoint().then((resp) => {
+        let markIndex = MapsService.markerArray.indexOf(MapsService.markerArray);
+        MapsService.markerArray.splice(markIndex, 1);
+        MapsService.currentMarker.setMap(null); 
+        MapsService.chartMark();
+        MapsService.updatePanel();
+      });
+    } else {
+        let markIndex = MapsService.markerArray.indexOf(MapsService.markerArray);
+        MapsService.markerArray.splice(markIndex, 1);
+        MapsService.currentMarker.setMap(null); 
+        MapsService.chartMark();
+        MapsService.updatePanel();
+    }
   }
 
 }
