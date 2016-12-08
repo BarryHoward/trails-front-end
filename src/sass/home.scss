@@ -1,0 +1,16 @@
+.home-info-diagram {
+  height: 500px;
+  width: 95%;
+  margin: 30px auto;
+  border: 1px solid black;
+  display: flex;
+  justify-content: space-around;
+
+  .diagram-box {
+    height: 300px;
+    width: 300px;
+    margin: 50px;
+    border: 1px solid red;
+
+  }
+}
