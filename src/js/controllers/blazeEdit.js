@@ -8,7 +8,6 @@ function BlazeEditController (MapsService, UsersService, $stateParams, $state) {
   MapsService.trail_id = $stateParams.id;
   MapsService.delete = false;
   MapsService.insert = "backInsert";
-  MapsService.newMarkerAllow = true;
   MapsService.snap = false;
   MapsService.markerArray = [];
   MapsService.panel={};
@@ -41,6 +40,7 @@ function BlazeEditController (MapsService, UsersService, $stateParams, $state) {
         MapsService.trailPath = encoding.decodePath(resp.data.path);
         MapsService.trailInfo = resp.data;
         MapsService.trailInfo.saved_url = resp.data.img_url;
+        MapsService.currentPath = MapsService.trailPath;
 
         //create line, center map, and initialize search bar
         MapsService.createTrailPoly();
@@ -90,6 +90,13 @@ function BlazeEditController (MapsService, UsersService, $stateParams, $state) {
     }, (reject) => {
         console.log(reject)
       });
+  }
+
+  function setInterval(){
+      let filteredPath = MapsService.filterPath(MapsService.panel.startInt, MapsService.panel.endInt);
+      MapsService.createHikePoly(filteredPath);
+      MapsService.centerMap();
+      MapsService.chartMark(true);
   }
 }
 

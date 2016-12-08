@@ -1,0 +1,86 @@
+<div class="trail-info-container">
+  <div class="trail-image-container">
+    <img src="{{hike.MapsService.trailInfo.img_url}}">
+  </div>
+  <div class="title-description">
+    <div>Title: <span class='static-info'>{{hike.MapsService.trailInfo.title}}</span></div>
+    <div> Description: <span class='static-info'>{{hike.MapsService.trailInfo.description}}</span></div>
+  </div>
+
+  <div class="static-info-container">
+    <div>Distance: <span class='static-info'>{{hike.MapsService.trailInfo.distance}} mi</span></div>
+    <div>Max Elevation: <span class='static-info'>{{hike.MapsService.trailInfo.max_elevation}} ft</span></div>
+    <div>Min Elevation: <span class='static-info'>{{hike.MapsService.trailInfo.min_elevation}} ft</span></div>
+    <div>Created by: <span class='static-info'>{{hike.MapsService.trailInfo.username}}</span></div>
+  </div>
+</div>
+
+<div class="map-controls-container">
+  <div class="map-container">
+    <input id="pac-input" class="controls" type="text" placeholder="Search...">
+    <ng-map class="map" id="hikeMap" on-click="hike.placeMarker($event)">
+    </ng-map>
+  </div>
+  <div class="point-control-container">
+    <div class="point-control-label">Add markers</div>
+  	<div class="distance-input-container">
+  		<span>
+  			<label>Distance: </label>
+  			<input type="text" ng-model="hike.MapsService.panel.distance"></input>
+  						mi. out of {{hike.MapsService.trailInfo.distance}}
+  		</span>
+  	</div>
+  	<div class="lat-lng-input-container">
+  		<span>
+        <span class="lat-lng">
+    			<label>Start: </label>
+    			<input class="point-control-input" type="text" ng-model="hike.MapsService.panel.startInt"></input>
+        </span>
+        <span class="lat-lng">
+          <label>End: </label>
+    			<input class="point-control-input" type="text" ng-model="hike.MapsService.panel.endInt"></input>
+        </span>
+  		</span>
+          <button ng-click="hike.setInterval()">go to interval</button>
+  	</div>
+  	<div class="type-container">
+      <div>Marker Type:</div>
+      <div class="type-row">
+    		<label>shelter: </label><input type="checkbox" ng-change="hike.MapsService.charthike()" ng-model="hike.MapsService.panel.shelter">
+    		<label>campsite: </label><input type="checkbox" ng-change="hike.MapsService.charthike()" ng-model="hike.MapsService.panel.campsite">
+    		<br>
+    		<label>water: </label><input type="checkbox" ng-change="hike.MapsService.charthike()" ng-model="hike.MapsService.panel.water">
+    		<label>view: </label><input type="checkbox" ng-change="hike.MapsService.charthike()" ng-model="hike.MapsService.panel.view">
+    		<br>
+      </div>
+      <div class="type-row">
+    		<label>road: </label><input type="checkbox" ng-change="hike.MapsService.charthike()" ng-model="hike.MapsService.panel.road">
+    		<label>parking: </label><input type="checkbox" ng-change="hike.MapsService.charthike()" ng-model="hike.MapsService.panel.parking">
+    		<br>
+    		<label>resupply: </label><input type="checkbox" ng-change="hike.MapsService.charthike()" ng-model="hike.MapsService.panel.resupply">
+    </div>
+    </div>
+  	<div class="title-container">
+  		<label>Title: </label><input type="text" ng-keyup="hike.MapsService.updateMarker()" ng-model="hike.MapsService.panel.title"></input>
+  	</div>
+  	<div class="description-container">
+  		<label>Description: </label>
+  		<textarea ng-keyup="hike.MapsService.updateMarker()" ng-model="hike.MapsService.panel.description"></textarea>
+  	</div>
+  	<div class="img-url-container">
+  		<label>Image Url: </label>
+  		<input type="text" ng-keyup="hike.MapsService.updateMarker()" ng-model="hike.MapsService.panel.img_url"></input>
+  	</div>
+
+  	<div class="point-control-update-delete">
+          <button class="update-trail-button" type="button" name="edit" ng-hide="hike.MapsService.currentMarker.id" ng-click="hike.savePoint()">Save Point</button>
+          <button class="update-trail-button" type="button" name="edit" ng-show="hike.MapsService.currentMarker.id" ng-click="hike.editPoint()">Edit Point</button>
+          <button class="delete-trail-button" type="button" name="delete" ng-show="hike.MapsService.currentMarker.id" ng-click="hike.deletePoint()">Delete Point</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="chart-box">
+	<canvas class="chart" id="myChart"></canvas>
+</div>

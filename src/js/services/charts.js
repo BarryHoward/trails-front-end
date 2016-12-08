@@ -37,7 +37,7 @@ function ChartsService ($http, $cookies) {
 	  	if (path.length >1){
 		    elevator.getElevationAlongPath({
 		      'path': path,
-		      'samples': Math.ceil(vm.pathLength*10)
+		      'samples': 200
 		    }, function (elevations, status){
 		        var pathElevations = [];
 		        let minObject = elevations.reduce(function (min, newNum){

@@ -51,10 +51,10 @@ function routerConfig ($stateProvider , $urlRouterProvider) {
       templateUrl: 'templates/trails.mark.tpl.html',
       controller: 'MarkController as mark'
     })
-    .state('root.trails.view', {
-      url: '/view/:id',
-      templateUrl: 'templates/trails.view.tpl.html',
-      controller: 'ViewController as view'
+    .state('root.trails.hike', {
+      url: '/hike/:id',
+      templateUrl: 'templates/trails.hike.tpl.html',
+      controller: 'HikeController as hike'
     })
 
 

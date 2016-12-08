@@ -1,26 +1,21 @@
 
-const mapId = "markMap"
+const mapId = "hikeMap"
 
-function MarkController (MapsService, UsersService, $stateParams) {
+function HikeController (MapsService, UsersService, $stateParams) {
   let vm = this;
 
   //params specific to page
   MapsService.trail_id = $stateParams.id;
   MapsService.delete = false;
+  MapsService.newMarkerAllow = true;
   MapsService.snap = true;
   MapsService.markerArray = [];
   MapsService.panel={};
-  MapsService.regraphElevation = false;
+  MapsService.regraphElevation = true;
   MapsService.trailInfo = {};
   MapsService.hikePolys = [];
 
   vm.MapsService = MapsService;
-  vm.placeMarker = placeMarker;
-  vm.placeLatLngMarker = placeLatLngMarker;
-  vm.placeDistanceMarker = placeDistanceMarker;
-  vm.savePoint = savePoint;
-  vm.editPoint = editPoint;
-  vm.deletePoint = deletePoint;
   vm.setInterval = setInterval;
 
   const metersFeetConversion = 3.28084;
@@ -85,62 +80,13 @@ function MarkController (MapsService, UsersService, $stateParams) {
         let filteredPath = MapsService.filterPath(MapsService.panel.startInt, MapsService.panel.endInt);
         MapsService.createHikePoly(filteredPath);
         MapsService.centerMap();
-  }
-
-  function placeMarker(event){
-    let waypoint = event.latLng;
-    let marker = MapsService.placeMarker(waypoint);
-    MapsService.dragListener(marker, waypoint)
-    MapsService.clickListener(marker, waypoint)
-  }
-
-  function placeLatLngMarker(){
-    let waypoint = new google.maps.LatLng(MapsService.panel.lat, MapsService.panel.lng)
-    let marker = MapsService.placeMarker(waypoint);
-    MapsService.dragListener(marker, waypoint)
-    MapsService.clickListener(marker, waypoint)
-  }
-
-  function placeDistanceMarker(){
-    let inputDist = Number(MapsService.panel.distance);
-    let waypoint = MapsService.distToWaypoint(inputDist);
-    let marker = MapsService.placeMarker(waypoint);
-    MapsService.dragListener(marker, waypoint)
-    MapsService.clickListener(marker, waypoint)
-  }
-
-  function savePoint(){
-    MapsService.panel.trail_id = Number($stateParams.id);
-    MapsService.savePoint(MapsService.panel).then((resp) => {
-      vm.MapsService.currentMarker.id = resp.data.id;
-    })
-  }
-
-  function editPoint(){
-    MapsService.panel.id = MapsService.currentMarker.id;
-    MapsService.editPoint(MapsService.panel).then((resp) => {
-    })
-  }
-
-  function deletePoint(){
-    if (MapsService.currentMarker.id){
-      MapsService.deletePoint().then((resp) => {
-        let markIndex = MapsService.markerArray.indexOf(MapsService.markerArray);
-        MapsService.markerArray.splice(markIndex, 1);
-        MapsService.currentMarker.setMap(null); 
         MapsService.chartMark();
-        MapsService.updatePanel();
-      });
-    } else {
-        let markIndex = MapsService.markerArray.indexOf(MapsService.markerArray);
-        MapsService.markerArray.splice(markIndex, 1);
-        MapsService.currentMarker.setMap(null); 
-        MapsService.chartMark();
-        MapsService.updatePanel();
-    }
   }
+
+
+
 
 }
 
-MarkController.$inject = ['MapsService', 'UsersService', '$stateParams'];
-export {MarkController}
+HikeController.$inject = ['MapsService', 'UsersService', '$stateParams'];
+export {HikeController}

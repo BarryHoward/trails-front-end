@@ -13,7 +13,6 @@ function BlazeNewController (MapsService, UsersService, $scope, $state) {
   //params specific to page
   MapsService.delete = false;
   MapsService.insert = "backInsert";
-  MapsService.newMarkerAllow = true;
   MapsService.snap = false;
   MapsService.markerArray = [];
   MapsService.panel={};
@@ -66,6 +65,13 @@ function BlazeNewController (MapsService, UsersService, $scope, $state) {
     MapsService.clickListener(marker, waypoint, $scope)
   }
 
+  function setInterval(){
+      let filteredPath = MapsService.filterPath(MapsService.panel.startInt, MapsService.panel.endInt);
+      MapsService.createHikePoly(filteredPath);
+      MapsService.centerMap();
+      MapsService.chartMark(true);
+  }
+
 
 // Jack's weird centering shit -----------------------------------
 
@@ -82,14 +88,6 @@ function BlazeNewController (MapsService, UsersService, $scope, $state) {
     }
   }
 
-  // function clearOldMarkers(){
-  //   let array = document.getElementsByClassName("gmnoprint");
-  //   for (var i=0; i<array.length; i++){
-  //     console.log(array[i])
-  //     let node = array[i]
-  //     console.log(node.getElementsbyTagName("img"))
-  //   }
-  // }
 
 // -----------------------------------------
 
