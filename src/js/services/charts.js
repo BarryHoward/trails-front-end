@@ -9,21 +9,26 @@ function ChartsService ($http, $cookies) {
 
 
 	function chart(path, markers, regraph){
-		var waypoints = []
-		markers.forEach(function(marker){
-			waypoints.push(marker.position)
-		})
-	    vm.elevator = new google.maps.ElevationService;
-	   	vm.pathLength = google.maps.geometry.spherical.computeLength(path)
-	   	getWaypointElevations(waypoints, markers).then(function (waypointElevations) {
-	    	if (regraph){
-	    		getPathElevations(path).then(function (pathElevations) {
-		    		vm.pathElevations = pathElevations;
-		    		drawChart(vm.pathElevations, waypointElevations, markers);
-		    	})
-	    	} else {
-	        	drawChart(vm.pathElevations, waypointElevations, markers);
-	        }
+		return new Promise(function(chartResolve, chartReject) {
+			var waypoints = []
+			markers.forEach(function(marker){
+				waypoints.push(marker.position)
+			})
+		    vm.elevator = new google.maps.ElevationService;
+		   	vm.pathLength = google.maps.geometry.spherical.computeLength(path)
+		   	getWaypointElevations(waypoints, markers).then(function (waypointElevations) {
+		    	if (regraph){
+		    		getPathElevations(path).then(function (pathElevations) {
+			    		vm.pathElevations = pathElevations;
+			    		drawChart(vm.pathElevations, waypointElevations, markers);
+			    		console.log("values returned")
+			    		chartResolve([vm.max_elevation, vm.min_elevation]);
+			    	})
+		    	} else {
+		        	drawChart(vm.pathElevations, waypointElevations, markers);
+		        	chartResolve([vm.max_elevation, vm.min_elevation]);
+		        }
+			})
 		})
 	}
 
@@ -52,7 +57,7 @@ function ChartsService ($http, $cookies) {
 
 		        vm.max_elevation = Number((maxObject.elevation*metersFeetConversion).toFixed(2));
 		        vm.min_elevation = Number((minObject.elevation*metersFeetConversion).toFixed(2));
-		        console.log(vm.max_elevation)
+		        console.log("elevations set")
 		        pathElevations[0]={x: 0, y: elevations[0].elevation*metersFeetConversion};
 		        var resolution = vm.pathLength/(elevations.length-1)* metersMilesConversion;
 		        for (var i=1; i<elevations.length; i++){

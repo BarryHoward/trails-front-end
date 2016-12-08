@@ -168,14 +168,14 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
 
   // Listeners
 
-  function dragListener (marker, waypoint, $scope){
+  function dragListener (marker, waypoint){
       google.maps.event.addListener(marker, 'dragend', function (event){
         if (!vm.snap){
           var index = vm.trailPath.indexOf(waypoint);
           waypoint = marker.getPosition();
           vm.trailPath[index] = waypoint;
           vm.trailPoly.setPath(vm.trailPath);
-          $scope.$apply(function (){
+          $rootScope.$apply(function (){
             updatePanel()
           });
         } else {
@@ -184,7 +184,7 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
           waypoint = spherical.interpolate(vm.trailPath[insert[0]-1], vm.trailPath[insert[0]], insert[1])
           marker.setPosition(waypoint);
           marker.setIcon(icons.pointUnsaved);
-          $scope.$apply(function (){
+          $rootScope.$apply(function (){
             marker.distance = Number(insert[2].toFixed(2));
             vm.currentMarker = marker;
             updatePanel()
@@ -193,12 +193,10 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
         if(vm.trailPath.length > 1) {
           chartMark();
         }
-
-
     })
   }
 
-  function clickListener (marker, waypoint, $scope){
+  function clickListener (marker, waypoint){
       google.maps.event.addListener(marker, 'click', function (event){
         waypoint = marker.getPosition();
         if (vm.delete){
@@ -213,19 +211,18 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
           if(vm.trailPath.length > 1) {
             chartMark();
           }
-          $scope.$apply(function(){
+          $rootScope.$apply(function(){
             vm.currentMarker = null;
             vm.newMarkerAllow = true;
             updatePanel()
           });
         } else {
-          $scope.$apply(function(){
+          $rootScope.$apply(function(){
             vm.currentMarker = marker;
             updatePanel()
-        });
-
+          });
         }
-        $scope.$apply(function(){
+        $rootScope.$apply(function(){
           updatePanel()
         });
     })
@@ -246,10 +243,10 @@ function closestPath(waypoint){
     let B = Math.acos((Math.pow(c,2)+Math.pow(a,2)-Math.pow(b,2))/(2*a*c))
     let C = Math.PI-B-A;
 
-    if (A>B && A>C){
+    if (A > (Math.PI/2)){
       pathDistances[i] = b;
       percentage[i]=0;
-    } else if (B>C){
+    } else if (B > (Math.PI/2)){
       pathDistances[i] = a;
       percentage[i]=1;
     } else {
@@ -466,15 +463,17 @@ function closestPath(waypoint){
   }
 
   function initChart(){
-    console.log(vm.markerArray)
     ChartsService.chart(vm.trailPath, vm.markerArray, true);
   }
 
   function chartMark(){
     console.log("hi")
-    ChartsService.chart(vm.trailPath, vm.markerArray, vm.regraphElevation);
-    vm.trailInfo.min_elevation = ChartsService.min_elevation;
-    vm.trailInfo.max_elevation = ChartsService.max_elevation;
+    ChartsService.chart(vm.trailPath, vm.markerArray, vm.regraphElevation).then(function(){
+      $rootScope.$apply(function(){
+        vm.trailInfo.min_elevation = ChartsService.min_elevation;
+        vm.trailInfo.max_elevation = ChartsService.max_elevation;
+      })
+    })
     vm.trailInfo.distance = Number((spherical.computeLength(vm.trailPath)*metersMilesConversion).toFixed(2));
     updateMarker();
   }
