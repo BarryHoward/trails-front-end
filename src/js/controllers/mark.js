@@ -13,6 +13,7 @@ function MarkController (MapsService, UsersService, $stateParams) {
   MapsService.panel={};
   MapsService.regraphElevation = false;
   MapsService.trailInfo = {};
+  MapsService.hikePolys = [];
 
   vm.MapsService = MapsService;
   vm.placeMarker = placeMarker;
@@ -63,6 +64,13 @@ function MarkController (MapsService, UsersService, $stateParams) {
         MapsService.map.setMapTypeId('terrain');
         MapsService.centerMap();
         MapsService.initSearch();
+
+        let filteredPath = MapsService.filterPath(8, 34);
+        MapsService.createHikePoly(filteredPath);
+        // console.log(filteredPath)
+        // filteredPath.forEach(function(waypoint){
+        //   MapsService.placeMarker(waypoint);
+        // })
       })
     })
   }
@@ -84,21 +92,7 @@ function MarkController (MapsService, UsersService, $stateParams) {
 
   function placeDistanceMarker(){
     let inputDist = Number(MapsService.panel.distance);
-    let path = MapsService.trailPath;
-    var found = false;
-    for (var i=0; i<path.length; i++){
-      if (!found){
-        let pathDist = spherical.computeLength(path.slice(0, i+1))*metersMilesConversion;
-        if (pathDist>inputDist){
-          let dist1 = spherical.computeLength(path.slice(0, i))*metersMilesConversion;
-          let dist2 = inputDist;
-          let dist3 = pathDist;
-          let percentage = (dist2 - dist1)/(dist3-dist1);
-          var waypoint = spherical.interpolate(path[i-1], path[i], percentage);
-          found = true;
-        }
-      }     
-    }
+    let waypoint = MapsService.distToWaypoint(inputDist);
     let marker = MapsService.placeMarker(waypoint);
     MapsService.dragListener(marker, waypoint)
     MapsService.clickListener(marker, waypoint)

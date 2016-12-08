@@ -28,6 +28,9 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
   vm.chartMark = chartMark;
   vm.updateMarker = updateMarker;
   vm.updatePanel = updatePanel;
+  vm.filterPath = filterPath;
+  vm.createHikePoly = createHikePoly;
+  vm.distToWaypoint = distToWaypoint;
 
   const metersFeetConversion = 3.28084;
   const metersMilesConversion = 0.000621371;
@@ -291,7 +294,7 @@ function closestPath(waypoint){
       //set to unsaved icon if snap
       if (vm.snap){
         marker.setIcon(icons.pointUnsaved);
-        vm.newMarkerAllow = false;
+        // vm.newMarkerAllow = false;
       }
       //re-chart
       if(vm.trailPath.length > 1) {
@@ -474,7 +477,55 @@ function closestPath(waypoint){
       $rootScope.$apply(fn);
     }
   };
+
+  // ----------------- Filtering -------------------------------------------------
+
+  function filterPath(start, end){
+    let filteredPath = vm.trailPath.filter(function(element, index){
+      let waypointDistance = spherical.computeLength(vm.trailPath.slice(0, index+1))*metersMilesConversion;
+      console.log(waypointDistance);
+      return (start<=waypointDistance && waypointDistance <=end)
+    })
+
+    filteredPath.unshift(distToWaypoint(start));
+    filteredPath.push(distToWaypoint(end));
+
+    return filteredPath;
+  }
+
+  function createHikePoly(path){
+    var hikePoly = new google.maps.Polyline({
+        path: path,
+        geodesic: true,
+        strokeColor: '#0000FF',
+        strokeOpacity: 1.0,
+        strokeWeight: 2
+      });
+    hikePoly.setMap(vm.map);
+    vm.hikePolys.push(hikePoly);
+  }
+
+  function distToWaypoint(distance){
+    let path = vm.trailPath;
+    for (var i=0; i<path.length; i++){
+        let pathDist = spherical.computeLength(path.slice(0, i+1))*metersMilesConversion;
+        if (pathDist>distance){
+          let dist1 = spherical.computeLength(path.slice(0, i))*metersMilesConversion;
+          let dist2 = distance;
+          let dist3 = pathDist;
+          let percentage = (dist2 - dist1)/(dist3-dist1);
+          return spherical.interpolate(path[i-1], path[i], percentage);
+        }
+    }     
+  }
+  
+
+
+
 };
+
+
+
 
 MapsService.$inject = ['$http', 'ChartsService', 'UsersService', 'NgMap', 'icons', '$rootScope'];
 export { MapsService };
