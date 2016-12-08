@@ -37,9 +37,12 @@ function BlazeNewController (MapsService, UsersService, $scope, $state) {
     //initial variables
     vm.loggedIn = UsersService.isLoggedIn();
     vm.status = "Create Trail";
+    // angular.element(document.getElementById("map-kill-box")).html(`<ng-map class="map" id="${mapId}" on-click="blazeNew.placeMarker($event)"></ng-map>`);
+
 
     MapsService.getMap(mapId).then(function (map){
       MapsService.map=map;
+      console.log(map)
         MapsService.createTrailPoly();
         MapsService.initSearch();
         MapsService.map.setMapTypeId('terrain');

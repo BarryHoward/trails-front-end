@@ -42,7 +42,7 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
   // Get map
 
   function getMap(id){
-    console.log(angular.element("#" + id))
+    
     return NgMap.getMap(id)
   }
 
@@ -89,6 +89,7 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
     var input = document.getElementById('pac-input')
     var searchBox = new google.maps.places.SearchBox(input);
     vm.map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+    google.maps.event.trigger(vm.map, "resize");
     //Listener for selecting an autocomplete option from the dropdown
     vm.map.addListener('bounds_changed', function() {
       searchBox.setBounds(vm.map.getBounds());
