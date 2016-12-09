@@ -22,13 +22,14 @@
     </ng-map>
   </div>
   <div class="point-control-container">
-    <div class="point-control-label">Add Markers</div>
+    <!-- <div class="point-control-label">Add Markers</div> -->
   	<div class="distance-input-container">
   		<span>
   			<label>Distance: </label>
   			<input type="text" ng-model="mark.MapsService.panel.distance"></input>
   						mi. out of {{mark.MapsService.trailInfo.distance}}
   		</span>
+      <button class="update-trail-button" id='place-distance-button' ng-click="mark.placeDistanceMarker()">Place Point by Distance</button>
   	</div>
   	<div class="lat-lng-input-container">
   		<span>
@@ -41,8 +42,7 @@
     			<input class="point-control-input" type="text" ng-model="mark.MapsService.panel.lng"></input>
         </span>
   		</span>
-      <button ng-click="mark.placeLatLngMarker()">Place Point by LatLng</button>
-      <button ng-click="mark.placeDistanceMarker()">Place Point by Distance</button>
+      <button class="update-trail-button" id="place-lat-lng-button" ng-click="mark.placeLatLngMarker()">Place Point by LatLng</button>
   	</div>
   	<div class="type-container">
       <div>Marker Type:</div>
@@ -61,18 +61,19 @@
     		<label>resupply: </label><input type="checkbox" ng-change="mark.MapsService.chartMark()" ng-model="mark.MapsService.panel.resupply">
     </div>
     </div>
-  	<div class="title-container">
-  		<label>Title: </label><input type="text" ng-keyup="mark.MapsService.updateMarker()" ng-model="mark.MapsService.panel.title"></input>
-  	</div>
-  	<div class="description-container">
-  		<label>Description: </label>
-  		<textarea ng-keyup="mark.MapsService.updateMarker()" ng-model="mark.MapsService.panel.description"></textarea>
-  	</div>
-  	<div class="img-url-container">
-  		<label>Image Url: </label>
-  		<input type="text" ng-keyup="mark.MapsService.updateMarker()" ng-model="mark.MapsService.panel.img_url"></input>
-  	</div>
-
+    <div class="mark-input-container">
+    	<div class="title-container">
+    		<label>Title: </label><input type="text" ng-keyup="mark.MapsService.updateMarker()" ng-model="mark.MapsService.panel.title"></input>
+    	</div>
+    	<div class="description-container">
+    		<label>Description: </label>
+    		<textarea ng-keyup="mark.MapsService.updateMarker()" ng-model="mark.MapsService.panel.description"></textarea>
+    	</div>
+    	<div class="img-url-container">
+    		<label>Image Url: </label>
+    		<input type="text" ng-keyup="mark.MapsService.updateMarker()" ng-model="mark.MapsService.panel.img_url"></input>
+    	</div>
+    </div>
   	<div class="point-control-update-delete">
           <button class="update-trail-button" type="button" name="edit" ng-hide="mark.MapsService.currentMarker.id" ng-click="mark.savePoint()">Save Point</button>
           <button class="update-trail-button" type="button" name="edit" ng-show="mark.MapsService.currentMarker.id" ng-click="mark.editPoint()">Edit Point</button>

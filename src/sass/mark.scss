@@ -1,34 +1,40 @@
 
 .point-control-container{
 	display: flex;
-	align-items: center;
-	flex-direction: column;
-	width: 400px;
-	height: 600px;
+	align-items: flex-start;
+	flex-direction: row;
+	flex-wrap: wrap;
+	width: 500px;
+	height: 250px;
 	background: #F4F2F2;
 	border: 2px solid black;
   margin: 10px;
   padding: 5px;
+	font-size: 10px;
 	div {
 		margin: 10px auto;
 	}
 }
 
 .lat-lng {
-  display: block;
-	margin: 5px auto;
+  // display: flex;
+	margin: 2px 0px;
+}
+
+#place-lat-lng-button {
+	background-color: #EA643C;
 }
 
 .title-description {
 	padding: 5px;
 	div {
-		margin: 10px 0px;
+		margin: 3px 0px;
 	}
 }
 
 .point-control-input {
-	height: 30px;
-	width: 50px;
+	height: 10px;
+	width: 30px;
 	border-radius: 10px;
 	border-style: none;
 }
@@ -36,8 +42,8 @@
 .type-container {
 	border: 2px solid grey;
 	background-color: #D7D5D5;
-	margin: 10px auto;
-	padding: 10px;
+	margin: 2px auto;
+	padding: 5px;
 	display: flex;
 	flex-direction: column;
 	.type-row {
@@ -87,5 +93,23 @@
 }
 
 .distance-input-container {
-	width: 200px;
+	width: 100px;
+	margin: 0px 0px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	input {
+		width: 50px;
+		border-style: none;
+		border-radius: 10px;
+	}
+	#place-distance-button {
+		width: 120px;
+		background-color: #EA643C;
+	}
+}
+
+.point-control-update-delete {
+	display: flex;
+	flex-direction: column;
 }

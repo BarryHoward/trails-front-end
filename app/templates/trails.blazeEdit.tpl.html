@@ -31,12 +31,17 @@
     </ng-map>
   </div>
   <div class="marker-buttons">
-
+    <div class="points-header">
+      Add or Remove Points
+    </div>
     <div class="add-delete">
       <input type="radio" ng-model="blazeEdit.MapsService.delete" name="delete" ng-value="false"></input>
         <span>Add Points</span>
         <input type="radio" ng-model="blazeEdit.MapsService.delete" name="delete" ng-value="true"></input>
         <span>Delete Points</span>
+    </div>
+    <div class="points-header">
+      Specify Point Placement
     </div>
     <div class="insert-buttons">
       <input type="radio" ng-model="blazeEdit.MapsService.insert" name="insert" value="frontInsert"></input>

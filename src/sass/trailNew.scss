@@ -88,20 +88,33 @@
 }
 
 .marker-buttons {
-  border: 2px solid #1D3042;
-  width: 225px;
-  height: 350px;
-  padding: 10px;
-  background-color: #F4F2F2;
-  margin: 10px 5px;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  width: 500px;
+  height: 250px;
+  background: #F4F2F2;
+  border: 2px solid black;
+  margin: 10px;
+  padding: 5px;
+  font-size: 10px;
+  div {
+    margin: 10px auto;
+  }
 }
 
 .add-delete {
+  border: 1px solid grey;
+  background-color: #D7D5D5;
+  font-size: 15px;
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   span {
-    width: 200px;
+    width: 100px;
     margin: 5px 5px;
     font-family: 'Coda', cursive;
-    display: block
   }
   input {
     margin: 0px 5px;
@@ -109,17 +122,27 @@
 }
 
 .insert-buttons {
-  border-top: 1px solid #1D3042;
+  border: 1px solid grey;
+  background-color: #D7D5D5;
+  font-size: 15px;
+  padding: 10px;
+  padding-left: 30px;
+  display: flex;
+  flex-direction: row;
+  width: 475px;
+  align-items: center;
+
 
   span {
-    width: 200px;
+    width: 350px;
     margin: 5px 5px;
     font-family: 'Coda', cursive;
-    display: block;
 
   }
   input {
     margin: 0px 5px;
+    height: 10px;
+    width: 10px;
   }
 }
 
@@ -134,4 +157,10 @@
 
 #status {
   margin: 40px 5px;
+}
+
+.points-header {
+  font-size: 12px;
+  padding: 3px;
+  border-bottom: 1px solid black;
 }
