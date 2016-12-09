@@ -13,7 +13,7 @@ function HikeController (MapsService, UsersService, $stateParams) {
   MapsService.panel={};
   MapsService.regraphElevation = true;
   MapsService.trailInfo = {};
-  MapsService.hikePolys = [];
+  MapsService.hikedTrailPoly = [];
 
   vm.MapsService = MapsService;
   vm.setInterval = setInterval;
@@ -77,10 +77,7 @@ function HikeController (MapsService, UsersService, $stateParams) {
 
 
   function setInterval(){
-        let filteredPath = MapsService.filterPath(MapsService.panel.startInt, MapsService.panel.endInt);
-        MapsService.createHikePoly(filteredPath);
-        MapsService.centerMap();
-        MapsService.chartMark();
+    MapsService.filterPath(MapsService.panel.startInt, MapsService.panel.endInt);
   }
 
 
