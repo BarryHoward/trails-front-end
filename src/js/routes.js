@@ -59,7 +59,12 @@ function routerConfig ($stateProvider , $urlRouterProvider) {
 
 
   // users states --------------------------------
-
+    .state('root.users', {
+      url: '/users',
+      abstract: true,
+      templateUrl: 'templates/users.tpl.html',
+      controller: 'UsersController as users'
+    })
      $urlRouterProvider.otherwise('/home');
 };
 

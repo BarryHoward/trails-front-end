@@ -203,6 +203,13 @@ function ChartsService ($http, $cookies) {
 		}
 
 		var options = {
+			title: {
+            display: true,
+            text: 'Elevation Information',
+						fontSize: 22,
+						fontFamily: 'Nunito, sans-serif',
+						fontColor: '#EA643C'
+        },
 			scales: {
 				xAxes: [{
 					type: 'linear',
@@ -221,13 +228,13 @@ function ChartsService ($http, $cookies) {
 					}
 				}],
 			},
-			animation: false
-			// hover: {
-			// 	intersect: true,
-			// 	mode: 'point'
-			// }
+			animation: false,
+			hover: {
+				intersect: true,
+				mode: 'point'
+			}
 		}
-		
+
 		var ctx=document.getElementById('myChart');
 		ctx.width = 800;
 		ctx.height = 125;

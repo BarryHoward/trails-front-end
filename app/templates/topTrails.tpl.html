@@ -1,5 +1,6 @@
 <h1>Top Trails</h1>
 
+<!-- Probably want to add the static info box to each trail as well. Will need to resize title. -->
 <div ng-repeat="trail in topTrails.trailList">
   <div class="top-trail-container">
     <img class="trail-image" src="{{trail.img_url}}">
@@ -11,6 +12,9 @@
     </div>
     <div class="top-trail-buttons">
       <a id="marker-link" href="#trails/mark/{{trail.id}}"><button class='add-trail-button' type="button" id='mark-link' name="button">Mark</button></a>
+    </div>
+    <div class="hike-button">
+      <a id="hike-link" href="#trails/hike/{{trail.id}}"><button class='add-trail-button' type="button" id='mark-link' name="button">Hike</button></a>
     </div>
   </div>
 </div>

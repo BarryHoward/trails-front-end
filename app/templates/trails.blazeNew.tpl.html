@@ -26,26 +26,35 @@
   <input id="pac-input" class="controls" type="text" placeholder="Search...">
   <ng-map class="map" id="blazeNewMap" on-click="blazeNew.placeMarker($event)"></ng-map>
 </div>
-<div class="marker-buttons">
-  <div class="points-header">
-    Add or Remove Points
+<div class="point-control-container">
+  <h3 class="interval-header">Interval</h3>
+  <div class="set-interval-box">
+
+    <!-- Interval stuff here -->
+
   </div>
-  <div class="add-delete">
-    <input type="radio" ng-model="blazeNew.MapsService.delete" name="delete" ng-value="false"></input>
-      <span>Add Points</span>
-      <input type="radio" ng-model="blazeNew.MapsService.delete" name="delete" ng-value="true"></input>
-      <span>Delete Points</span>
-  </div>
-  <div class="points-header">
-    Specify Point Placement
-  </div>
-  <div class="insert-buttons">
-    <input type="radio" ng-model="blazeNew.MapsService.insert" name="insert" value="frontInsert"></input>
-      <span>Add to Beginning</span>
-      <input type="radio" ng-model="blazeNew.MapsService.insert" name="insert" value="midInsert"></input>
-      <span>Insert Between</span>
-      <input type="radio" ng-model="blazeNew.MapsService.insert" name="insert" value="backInsert"></input>
-      <span>Add to End</span>
+  <h3 class="controls-header">Controls</h3>
+  <div class="control-box">
+    <div class="points-header">
+      Add or Remove Points
+    </div>
+    <div class="add-delete">
+      <input type="radio" ng-model="blazeNew.MapsService.delete" name="delete" ng-value="false"></input>
+        <span>Add Points</span>
+        <input type="radio" ng-model="blazeNew.MapsService.delete" name="delete" ng-value="true"></input>
+        <span>Delete Points</span>
+    </div>
+    <div class="points-header">
+      Specify Point Placement
+    </div>
+    <div class="insert-buttons">
+      <input type="radio" ng-model="blazeNew.MapsService.insert" name="insert" value="frontInsert"></input>
+        <span>Add to Beginning</span>
+        <input type="radio" ng-model="blazeNew.MapsService.insert" name="insert" value="midInsert"></input>
+        <span>Insert Between</span>
+        <input type="radio" ng-model="blazeNew.MapsService.insert" name="insert" value="backInsert"></input>
+        <span>Add to End</span>
+    </div>
   </div>
 </div>
 

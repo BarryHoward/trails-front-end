@@ -1,34 +1,40 @@
 
 
+.map {
+	height: 100%;
+	width: 100%;
+}
 // Add Trail template
 #blazeNewMap {
-  height: 450px;
-  width: 550px;
-  margin: 20px 0px;
+  // height: 450px;
+  // width: 550px;
+  // margin: 20px 0px;
   border: 1px solid #CCCCC3;
 }
 
 // Update Trail template
 #blazeEditMap {
-  height: 400px;
-  width: 550px;
-  margin: 20px 0px;
+  // height: 400px;
+  // width: 550px;
+  // margin: 20px 0px;
   border: 1px solid #CCCCC3;
 }
 
 // Mark Trail Template
 #markMap {
-  height: 400px;
-  width: 550px;
-  margin: 20px 0px;
+  // height: 400px;
+  // width: 550px;
+  // margin: 20px 0px;
   border: 1px solid #CCCCC3
 }
 
 .map-container {
   border: 2px solid black;
-  height: 500px;
-  width: 600px;
-  margin: 10px;
+  border-radius: 5px;
+  height: 450px;
+  width: 850px;
+  margin: 10px 5px;
+  margin-bottom: 5px;
   padding: 10px;
   display: flex;
   justify-content: space-around;

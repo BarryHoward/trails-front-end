@@ -8,6 +8,7 @@
 @import 'login';
 @import 'topTrails';
 @import 'mark';
+@import 'controls';
 
 html {
 	background-color: #748491;
@@ -32,18 +33,10 @@ h3 {
 }
 
 .container {
-  padding: 20px;
-  width: 1240px;
+  width: 100%;
   height: 500px;
 }
 
-.map {
-	height: 100%;
-	width: 100%;
-}
 
-.chart-box {
-	height: 260px;
-}
 
 // IGNORE ME!

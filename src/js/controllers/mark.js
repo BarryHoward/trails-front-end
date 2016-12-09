@@ -127,14 +127,14 @@ function MarkController (MapsService, UsersService, $stateParams) {
       MapsService.deletePoint().then((resp) => {
         let markIndex = MapsService.markerArray.indexOf(MapsService.markerArray);
         MapsService.markerArray.splice(markIndex, 1);
-        MapsService.currentMarker.setMap(null); 
+        MapsService.currentMarker.setMap(null);
         MapsService.chartMark();
         MapsService.updatePanel();
       });
     } else {
         let markIndex = MapsService.markerArray.indexOf(MapsService.markerArray);
         MapsService.markerArray.splice(markIndex, 1);
-        MapsService.currentMarker.setMap(null); 
+        MapsService.currentMarker.setMap(null);
         MapsService.chartMark();
         MapsService.updatePanel();
     }
