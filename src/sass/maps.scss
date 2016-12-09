@@ -26,12 +26,13 @@
 
 .map-container {
   border: 2px solid black;
-  height: 450px;
+  height: 500px;
   width: 600px;
   margin: 10px;
+  padding: 10px;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: space-around;
+  align-items: space-around;
   background-color: #F4F2F2;
 }
 
