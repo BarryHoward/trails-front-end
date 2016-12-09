@@ -29,7 +29,6 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
   vm.updateMarker = updateMarker;
   vm.updatePanel = updatePanel;
   vm.filterPath = filterPath;
-  vm.createHikePoly = createHikePoly;
   vm.distToWaypoint = distToWaypoint;
 
   const metersFeetConversion = 3.28084;
@@ -65,22 +64,7 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
 
   //Create line and Center map
 
-  function createTrailPoly() {
-    if (vm.trailPoly){
-      vm.trailPoly.setMap(null);
-    }
-    var trailPoly = new google.maps.Polyline({
-        path: vm.trailPath,
-        geodesic: true,
-        strokeColor: '#FF0000',
-        strokeOpacity: 1.0,
-        strokeWeight: 3
-      });
-    trailPoly.setMap(vm.map);
-    vm.trailPoly = trailPoly;
-    vm.currentPoly = trailPoly;
-    vm.currentPolyTrail = true;
-  }
+
 
   function centerMap() {
     var latlngbounds = new google.maps.LatLngBounds();
@@ -478,44 +462,25 @@ function closestPath(waypoint){
   // ----------------- Filtering -------------------------------------------------
 
   function filterPath(start, end){
-    vm.hikePolys.forEach(function(poly){
-      poly.setMap(null);
-    })
     if (start<=0 && end>=spherical.computeLength(vm.trailPath)*metersMilesConversion){
       vm.currentPath = vm.trailPath;
-      vm.currentPoly = vm.trailPoly;
       vm.panel.startInt = 0;
       vm.panel.endInt = round(spherical.computeLength(vm.trailPath)*metersMilesConversion,2);
-      vm.trailPoly.setOptions({strokeColor: '#FF0000', strokeOpacity: 1, strokeWeight: 3});
-      vm.currentPolyTrail = true;
-      return vm.trailPath;
-    }
-    let filteredPath = vm.trailPath.filter(function(element, index){
-      let waypointDistance = spherical.computeLength(vm.trailPath.slice(0, index+1))*metersMilesConversion;
-      return (start<waypointDistance && waypointDistance <end)
-    })
-    filteredPath.unshift(distToWaypoint(start));
-    filteredPath.push(distToWaypoint(end));
-    vm.currentPath = filteredPath;
-    vm.currentPolyTrail = false;
-    return filteredPath;
-  }
-
-  function createHikePoly(path){
-    if (path[0] && path[1]){
-      if (!vm.currentPolyTrail){
-        var hikePoly = new google.maps.Polyline({
-          path: vm.currentPath,
-          geodesic: true,
-          strokeColor: "#FF00FF",
-          strokeOpacity: 1.0,
-          strokeWeight: 4
-        });
-        vm.currentPoly = hikePoly;
-        hikePoly.setMap(vm.map);
-        vm.hikePolys.push(hikePoly);
-        vm.trailPoly.setOptions({strokeColor: '#000000', strokeOpacity: 0.4, strokeWeight: 3});
-      }
+      showTrailPoly();
+      centerMap();
+      chartMark();
+    } else {
+      let filteredPath = vm.trailPath.filter(function(element, index){
+        let waypointDistance = spherical.computeLength(vm.trailPath.slice(0, index+1))*metersMilesConversion;
+        return (start<waypointDistance && waypointDistance <end)
+      })
+      filteredPath.unshift(distToWaypoint(start));
+      filteredPath.push(distToWaypoint(end));
+      vm.currentPath = filteredPath;
+      createCurrentPoly(filteredPath);
+      showCurrentPoly();
+      centerMap();
+      chartMark();
     }
   }
 
@@ -541,7 +506,87 @@ function closestPath(waypoint){
       }     
     }
   }
-  
+
+  //  Show Poly ----------------------------------
+
+
+  function showTrailPoly(){
+    vm.hikedTrailPoly.forEach(function(poly){
+      poly.setOptions({strokeOpacity: 0})
+    })
+    vm.currentPoly.setOptions({strokeOpacity: 0});
+    vm.trailPoly.setOptions({strokeColor: '#FF0000', strokeOpacity: 1.0, strokeWeight: 3})
+
+  }
+
+  function showHikedTrails(){
+    vm.hikedTrailPoly.forEach(function (poly){
+      poly.setOptions({strokeOpacity: 1})
+    })
+    vm.currentPoly.setOptions({strokeOpacity: 0});
+    vm.trailPoly.setOptions({strokeColor: '#000000', strokeOpacity: 0.4, strokeWeight: 3});
+  }
+
+  function showCurrentPoly(){
+    vm.hikedTrailPoly.forEach(function(poly){
+      poly.setOptions({strokeOpacity: 0})
+    })
+    vm.currentPoly.setOptions({strokecolor: "#FF00FF", strokeOpacity: 1.0, strokeWeight: 4});
+    vm.trailPoly.setOptions({strokeColor: '#000000', strokeOpacity: 0.4, strokeWeight: 3});
+  }
+
+  // Create Poly -----------------------------
+
+  function createTrailPoly() {
+    if (vm.trailPoly){
+      vm.trailPoly.setMap(null);
+    }
+    var trailPoly = new google.maps.Polyline({
+        path: vm.trailPath,
+        geodesic: true,
+        strokeColor: '#FF0000',
+        strokeOpacity: 1.0,
+        strokeWeight: 3
+      });
+    trailPoly.setMap(vm.map);
+    vm.trailPoly = trailPoly;
+  }
+
+  function createCurrentPoly(path){
+    if (path[0] && path[1]){
+        var hikePoly = new google.maps.Polyline({
+          path: vm.currentPath,
+          geodesic: true,
+          strokeColor: "#FF00FF",
+          strokeOpacity: 1.0,
+          strokeWeight: 4
+        });
+        hikePoly.setMap(vm.map);
+        if (vm.currentPoly) {
+          vm.currentPoly.setMap(null);
+        }
+        vm.currentPoly = hikePoly;
+    }
+  }
+
+  function createHikedTrailPoly(path){
+    let index = hikedTrailPoly.length;
+    index = index % hikedTrailColor.length;
+    let color  = hikedTrailColor[index]
+    if (path[0] && path[1]){
+        var hikePoly = new google.maps.Polyline({
+          path: vm.currentPath,
+          geodesic: true,
+          strokeColor: color,
+          strokeOpacity: 1.0,
+          strokeWeight: 4
+        });
+        hikePoly.setMap(vm.map);
+        vm.hikedTrailPoly.push(hikePoly);
+    }
+
+  }
+
 
 
 
