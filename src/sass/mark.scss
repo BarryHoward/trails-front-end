@@ -1,21 +1,21 @@
-
-.point-control-container{
-	display: flex;
-	align-items: flex-start;
-	flex-direction: row;
-	flex-wrap: wrap;
-	width: 500px;
-	height: 250px;
-	background: #F4F2F2;
-	border: 2px solid black;
-	border-radius: 5px;
-  margin: 10px;
-  padding: 5px;
-	font-size: 10px;
-	div {
-		margin: 10px auto;
-	}
-}
+//
+// .point-control-container{
+// 	display: flex;
+// 	align-items: flex-start;
+// 	flex-direction: row;
+// 	flex-wrap: wrap;
+// 	width: 530px;
+// 	height: 500px;
+// 	background: #F4F2F2;
+// 	border: 2px solid black;
+// 	border-radius: 5px;
+//   margin: 10px 5px;
+//   padding: 5px;
+// 	font-size: 10px;
+// 	div {
+// 		margin: 10px auto;
+// 	}
+// }
 
 .lat-lng {
   // display: flex;
@@ -24,6 +24,7 @@
 
 #place-lat-lng-button {
 	background-color: #EA643C;
+	display: block;
 }
 
 .title-description {

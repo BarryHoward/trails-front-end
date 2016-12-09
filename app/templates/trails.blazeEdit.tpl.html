@@ -30,30 +30,40 @@
     <ng-map class="map" id="blazeEditMap" on-click="blazeEdit.placeMarker($event)">
     </ng-map>
   </div>
-  <div class="marker-buttons">
-    <div class="points-header">
-      Add or Remove Points
+  <div class="point-control-container">
+    <h3 class="interval-header">Interval</h3>
+
+    <div class="set-interval-box">
+
+      <!-- Interval stuff here -->
+
     </div>
-    <div class="add-delete">
-      <input type="radio" ng-model="blazeEdit.MapsService.delete" name="delete" ng-value="false"></input>
-        <span>Add Points</span>
-        <input type="radio" ng-model="blazeEdit.MapsService.delete" name="delete" ng-value="true"></input>
-        <span>Delete Points</span>
+    <h3 class="controls-header">Controls</h3>
+    <div class="control-box">
+      <div class="points-header">
+        Add or Remove Points
+      </div>
+      <div class="add-delete">
+        <input type="radio" ng-model="blazeEdit.MapsService.delete" name="delete" ng-value="false"></input>
+          <span>Add Points</span>
+          <input type="radio" ng-model="blazeEdit.MapsService.delete" name="delete" ng-value="true"></input>
+          <span>Delete Points</span>
+      </div>
+      <div class="points-header">
+        Specify Point Placement
+      </div>
+      <div class="insert-buttons">
+        <input type="radio" ng-model="blazeEdit.MapsService.insert" name="insert" value="frontInsert"></input>
+          <span>Add to Beginning</span>
+          <input type="radio" ng-model="blazeEdit.MapsService.insert" name="insert" value="midInsert"></input>
+          <span>Insert Between</span>
+          <input type="radio" ng-model="blazeEdit.MapsService.insert" name="insert" value="backInsert"></input>
+          <span>Add to End</span>
+      </div>
     </div>
-    <div class="points-header">
-      Specify Point Placement
-    </div>
-    <div class="insert-buttons">
-      <input type="radio" ng-model="blazeEdit.MapsService.insert" name="insert" value="frontInsert"></input>
-        <span>Add to Beginning</span>
-        <input type="radio" ng-model="blazeEdit.MapsService.insert" name="insert" value="midInsert"></input>
-        <span>Insert Between</span>
-        <input type="radio" ng-model="blazeEdit.MapsService.insert" name="insert" value="backInsert"></input>
-        <span>Add to End</span>
-    </div>
-</div>
+  </div>
 </div>
 <div class="elevation-header"><h2>Elevation Information</h2></div>
 <div class="chart-box">
-	<canvas class="chart" id="myChart"></canvas>
+	<canvas class="chart" id="myChart" ng-click="blazeEdit.testClick($event)"></canvas>
 </div>
