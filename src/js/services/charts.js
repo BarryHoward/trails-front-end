@@ -10,7 +10,7 @@ function ChartsService ($http, $cookies) {
 	const spherical = google.maps.geometry.spherical;
 
 
-	function chart(path, markers, regraph){
+	function chart(path, markers, start, regraph){
 		return new Promise(function(chartResolve, chartReject) {
 			var waypoints = []
 			markers.forEach(function(marker){
@@ -19,26 +19,27 @@ function ChartsService ($http, $cookies) {
 		   	vm.pathLength = spherical.computeLength(path)*metersMilesConversion;
 		   	getWaypointElevations(waypoints, markers).then(function (waypointElevations) {
 		    	if (regraph){
-		    		getPathElevations(path).then(function (pathElevations) {
+		    		getPathElevations(path, start).then(function (pathElevations) {
 			    		vm.pathElevations = pathElevations;
-			    		drawChart(vm.pathElevations, waypointElevations, markers);
+			    		drawChart(vm.pathElevations, waypointElevations, markers, start);
 			    		chartResolve();
 			    	})
 		    	} else {
-		        	drawChart(vm.pathElevations, waypointElevations, markers);
+		        	drawChart(vm.pathElevations, waypointElevations, markers, start);
 		        	chartResolve();
 		        }
 			})
 		})
 	}
 
-	function getPathElevations(path){
+	function getPathElevations(path, start){
 	  return new Promise(function (resolve, reject) {
 	  	if (path.length >1){
 		    elevator.getElevationAlongPath({
 		      'path': path,
 		      'samples': 200
 		    }, function (elevations, status){
+		    	console.log(status)
 		        var pathElevations = [];
 		        let minObject = elevations.reduce(function (min, newNum){
 		        	if (newNum.elevation<min.elevation){
@@ -57,10 +58,10 @@ function ChartsService ($http, $cookies) {
 
 		        vm.max_elevation = round(maxObject.elevation*metersFeetConversion, 2);
 		        vm.min_elevation = round(minObject.elevation*metersFeetConversion, 2);
-		        pathElevations[0]={x: 0, y: elevations[0].elevation*metersFeetConversion};
+		        pathElevations[0]={x: start, y: elevations[0].elevation*metersFeetConversion};
 		        var resolution = vm.pathLength/(elevations.length-1);
 		        for (var i=1; i<elevations.length; i++){
-		          pathElevations[i] = {x: resolution * i,
+		          pathElevations[i] = {x: start + resolution * i,
 		                      y: elevations[i].elevation*metersFeetConversion}
 		        }
 		      resolve(pathElevations);
@@ -85,8 +86,9 @@ function ChartsService ($http, $cookies) {
 	}
 
 
-	function drawChart(pathElevations, waypointElevations, markers){
+	function drawChart(pathElevations, waypointElevations, markers, start){
 		var marksSorted = sortMarks(waypointElevations, markers);
+		console.log(marksSorted)
 		var ctx = document.getElementById('myChart');
 		ctx.width = 800;
 		ctx.height = 125;
@@ -215,9 +217,8 @@ function ChartsService ($http, $cookies) {
 					type: 'linear',
 					position: 'bottom',
 					ticks: {
-						min: 0,
-						max: 20,
-						beginAtZero: true
+						min: start,
+						max: start+20,
 					}
 				}],
 				yAxes: [{

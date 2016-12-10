@@ -29,11 +29,11 @@
         <span>
           <span class="lat-lng">
             <label>Start: </label>
-            <input class="point-control-input" type="text" ng-model="hike.MapsService.panel.startInt"></input>
+            <input class="point-control-input" type="text" ng-model="hike.MapsService.panel.start"></input>
           </span>
           <span class="lat-lng">
             <label>End: </label>
-            <input class="point-control-input" type="text" ng-model="hike.MapsService.panel.endInt"></input>
+            <input class="point-control-input" type="text" ng-model="hike.MapsService.panel.end"></input>
           </span>
         </span>
             <button ng-click="hike.setInterval()">go to interval</button>
@@ -79,7 +79,7 @@
       	</div>
 
     	<div class="point-control-update-delete">
-            <button class="update-trail-button" type="button" name="edit" ng-hide="hike.MapsService.currentMarker.id" ng-click="hike.savePoint()">Save Point</button>
+            <button class="update-trail-button" type="button" name="edit" ng-hide="hike.MapsService.currentMarker.id" ng-click="hike.saveHike()">Save Hike</button>
             <button class="update-trail-button" type="button" name="edit" ng-show="hike.MapsService.currentMarker.id" ng-click="hike.editPoint()">Edit Point</button>
             <button class="delete-trail-button" type="button" name="delete" ng-show="hike.MapsService.currentMarker.id" ng-click="hike.deletePoint()">Delete Point</button>
       </div>
