@@ -1,3 +1,7 @@
+//Outstanding Issues
+
+//-- Chart Icons dont show up on initial graph sometimes.  Other times they're slow.
+
 function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootScope) {
 
   const SERVER = "https://trails-back-end.herokuapp.com/";
@@ -320,40 +324,25 @@ function closestPath(waypoint){
 
   function updatePanel(mark){
     safeApply(function(){
-      if (vm.currentMarker && mark){
+      if (Object.keys(vm.currentMarker).length && mark){
         let waypoint = vm.currentMarker.getPosition();
-        vm.panel = vm.currentMarker;
         vm.panel.lat = waypoint.lat();
         vm.panel.lng = waypoint.lng();
-
-        // vm.panel.title = vm.currentMarker.title;
-        // vm.panel.description = vm.currentMarker.description;
-        // vm.panel.img_url = vm.currentMarker.img_url;
-        // vm.panel.distance = vm.currentMarker.distance;
-        // vm.panel.shelter = vm.currentMarker.shelter;
-        // vm.panel.campsite = vm.currentMarker.campsite;
-        // vm.panel.water = vm.currentMarker.water;
-        // vm.panel.view = vm.currentMarker.view;
-        // vm.panel.road = vm.currentMarker.road;
-        // vm.panel.parking = vm.currentMarker.parking;
-        // vm.panel.resupply = vm.currentMarker.resupply;
+        vm.panel.title = vm.currentMarker.title;
+        vm.panel.description = vm.currentMarker.description;
+        vm.panel.img_url = vm.currentMarker.img_url;
+        vm.panel.distance = vm.currentMarker.distance;
+        vm.panel.shelter = vm.currentMarker.shelter;
+        vm.panel.campsite = vm.currentMarker.campsite;
+        vm.panel.water = vm.currentMarker.water;
+        vm.panel.view = vm.currentMarker.view;
+        vm.panel.road = vm.currentMarker.road;
+        vm.panel.parking = vm.currentMarker.parking;
+        vm.panel.resupply = vm.currentMarker.resupply;
       } else if (vm.currentHike && !mark){
         vm.panel = vm.currentHike
       } else {
         vm.panel = {};
-        // vm.panel.distance = "";
-        // vm.panel.lat = "";
-        // vm.panel.lng = "";
-        // vm.panel.title = "";
-        // vm.panel.description = "";
-        // vm.panel.img_url = "";
-        // vm.panel.shelter = false;
-        // vm.panel.campsite = false;
-        // vm.panel.water = false;
-        // vm.panel.view = false;
-        // vm.panel.road = false;
-        // vm.panel.parking = false;
-        // vm.panel.resupply = false;
       }
     })
   }
@@ -381,7 +370,7 @@ function closestPath(waypoint){
   }
 
   function updateHike(){
-    if (vm.currentHike){
+    if (Object.keys(vm.currentHike).length){
       vm.currentHike.title = vm.panel.title;
       vm.currentHike.description = vm.panel.description;
       vm.currentHike.start = vm.panel.start;
@@ -431,7 +420,6 @@ function closestPath(waypoint){
   }
 
   function deletePoint(){
-    vm.currentMarker = null; 
     let req = {
       url: `${SERVER}points/${vm.currentMarker.id}`,
       method: 'DELETE',
@@ -463,6 +451,7 @@ function closestPath(waypoint){
       method: 'PATCH',
       headers: UsersService.getHeaders()
     };
+    console.log(req)
     return $http(req);
   }
 
@@ -495,7 +484,9 @@ function closestPath(waypoint){
   }
 
   function initChart(){
-    ChartsService.chart(vm.currentHike.path, vm.markerArray, 0, true);
+    ChartsService.chart(vm.currentHike.path, vm.markerArray, 0, true).then(function(){
+      console.log("chart loaded")
+    });
   }
 
   function chartMark(overide){

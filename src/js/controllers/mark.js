@@ -115,6 +115,9 @@ function MarkController (MapsService, UsersService, $stateParams) {
 
   function editPoint(){
     MapsService.panel.id = MapsService.currentMarker.id;
+    let newPoint = {
+
+    }
     MapsService.editPoint(MapsService.panel).then((resp) => {
     })
   }
@@ -125,6 +128,9 @@ function MarkController (MapsService, UsersService, $stateParams) {
         let markIndex = MapsService.markerArray.indexOf(MapsService.markerArray);
         MapsService.markerArray.splice(markIndex, 1);
         MapsService.currentMarker.setMap(null);
+        var index = MapsService.markerArray.indexOf(MapsService.currentMarker);
+        MapsService.markerArray.splice(index, 1);
+        MapsService.currentMarker = undefined;
         MapsService.chartMark();
         MapsService.updatePanel(true);
       });
