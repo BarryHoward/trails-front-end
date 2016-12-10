@@ -88,7 +88,6 @@ function ChartsService ($http, $cookies) {
 
 	function drawChart(pathElevations, waypointElevations, markers, start){
 		var marksSorted = sortMarks(waypointElevations, markers);
-		console.log(marksSorted)
 		var ctx = document.getElementById('myChart');
 		ctx.width = 800;
 		ctx.height = 125;
