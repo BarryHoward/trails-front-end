@@ -56,7 +56,6 @@ function BlazeEditController (MapsService, UsersService, $stateParams, $state) {
           MapsService.clickListener(marker, waypoint);
         });
         MapsService.initChart();
-              console.log(map)
 
       })
     })

@@ -39,6 +39,7 @@ function ChartsService ($http, $cookies) {
 		      'path': path,
 		      'samples': 200
 		    }, function (elevations, status){
+		    	console.log(status)
 		        var pathElevations = [];
 		        let minObject = elevations.reduce(function (min, newNum){
 		        	if (newNum.elevation<min.elevation){
@@ -63,7 +64,6 @@ function ChartsService ($http, $cookies) {
 		          pathElevations[i] = {x: start + resolution * i,
 		                      y: elevations[i].elevation*metersFeetConversion}
 		        }
-		        console.log(pathElevations, start)
 		      resolve(pathElevations);
 		    });
 		} else {resolve()}

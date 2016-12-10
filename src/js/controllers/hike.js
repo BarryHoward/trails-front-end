@@ -6,17 +6,16 @@ function HikeController (MapsService, UsersService, $stateParams) {
 
   //params specific to page
   MapsService.trail_id = $stateParams.id;
-  MapsService.delete = false;
-  MapsService.newMarkerAllow = true;
-  MapsService.snap = true;
   MapsService.draggable = false;
-
   MapsService.regraphElevation = true;
 
+  vm.loggedIn = UsersService.isLoggedIn();
+  vm.status = "Add Points to a Trail!";
 
   vm.MapsService = MapsService;
   vm.setInterval = setInterval;
   vm.saveHike = saveHike;
+  vm.editHike = editHike;
 
   const metersFeetConversion = 3.28084;
   const metersMilesConversion = 0.000621371;
@@ -25,14 +24,12 @@ function HikeController (MapsService, UsersService, $stateParams) {
 
   init();
 
-
   function init(){
-    vm.loggedIn = UsersService.isLoggedIn();
-    //initial variables
-    vm.status = "Add Points to a Trail!";
+
 
     MapsService.getMap(mapId).then(function (map){
       MapsService.map=map;
+      MapsService.map.setMapTypeId('terrain');
       MapsService.getTrail(map).then(function (resp){
 
         //add trail Markers and add listeners;
@@ -57,7 +54,6 @@ function HikeController (MapsService, UsersService, $stateParams) {
 
         //create line, center map, and initialize search bar
         MapsService.createTrailPoly();
-        MapsService.map.setMapTypeId('terrain');
         MapsService.centerMap();
         MapsService.initSearch();
 
@@ -95,13 +91,8 @@ function HikeController (MapsService, UsersService, $stateParams) {
 
 
   function setInterval(){
-    let fullPath = MapsService.filterPath(MapsService.panel.start, MapsService.panel.end, true);
-    if ((MapsService.panel.endInt - MapsService.panel.startInt)>20){
-      let chartPath = MapsService.filterPath(MapsService.panel.startInt, MapsService.panel.startInt + 20, false);
-      MapsService.chartHike(chartPath);
-    } else {
-      MapsService.chartHike(fullPath);
-    }
+      MapsService.filterTrailPath(Number(MapsService.panel.start), Number(MapsService.panel.end));
+      MapsService.filterChartPath(Number(MapsService.panel.start), Number(MapsService.panel.end))
   }
 
 

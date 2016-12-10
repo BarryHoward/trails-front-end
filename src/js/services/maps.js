@@ -31,7 +31,8 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
   vm.updateMarker = updateMarker;
   vm.updateHike = updateHike;
   vm.updatePanel = updatePanel;
-  vm.filterPath = filterPath;
+  vm.filterTrailPath = filterTrailPath;
+  vm.filterChartPath = filterChartPath;
   vm.distToWaypoint = distToWaypoint;
 
   const metersFeetConversion = 3.28084;
@@ -46,6 +47,7 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
   vm.trailInfo = {};
   vm.currentHike ={};
   vm.currentHike.start = 0;
+  vm.chartOffset = 0;
 
 
 // ----- Reset markers
@@ -79,6 +81,9 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
     return $http.get(`${SERVER}trails/${vm.trail_id}/points`);
   }
 
+  function getHikes(userId){
+    return $http.get(`${SERVER}hikes/users/${userId}/trails`)
+  }
 // -----------------------------------------------------------------------
 
   //Create line and Center map
@@ -426,7 +431,7 @@ function closestPath(waypoint){
   }
 
   function deletePoint(){
-    MapsService.currentMarker = null; 
+    vm.currentMarker = null; 
     let req = {
       url: `${SERVER}points/${vm.currentMarker.id}`,
       method: 'DELETE',
@@ -506,10 +511,10 @@ function closestPath(waypoint){
 
   function chartHike(path){
     ChartsService.chart(path, vm.markerArray, Number(vm.currentHike.start), (vm.regraphElevation || overide)).then(function(){
-      safeApply(function(){
-        vm.currentHike.min_elevation = ChartsService.min_elevation;
-        vm.currentHike.max_elevation = ChartsService.max_elevation;
-      })
+      // safeApply(function(){
+      //   vm.currentHike.min_elevation = ChartsService.min_elevation;
+      //   vm.currentHike.max_elevation = ChartsService.max_elevation;
+      // })
     })
   }
 
@@ -530,31 +535,41 @@ function closestPath(waypoint){
 
   // ----------------- Filtering -------------------------------------------------
 
-  function filterPath(start, end, chart){
+
+  function filterTrailPath(){
+    var start =  Number(vm.panel.start);
+    var end = Number(vm.panel.end);
+    console.log(start, end)
     if (start<=0 && end>=spherical.computeLength(vm.trailPath)*metersMilesConversion){
       vm.currentHike.path = vm.trailPath;
       vm.panel.start = 0;
       vm.panel.end = round(spherical.computeLength(vm.trailPath)*metersMilesConversion,2);
       showTrailPoly();
-      centerMap();
-      updateHike();
     } else {
       let filteredPath = vm.trailPath.filter(function(element, index){
         let waypointDistance = spherical.computeLength(vm.trailPath.slice(0, index+1))*metersMilesConversion;
-        return (start<waypointDistance && waypointDistance <end)
+        return (start<=waypointDistance && waypointDistance <=end)
       })
       filteredPath.unshift(distToWaypoint(start));
       filteredPath.push(distToWaypoint(end));
-
-      if (chart){
-        vm.currentHike.path = filteredPath;
-        createCurrentPoly(filteredPath);
-        showCurrentPoly();
-        centerMap();
-      }
-      updateHike();
-      return filteredPath;
+      vm.currentHike.path = filteredPath;
+      createCurrentPoly(filteredPath);
+      showCurrentPoly();
     }
+    centerMap();
+    updateHike();
+  }
+
+  function filterChartPath(){
+    var start =  Number(vm.panel.start);
+    var end = Number(vm.panel.end);
+    let chartPath = vm.trailPath.filter(function(element, index){
+    let waypointDistance = spherical.computeLength(vm.trailPath.slice(0, index+1))*metersMilesConversion;
+      return (start + (20*vm.chartOffset)<=waypointDistance && waypointDistance<=(start + 20 + 20*vm.chartOffset) && waypointDistance<=end)
+    })
+    chartPath.unshift(distToWaypoint(start));
+    chartPath.push(distToWaypoint(end));
+    chartHike(chartPath);
   }
 
   function distToWaypoint(distance){
