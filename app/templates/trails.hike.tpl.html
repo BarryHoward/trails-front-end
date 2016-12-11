@@ -42,20 +42,22 @@
     </div>
     <h3 class="controls-header">Controls</h3>
     <div class="control-box">
-      <button ng-repeat="hike in hike.MapsService.hikedArray" ng-click="gotoHiked({{hike.id}})">
-        {{hike.title}}
-        {{hike.id}}
+      <div ng-repeat="singleHiked in hike.MapsService.hikedArray">
+      <button  ng-click="hike.gotoHiked(singleHiked.id)">
+        {{singleHiked.title}}
       </button>
+      </div>
+      <button ng-click="hike.clearCurrent()">+ New</button>
 
       <div class="hike-box">
         <input type="text" ng-model="hike.MapsService.panel.title" placeholder="title">
-        <input type="date" ng-model="hike.MapsService.panel.startDate">
-        <input type="date" ng-model="hike.MapsService.panel.endDate">
-        <textarea ng-model="hike.MapsService.panel.description">
+        <input type="date" ng-model="hike.MapsService.panel.start_date">
+        <input type="date" ng-model="hike.MapsService.panel.end_date">
+        <textarea ng-model="hike.MapsService.panel.description"></textarea>
       </div>
-        <button class="save-hike-button" type="button" name="save" ng-click="hike.saveHike()">Save Hike</button>
-        <button class="edit-hike-button" type="button" name="save" ng-click="hike.editHike()">Edit Hike</button>
-        <button class="edit-hike-button" type="button" name="save" ng-click="hike.deleteHike()">Delete Hike</button>
+        <button class="save-hike-button" ng-click="hike.saveHike()">Save Hike</button>
+        <button class="edit-hike-button" ng-click="hike.editHike()">Edit Hike</button>
+        <button class="delete-hike-button" ng-click="hike.deleteHike()">Delete Hike</button>
     </div>
   </div>
 
