@@ -65,6 +65,13 @@ function routerConfig ($stateProvider , $urlRouterProvider) {
       templateUrl: 'templates/users.tpl.html',
       controller: 'UsersController as users'
     })
+
+    .state('root.users.home', {
+      url: '/users/:userId/home',
+      templateUrl: 'templates/users.home.tpl.html',
+      controller: 'UserHomeController as userHome'
+    })
+
      $urlRouterProvider.otherwise('/home');
 };
 
