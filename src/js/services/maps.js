@@ -49,6 +49,10 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
   vm.showCurrentPoly = showCurrentPoly;
   vm.showSingleHiked = showSingleHiked;
   vm.safeApply = safeApply;
+  vm.nextChart = nextChart;
+  vm.prevChart = prevChart;
+  vm.chooseChart = chooseChart;
+  vm.setOffSetArray = setOffSetArray;
 
   const metersFeetConversion = 3.28084;
   const metersMilesConversion = 0.000621371;
@@ -529,8 +533,11 @@ function closestPath(waypoint){
   }
 
   function initChart(){
-    ChartsService.chart(vm.currentHike.path, vm.markerArray, 0, true).then(function(){
-    });
+    vm.currentHike.start = 0;
+    vm.currentHike.end = spherical.computeLength(vm.trailPath)*metersMilesConversion;
+    filterChartPath();
+    // ChartsService.chart(vm.currentHike.path, vm.markerArray, 0, true).then(function(){
+    // });
   }
 
   function chartMark(overide){
@@ -544,8 +551,8 @@ function closestPath(waypoint){
     updateMarker();
   }
 
-  function chartHike(path){
-    ChartsService.chart(path, vm.markerArray, Number(vm.currentHike.start), (vm.regraphElevation || overide)).then(function(){
+  function chartHike(path, start, overide){
+    ChartsService.chart(path, vm.markerArray, start, (vm.regraphElevation || overide)).then(function(){
     })
   }
 
@@ -594,16 +601,60 @@ function closestPath(waypoint){
     updateHike();
   }
 
+  function updateShownChart(){
+    vm.showChart = [];
+    for (var i=-2; i<=2; i++){
+      if (vm.chartOffset+i>=0 && vm.chartOffset+i<vm.offSetArray.length){
+        vm.showChart.push(vm.chartOffset+i)
+      }
+    }
+    console.log(vm.showChart);
+  }
+
+  function nextChart(){
+    if (vm.chartOffset+1<vm.offSetArray.length){
+      vm.chartOffset++;
+      filterChartPath();
+      updateShownChart();
+    }
+  }
+  function prevChart(){
+    if (vm.chartOffset-1>=0){
+      vm.chartOffset--;
+      updateShownChart()
+      filterChartPath();
+    }
+  }
+
+  function chooseChart(number){
+    vm.chartOffset = number;
+    updateShownChart()
+    filterChartPath();
+  }
+
+  function setOffSetArray(length){
+    vm.offSetArray = [];
+    let number = Math.floor(length*metersMilesConversion/20);
+    for (var i=0; i<=number; i++){
+      vm.offSetArray.push(i);
+    }
+    updateShownChart()
+
+  }
+
   function filterChartPath(){
-    var start =  Number(vm.panel.start);
-    var end = Number(vm.panel.end);
+    var start =  Number(vm.currentHike.start);
+    var end = Number(vm.currentHike.end);
+    var chartStart = start + 20*vm.chartOffset;
+    var chartEnd = Math.min(end, (start + 20 + 20*vm.chartOffset))
     let chartPath = vm.trailPath.filter(function(element, index){
-    let waypointDistance = spherical.computeLength(vm.trailPath.slice(0, index+1))*metersMilesConversion;
-      return (start + (20*vm.chartOffset)<=waypointDistance && waypointDistance<=(start + 20 + 20*vm.chartOffset) && waypointDistance<=end)
+      let waypointDistance = spherical.computeLength(vm.trailPath.slice(0, index+1))*metersMilesConversion;
+      return (chartStart<=waypointDistance && waypointDistance<=chartEnd)
     })
-    chartPath.unshift(distToWaypoint(start));
-    chartPath.push(distToWaypoint(end));
-    chartHike(chartPath);
+    chartPath.unshift(distToWaypoint(chartStart));
+    chartPath.push(distToWaypoint(chartEnd));
+    console.log(chartPath, start + (20*vm.chartOffset), vm.currentHike)
+    chartHike(chartPath, chartStart);
   }
 
   function distToWaypoint(distance){
