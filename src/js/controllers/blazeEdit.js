@@ -45,8 +45,7 @@ function BlazeEditController (MapsService, UsersService, $stateParams, $state) {
 
         //create line, center map, and initialize search bar
         MapsService.createTrailPoly();
-        MapsService.centerMap();
-        MapsService.initSearch();
+        MapsService.initSearch().then(MapsService.centerMap())
         MapsService.map.setMapTypeId('terrain');
 
         //add trail Markers and add listeners;

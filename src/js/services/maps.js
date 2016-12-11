@@ -11,6 +11,7 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
   vm.getMap = getMap;
   vm.getTrail = getTrail;
   vm.getPoints = getPoints;
+  vm.getHikes = getHikes;
   vm.createTrailPoly = createTrailPoly;
   vm.centerMap = centerMap;
   vm.initSearch = initSearch;
@@ -35,9 +36,16 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
   vm.updateMarker = updateMarker;
   vm.updateHike = updateHike;
   vm.updatePanel = updatePanel;
+  vm.updateHikedList = vm.updateHikedList;
   vm.filterTrailPath = filterTrailPath;
   vm.filterChartPath = filterChartPath;
   vm.distToWaypoint = distToWaypoint;
+  vm.createHikedPoly = createHikedPoly;
+  vm.createCurrentPoly = createCurrentPoly; 
+  vm.showTrailPoly = showTrailPoly;
+  vm.showHikedPoly = showHikedPoly;
+  vm.showCurrentPoly = showCurrentPoly;
+  vm.safeApply = safeApply;
 
   const metersFeetConversion = 3.28084;
   const metersMilesConversion = 0.000621371;
@@ -49,9 +57,11 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
   vm.markerArray = [];
   vm.panel={};
   vm.trailInfo = {};
+  vm.currentMarker = {};
   vm.currentHike ={};
   vm.currentHike.start = 0;
   vm.chartOffset = 0;
+  vm.hikedTrailColor = ["#00FFFF", "#0000FF", "#00FF00", "FFFF00", "FF00FF"]
 
 
 // ----- Reset markers
@@ -85,8 +95,9 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
     return $http.get(`${SERVER}trails/${vm.trail_id}/points`);
   }
 
-  function getHikes(userId){
-    return $http.get(`${SERVER}hikes/users/${userId}/trails`)
+  function getHikes(){
+    console.log(vm.user_id, vm.trail_id)
+    return $http.get(`${SERVER}hikes/users/${vm.user_id}/trails/${vm.trail_id}`)
   }
 // -----------------------------------------------------------------------
 
@@ -103,36 +114,39 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
   }
 
   function initSearch () {
-    var input = document.getElementById('pac-input')
-    var searchBox = new google.maps.places.SearchBox(input);
-    vm.map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-    google.maps.event.trigger(vm.map, "resize");
-    //Listener for selecting an autocomplete option from the dropdown
-    vm.map.addListener('bounds_changed', function() {
+    return new Promise(function(resolve) {
+      var input = document.getElementById('pac-input')
+      var searchBox = new google.maps.places.SearchBox(input);
+      vm.map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
       google.maps.event.trigger(vm.map, "resize");
-      searchBox.setBounds(vm.map.getBounds());
-    });
-    // get place information when the user makes a selection (may leave this out because it's not displaying anything currently)
-    searchBox.addListener('places_changed', function() {
-      var places = searchBox.getPlaces();
-      if (places.length == 0) {
-        return;
-      }
-      // For each place, get the name and location.
-      var bounds = new google.maps.LatLngBounds();
-      places.forEach(function(place) {
-        if (!place.geometry) {
-          console.log("Returned place contains no geometry");
+      //Listener for selecting an autocomplete option from the dropdown
+      vm.map.addListener('bounds_changed', function() {
+        google.maps.event.trigger(vm.map, "resize");
+        searchBox.setBounds(vm.map.getBounds());
+      });
+      // get place information when the user makes a selection (may leave this out because it's not displaying anything currently)
+      searchBox.addListener('places_changed', function() {
+        var places = searchBox.getPlaces();
+        if (places.length == 0) {
           return;
         }
-        if (place.geometry.viewport) {
-          // Set the viewport if available. This makes the map display more mobile-friendly. Only for geocodes.
-          bounds.union(place.geometry.viewport);
-        } else {
-          bounds.extend(place.geometry.location);
-        }
+        // For each place, get the name and location.
+        var bounds = new google.maps.LatLngBounds();
+        places.forEach(function(place) {
+          if (!place.geometry) {
+            console.log("Returned place contains no geometry");
+            return;
+          }
+          if (place.geometry.viewport) {
+            // Set the viewport if available. This makes the map display more mobile-friendly. Only for geocodes.
+            bounds.union(place.geometry.viewport);
+          } else {
+            bounds.extend(place.geometry.location);
+          }
+        });
+        vm.map.fitBounds(bounds);
       });
-      vm.map.fitBounds(bounds);
+      resolve();
     });
   }
 
@@ -218,7 +232,7 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
           if (vm.trailPath.length > 1) {
             chartMark();
           }
-          vm.currentMarker = null;
+          vm.currentMarker = {};
           updatePanel(true)
         } else {
           vm.currentMarker = marker;
@@ -323,6 +337,7 @@ function closestPath(waypoint){
     // update Panel/Marker
 
   function updatePanel(mark){
+
     safeApply(function(){
       if (Object.keys(vm.currentMarker).length && mark){
         let waypoint = vm.currentMarker.getPosition();
@@ -355,7 +370,7 @@ function closestPath(waypoint){
         vm.currentMarker.lng = vm.panel.lng;
         vm.currentMarker.title = vm.panel.title;
         vm.currentMarker.description = vm.panel.description;
-        vm.currentMarker.img_url = vm.currentMarker.img_url;
+        vm.currentMarker.img_url = vm.panel.img_url;
         vm.currentMarker.distance = vm.panel.distance;
         vm.currentMarker.shelter = vm.panel.shelter;
         vm.currentMarker.campsite = vm.panel.campsite;
@@ -590,28 +605,28 @@ function closestPath(waypoint){
 
 
   function showTrailPoly(){
-    vm.currentHike.poly.setOptions({strokeOpacity: 0});
-    vm.hikedArray.forEach(function(poly){
-      poly.setOptions({strokeOpacity: 0})
+    vm.currentHike.poly.setOptions({visible: false});
+    vm.hikedArray.forEach(function(hike){
+      hike.poly.setOptions({visible: false})
     })
-    vm.trailPoly.setOptions({strokeColor: '#FF0000', strokeOpacity: 1.0, strokeWeight: 3})
+    vm.trailPoly.setOptions({visible: true, strokeColor: '#FF0000', strokeOpacity: 1.0, strokeWeight: 3})
 
   }
 
-  function showHikedTrails(){
-    vm.currentHike.poly.setOptions({strokeOpacity: 0});
-    vm.hikedArray.forEach(function (poly){
-      poly.setOptions({strokeOpacity: 1})
+  function showHikedPoly(){
+    vm.currentHike.poly.setOptions({visible: false});
+    vm.hikedArray.forEach(function (hike){
+      hike.poly.setOptions({visible: true})
     })
-    vm.trailPoly.setOptions({strokeColor: '#000000', strokeOpacity: 0.4, strokeWeight: 3});
+    vm.trailPoly.setOptions({visible: true, strokeColor: '#000000', strokeOpacity: 0.4, strokeWeight: 3});
   }
 
   function showCurrentPoly(){
     vm.currentHike.poly.setOptions({strokecolor: "#FF00FF", strokeOpacity: 1.0, strokeWeight: 4});
-    vm.hikedArray.forEach(function(poly){
-      poly.setOptions({strokeOpacity: 0})
+    vm.hikedArray.forEach(function(hike){
+      hike.poly.setOptions({visible: false})
     })
-    vm.trailPoly.setOptions({strokeColor: '#000000', strokeOpacity: 0.4, strokeWeight: 3});
+    vm.trailPoly.setOptions({visible: true, strokeColor: '#000000', strokeOpacity: 0.4, strokeWeight: 3});
   }
 
   // Create Poly -----------------------------
@@ -629,6 +644,7 @@ function closestPath(waypoint){
       });
     trailPoly.setMap(vm.map);
     vm.trailPoly = trailPoly;
+    vm.currentHike.poly = trailPoly;
   }
 
   function createCurrentPoly(path){
@@ -641,7 +657,7 @@ function closestPath(waypoint){
           strokeWeight: 4
         });
         hikePoly.setMap(vm.map);
-        if (vm.currentHike.poly) {
+        if (vm.currentHike.poly && vm.currentHike.poly !== vm.trailPoly) {
           vm.currentHike.poly.setMap(null);
         }
         vm.currentHike.poly = hikePoly;
@@ -649,20 +665,21 @@ function closestPath(waypoint){
     }
   }
 
-  function createhikedArray(path){
-    let index = hikedArray.length;
-    index = index % hikedTrailColor.length;
-    let color  = hikedTrailColor[index]
+  function createHikedPoly(path){
+    let index = vm.hikedArray.length;
+    index = index % vm.hikedTrailColor.length;
+    console.log(index)
+    let color  = vm.hikedTrailColor[index]
     if (path[0] && path[1]){
         var hikePoly = new google.maps.Polyline({
-          path: vm.currentHike.path,
+          path: path,
           geodesic: true,
           strokeColor: color,
           strokeOpacity: 1.0,
           strokeWeight: 4
         });
         hikePoly.setMap(vm.map);
-        vm.hikedArray.push(hikePoly);
+        return hikePoly;
     }
 
   }

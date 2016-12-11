@@ -11,7 +11,8 @@ function UsersService ($http, $cookies) {
   vm.logout = logout;
   vm.getHeaders = getHeaders;
   vm.newUser = newUser;
-  vm.currentUser = currentUser
+  vm.currentUser = currentUser;
+  vm.currentUserId = currentUserId;
 
 
 
@@ -48,9 +49,13 @@ function UsersService ($http, $cookies) {
   function setUser (data) {
     $cookies.put('username', data.username);
     $cookies.put('access_token', data.access_token);
+    $cookies.put('user_id', data.id)
     // $cookies.put('admin', data.admin);
   }
 
+  function currentUserId () {
+    return $cookies.get('user_id')
+  }
   function currentUser (){
     return $cookies.get('username')
   }

@@ -60,8 +60,7 @@ function MarkController (MapsService, UsersService, $stateParams) {
         //create line, center map, and initialize search bar
         MapsService.createTrailPoly();
         MapsService.map.setMapTypeId('terrain');
-        MapsService.centerMap();
-        MapsService.initSearch();
+        MapsService.initSearch().then(MapsService.centerMap())
 
       })
     })

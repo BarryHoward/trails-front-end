@@ -5,12 +5,24 @@ function HikeController (MapsService, UsersService, $stateParams) {
   let vm = this;
 
   //params specific to page
-  MapsService.trail_id = $stateParams.id;
+  MapsService.trail_id = $stateParams.trailId;
+  MapsService.user_id = $stateParams.userId;
   MapsService.draggable = false;
   MapsService.regraphElevation = true;
 
+
+  MapsService.hikedArray = [];
+  MapsService.markerArray = [];
+  MapsService.panel={};
+  MapsService.trailInfo = {};
+  MapsService.currentMarker = {};
+  MapsService.currentHike ={};
+  MapsService.currentHike.start = 0;
+  MapsService.chartOffset = 0;
+
   vm.loggedIn = UsersService.isLoggedIn();
-  vm.status = "Add Points to a Trail!";
+  vm.status = "Hike a Trail";
+
 
   vm.MapsService = MapsService;
   vm.setInterval = setInterval;
@@ -54,8 +66,22 @@ function HikeController (MapsService, UsersService, $stateParams) {
 
         //create line, center map, and initialize search bar
         MapsService.createTrailPoly();
-        MapsService.centerMap();
-        MapsService.initSearch();
+        MapsService.initSearch().then(MapsService.centerMap())
+
+        MapsService.getHikes().then(function(resp){
+          console.log(resp.data)
+          let previousHikes = resp.data;
+          previousHikes.forEach(function(hike){
+            hike.path = encoding.decodePath(hike.path);
+            MapsService.hikedArray.push(hike);
+            hike.poly = MapsService.createHikedPoly(hike.path);
+          })
+          if (MapsService.hikedArray.length){
+            MapsService.showHikedPoly();
+          } else {
+            MapsService.showTrailPoly();
+          }
+        })
 
       })
     })
@@ -63,14 +89,18 @@ function HikeController (MapsService, UsersService, $stateParams) {
 
   function saveHike(){
     vm.status = "Adding Hike...";
-    vm.hikedArray.push(vm.currentHike);
+    MapsService.hikedArray.push(vm.currentHike);
     let newHike = MapsService.panel;
     newHike.trail_id = Number($stateParams.id)
     let encodeString = encoding.encodePath(MapsService.currentHike.path);
     newHike.path = encodeString;
+    newHike.trail_id = $stateParams.trailId;
+
     MapsService.saveHike(newHike).then(function (resp) {
       console.log(resp)
         vm.status = "Hike Saved";
+        newHike.id = resp.data.id
+        MapsService.safeApply(MapsService.hikedArray.push(newHike))
       }, (reject) => {
         console.log(reject)
     })
