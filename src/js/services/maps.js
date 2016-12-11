@@ -64,7 +64,7 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
   vm.currentHike ={};
   vm.currentHike.start = 0;
   vm.chartOffset = 0;
-  vm.hikedTrailColor = ["#00FFFF", "#0000FF", "#00FF00", "FFFF00", "FF00FF"]
+  vm.hikedTrailColor = ["#00FFFF", "#0000FF", "#00FF00", "#FFFF00", "#FF00FF"]
 
 
 // ----- Reset markers
@@ -394,7 +394,7 @@ function closestPath(waypoint){
       vm.currentHike.end = Number(vm.panel.end);
       vm.currentHike.start_date = vm.panel.start_date;
       vm.currentHike.end_date = vm.panel.end_date;
-      vm.currentHike.distance = vm.currentHike.end - vm.currentHike.start;
+      // vm.currentHike.distance = vm.currentHike.end - vm.currentHike.start;
     } else {
       vm.currentHike = {};
     }
@@ -402,7 +402,6 @@ function closestPath(waypoint){
 
   function updateHikedPanel(){
       safeApply(function(){
-        console.log("apply")
       if (Object.keys(vm.currentHike).length){
         vm.panel.title = vm.currentHike.title;
         vm.panel.description = vm.currentHike.description;
@@ -488,7 +487,6 @@ function closestPath(waypoint){
       method: 'PATCH',
       headers: UsersService.getHeaders()
     };
-    console.log(req)
     return $http(req);
   }
 
@@ -531,7 +529,6 @@ function closestPath(waypoint){
 
   function initChart(){
     ChartsService.chart(vm.currentHike.path, vm.markerArray, 0, true).then(function(){
-      console.log("chart loaded")
     });
   }
 
@@ -572,7 +569,6 @@ function closestPath(waypoint){
   function filterTrailPath(){
     var start =  Number(vm.panel.start);
     var end = Number(vm.panel.end);
-    console.log(start, end)
     if (start<=0 && end>=spherical.computeLength(vm.trailPath)*metersMilesConversion){
       vm.currentHike.path = vm.trailPath;
       vm.panel.start = 0;
@@ -644,7 +640,6 @@ function closestPath(waypoint){
   }
 
   function showHikedPoly(){
-    console.log(vm.currentHike.poly, vm.hikedArray, vm.trailPoly)
     if (vm.currentHike.poly){
       vm.currentHike.poly.setOptions({visible: false});
     }
@@ -655,14 +650,19 @@ function closestPath(waypoint){
   }
 
   function showSingleHiked(id){
+    console.log(vm.hikedArray)
     if (vm.currentHike.poly){
       vm.currentHike.poly.setOptions({visible: false});
     }
     vm.hikedArray.forEach(function (hike){
+      if (hike.id === id){
+        hike.poly.setOptions({visible: true})
+      } else {
       hike.poly.setOptions({visible: false})
+      }
     })
-    console.log(vm.hikedArray)
-    vm.currentHike.poly.setOptions({visible: true})
+
+    // vm.currentHike.poly.setOptions({visible: true})
     vm.trailPoly.setOptions({visible: true, strokeColor: '#000000', strokeOpacity: 0.4, strokeWeight: 3});
   }
 
@@ -682,7 +682,7 @@ function closestPath(waypoint){
     }
     var trailPoly = new google.maps.Polyline({
         path: vm.trailPath,
-        geodesic: true,
+        // geodesic: true,
         strokeColor: '#FF0000',
         strokeOpacity: 1.0,
         strokeWeight: 3
@@ -696,7 +696,7 @@ function closestPath(waypoint){
     if (path[0] && path[1]){
         var hikePoly = new google.maps.Polyline({
           path: vm.currentHike.path,
-          geodesic: true,
+          // geodesic: true,
           strokeColor: "#FF00FF",
           strokeOpacity: 1.0,
           strokeWeight: 4
@@ -713,12 +713,11 @@ function closestPath(waypoint){
   function createHikedPoly(path){
     let index = vm.hikedArray.length;
     index = index % vm.hikedTrailColor.length;
-    console.log(path)
     let color  = vm.hikedTrailColor[index]
     if (path[0] && path[1]){
         var hikePoly = new google.maps.Polyline({
           path: path,
-          geodesic: true,
+          // geodesic: true,
           strokeColor: color,
           strokeOpacity: 1.0,
           strokeWeight: 4

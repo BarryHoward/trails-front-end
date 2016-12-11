@@ -73,9 +73,7 @@ function HikeController (MapsService, UsersService, $stateParams) {
         MapsService.initSearch().then(MapsService.centerMap())
 
         MapsService.getHikes().then(function(resp){
-          console.log(resp.data)
           let previousHikes = resp.data;
-          console.log(resp.data)
           previousHikes.forEach(function(hike){
             hike.path = encoding.decodePath(hike.path);
             MapsService.hikedArray.push(hike);
@@ -94,25 +92,28 @@ function HikeController (MapsService, UsersService, $stateParams) {
 
   function saveHike(){
     vm.status = "Adding Hike...";
-    console.log(MapsService.currentHike)
     MapsService.updateHike();
-
-    let newHike = MapsService.currentHike;
+    MapsService.currentHike.poly.setMap(null);
+    let newHike = {};
+      newHike.title = MapsService.panel.title;
+      newHike.description = MapsService.panel.description;
+      newHike.start = Number(MapsService.panel.start);
+      newHike.end = Number(MapsService.panel.end);
+      newHike.start_date = MapsService.panel.start_date;
+      newHike.end_date = MapsService.panel.end_date;
     if (!newHike.title){
       newHike.title = "Hike"
     }
-
     newHike.trail_id = Number($stateParams.id)
     let encodeString = encoding.encodePath(MapsService.currentHike.path);
     newHike.path = encodeString;
-    newHike.trail_id = $stateParams.trailId;
     MapsService.saveHike(newHike).then(function (resp) {
-      console.log(resp)
         vm.status = "Hike Saved";
         newHike.id = resp.data.id
-        newHike.path = encoding.decodePath(MapsService.newHike.path);
-        newHike.poly = MapsService.createHikedPoly(newHike.path)
-        MapsService.safeApply(MapsService.hikedArray.push(newHike))
+        newHike.path = encoding.decodePath(newHike.path);
+        newHike.poly = MapsService.createHikedPoly(MapsService.currentHike.path)
+        MapsService.hikedArray.push(newHike)
+
       }, (reject) => {
         console.log(reject)
     })
@@ -125,12 +126,12 @@ function HikeController (MapsService, UsersService, $stateParams) {
     newHike.end = MapsService.currentHike.end;
     newHike.distance = newHike.end-newHike.start;
     newHike.id = MapsService.currentHike.id;
-    console.log(MapsService.currentHike)
     let encodeString = encoding.encodePath(MapsService.currentHike.path);
     newHike.path = encodeString;
     MapsService.editHike(newHike.id, newHike).then(function (resp) {
       console.log(resp)
         vm.status = "Hike Edited";
+        MapsService.updateHike();
       }, (reject) => {
         console.log(reject)
     })
@@ -160,7 +161,6 @@ function HikeController (MapsService, UsersService, $stateParams) {
     MapsService.centerMap();
     MapsService.showSingleHiked(id);
     MapsService.chartHike(hiked.path)
-    console.log(hiked)
   }
 
   function setInterval(){
