@@ -18,6 +18,7 @@ function BlazeNewController (MapsService, UsersService, $scope, $state) {
   MapsService.panel={};
   MapsService.regraphElevation = true;
   MapsService.trailPath = [];
+  MapsService.draggable = true;
   MapsService.trailInfo = {};
 
   //Constants
