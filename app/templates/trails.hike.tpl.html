@@ -37,16 +37,25 @@
           </span>
         </span>
             <button ng-click="hike.setInterval()">go to interval</button>
-            <button class="save-hike-button" type="button" name="save" ng-click="hike.saveHike()">Save Hike</button>
+
       </div>
     </div>
     <h3 class="controls-header">Controls</h3>
     <div class="control-box">
-      <div ng-repeat="hike in hike.MapsService.hikedArray">
+      <button ng-repeat="hike in hike.MapsService.hikedArray" ng-click="gotoHiked({{hike.id}})">
+        {{hike.title}}
         {{hike.id}}
+      </button>
+
+      <div class="hike-box">
+        <input type="text" ng-model="hike.MapsService.panel.title" placeholder="title">
+        <input type="date" ng-model="hike.MapsService.panel.startDate">
+        <input type="date" ng-model="hike.MapsService.panel.endDate">
+        <textarea ng-model="hike.MapsService.panel.description">
       </div>
-
-
+        <button class="save-hike-button" type="button" name="save" ng-click="hike.saveHike()">Save Hike</button>
+        <button class="edit-hike-button" type="button" name="save" ng-click="hike.editHike()">Edit Hike</button>
+        <button class="edit-hike-button" type="button" name="save" ng-click="hike.deleteHike()">Delete Hike</button>
     </div>
   </div>
 
