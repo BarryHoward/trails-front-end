@@ -1,3 +1,7 @@
+//Outstanding Issues
+
+//-- Chart Icons dont show up on initial graph sometimes.  Other times they're slow.
+
 function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootScope) {
 
   const SERVER = "https://trails-back-end.herokuapp.com/";
@@ -7,6 +11,7 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
   vm.getMap = getMap;
   vm.getTrail = getTrail;
   vm.getPoints = getPoints;
+  vm.getHikes = getHikes;
   vm.createTrailPoly = createTrailPoly;
   vm.centerMap = centerMap;
   vm.initSearch = initSearch;
@@ -21,15 +26,26 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
   vm.deleteTrail = deleteTrail;
   vm.newTrail = newTrail;
   vm.getTrailList = getTrailList;
+  vm.saveHike = saveHike;
   vm.savePoint = savePoint;
   vm.editPoint = editPoint;
   vm.deletePoint = deletePoint;
   vm.initChart = initChart;
+  vm.chartHike = chartHike;
   vm.chartMark = chartMark;
   vm.updateMarker = updateMarker;
+  vm.updateHike = updateHike;
   vm.updatePanel = updatePanel;
-  vm.filterPath = filterPath;
+  vm.updateHikedList = vm.updateHikedList;
+  vm.filterTrailPath = filterTrailPath;
+  vm.filterChartPath = filterChartPath;
   vm.distToWaypoint = distToWaypoint;
+  vm.createHikedPoly = createHikedPoly;
+  vm.createCurrentPoly = createCurrentPoly; 
+  vm.showTrailPoly = showTrailPoly;
+  vm.showHikedPoly = showHikedPoly;
+  vm.showCurrentPoly = showCurrentPoly;
+  vm.safeApply = safeApply;
 
   const metersFeetConversion = 3.28084;
   const metersMilesConversion = 0.000621371;
@@ -37,7 +53,26 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
   const spherical = google.maps.geometry.spherical;
 
 
+  vm.hikedArray = [];
+  vm.markerArray = [];
+  vm.panel={};
+  vm.trailInfo = {};
+  vm.currentMarker = {};
+  vm.currentHike ={};
+  vm.currentHike.start = 0;
+  vm.chartOffset = 0;
+  vm.hikedTrailColor = ["#00FFFF", "#0000FF", "#00FF00", "FFFF00", "FF00FF"]
 
+
+// ----- Reset markers
+  $rootScope.$on('$stateChangeStart', (event, toState) =>{
+    vm.markerArray.forEach(function(marker){
+      marker.setMap(null);
+    })
+    vm.hikedArray.forEach(function(hike){
+      hike.poly.setMap(null);
+    })
+  })
 
 // -----------------------------------------------------------------------
 
@@ -60,6 +95,10 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
     return $http.get(`${SERVER}trails/${vm.trail_id}/points`);
   }
 
+  function getHikes(){
+    console.log(vm.user_id, vm.trail_id)
+    return $http.get(`${SERVER}hikes/users/${vm.user_id}/trails/${vm.trail_id}`)
+  }
 // -----------------------------------------------------------------------
 
   //Create line and Center map
@@ -68,43 +107,46 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
 
   function centerMap() {
     var latlngbounds = new google.maps.LatLngBounds();
-    vm.currentPath.forEach(function (waypoint) {
+    vm.currentHike.path.forEach(function (waypoint) {
       latlngbounds.extend(waypoint)
     })
     vm.map.fitBounds(latlngbounds);
   }
 
   function initSearch () {
-    var input = document.getElementById('pac-input')
-    var searchBox = new google.maps.places.SearchBox(input);
-    vm.map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-    google.maps.event.trigger(vm.map, "resize");
-    //Listener for selecting an autocomplete option from the dropdown
-    vm.map.addListener('bounds_changed', function() {
+    return new Promise(function(resolve) {
+      var input = document.getElementById('pac-input')
+      var searchBox = new google.maps.places.SearchBox(input);
+      vm.map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
       google.maps.event.trigger(vm.map, "resize");
-      searchBox.setBounds(vm.map.getBounds());
-    });
-    // get place information when the user makes a selection (may leave this out because it's not displaying anything currently)
-    searchBox.addListener('places_changed', function() {
-      var places = searchBox.getPlaces();
-      if (places.length == 0) {
-        return;
-      }
-      // For each place, get the name and location.
-      var bounds = new google.maps.LatLngBounds();
-      places.forEach(function(place) {
-        if (!place.geometry) {
-          console.log("Returned place contains no geometry");
+      //Listener for selecting an autocomplete option from the dropdown
+      vm.map.addListener('bounds_changed', function() {
+        google.maps.event.trigger(vm.map, "resize");
+        searchBox.setBounds(vm.map.getBounds());
+      });
+      // get place information when the user makes a selection (may leave this out because it's not displaying anything currently)
+      searchBox.addListener('places_changed', function() {
+        var places = searchBox.getPlaces();
+        if (places.length == 0) {
           return;
         }
-        if (place.geometry.viewport) {
-          // Set the viewport if available. This makes the map display more mobile-friendly. Only for geocodes.
-          bounds.union(place.geometry.viewport);
-        } else {
-          bounds.extend(place.geometry.location);
-        }
+        // For each place, get the name and location.
+        var bounds = new google.maps.LatLngBounds();
+        places.forEach(function(place) {
+          if (!place.geometry) {
+            console.log("Returned place contains no geometry");
+            return;
+          }
+          if (place.geometry.viewport) {
+            // Set the viewport if available. This makes the map display more mobile-friendly. Only for geocodes.
+            bounds.union(place.geometry.viewport);
+          } else {
+            bounds.extend(place.geometry.location);
+          }
+        });
+        vm.map.fitBounds(bounds);
       });
-      vm.map.fitBounds(bounds);
+      resolve();
     });
   }
 
@@ -129,7 +171,7 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
         map: vm.map,
         position: position,
         icon: icons.pointSaved,
-        draggable: true
+        draggable: vm.draggable
     });
     marker.title = waypoint.title;
     marker.description = waypoint.description;
@@ -158,7 +200,7 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
           waypoint = marker.getPosition();
           vm.trailPath[index] = waypoint;
           vm.trailPoly.setPath(vm.trailPath);
-          updatePanel();
+          updatePanel(true);
         } else {
           waypoint = marker.getPosition();
           let insert = closestPath(waypoint);
@@ -167,7 +209,7 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
           marker.setIcon(icons.pointUnsaved);
           marker.distance = round(insert[2], 2);
           vm.currentMarker = marker;
-          updatePanel();
+          updatePanel(true);
         }
         if(vm.trailPath.length > 1) {
           chartMark();
@@ -190,11 +232,11 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
           if (vm.trailPath.length > 1) {
             chartMark();
           }
-          vm.currentMarker = null;
-          updatePanel()
+          vm.currentMarker = {};
+          updatePanel(true)
         } else {
           vm.currentMarker = marker;
-          updatePanel()
+          updatePanel(true)
         }
     })
   }
@@ -251,18 +293,18 @@ function closestPath(waypoint){
           waypoint = snapWaypoint;
         } else {
           vm.trailPath.splice(insert[0], 0, waypoint);
-          vm.currentPath = vm.trailPath;
+          vm.currentHike.path = vm.trailPath;
           vm.trailPoly.setPath(vm.trailPath);
         }
 
       } else if (vm.insert === "frontInsert") {
         vm.trailPath.unshift(waypoint);
-        vm.currentPath = vm.trailPath;
+        vm.currentHike.path = vm.trailPath;
         vm.trailPoly.setPath(vm.trailPath);
         markerDistance = 0;
       } else {
         vm.trailPath.push(waypoint);
-        vm.currentPath = vm.trailPath;
+        vm.currentHike.path = vm.trailPath;
         vm.trailPoly.setPath(vm.trailPath);
         markerDistance = spherical.computeLength(vm.trailPath)*metersMilesConversion;
       }
@@ -284,7 +326,7 @@ function closestPath(waypoint){
       marker.distance = round(markerDistance, 2);
       vm.markerArray.push(marker)
       vm.currentMarker = marker;
-      updatePanel();
+      updatePanel(true);
       return marker;
     }
 
@@ -294,9 +336,10 @@ function closestPath(waypoint){
 
     // update Panel/Marker
 
-  function updatePanel(){
+  function updatePanel(mark){
+
     safeApply(function(){
-      if (vm.currentMarker){
+      if (Object.keys(vm.currentMarker).length && mark){
         let waypoint = vm.currentMarker.getPosition();
         vm.panel.lat = waypoint.lat();
         vm.panel.lng = waypoint.lng();
@@ -311,20 +354,10 @@ function closestPath(waypoint){
         vm.panel.road = vm.currentMarker.road;
         vm.panel.parking = vm.currentMarker.parking;
         vm.panel.resupply = vm.currentMarker.resupply;
+      } else if (vm.currentHike && !mark){
+        vm.panel = vm.currentHike
       } else {
-        vm.panel.distance = "";
-        vm.panel.lat = "";
-        vm.panel.lng = "";
-        vm.panel.title = "";
-        vm.panel.description = "";
-        vm.panel.img_url = "";
-        vm.panel.shelter = false;
-        vm.panel.campsite = false;
-        vm.panel.water = false;
-        vm.panel.view = false;
-        vm.panel.road = false;
-        vm.panel.parking = false;
-        vm.panel.resupply = false;
+        vm.panel = {};
       }
     })
   }
@@ -337,7 +370,7 @@ function closestPath(waypoint){
         vm.currentMarker.lng = vm.panel.lng;
         vm.currentMarker.title = vm.panel.title;
         vm.currentMarker.description = vm.panel.description;
-        vm.currentMarker.img_url = vm.currentMarker.img_url;
+        vm.currentMarker.img_url = vm.panel.img_url;
         vm.currentMarker.distance = vm.panel.distance;
         vm.currentMarker.shelter = vm.panel.shelter;
         vm.currentMarker.campsite = vm.panel.campsite;
@@ -349,6 +382,22 @@ function closestPath(waypoint){
       } else {
         vm.currentMarker = {};
       }
+  }
+
+  function updateHike(){
+    if (Object.keys(vm.currentHike).length){
+      vm.currentHike.title = vm.panel.title;
+      vm.currentHike.description = vm.panel.description;
+      vm.currentHike.start = vm.panel.start;
+      vm.currentHike.end = vm.panel.end;
+      vm.currentHike.max_elevation  = vm.panel.max_elevation;
+      vm.currentHike.min_elevation = vm.panel.min_elevation;
+      vm.currentHike.start_date = vm.panel.start_date;
+      vm.currentHike.end_date = vm.panel.end_date;
+      vm.currentHike.distance = vm.currentHike.end - vm.currentHike.start;
+    } else {
+      vm.currentHike = {};
+    }
   }
 
 // ---------------------------------------------------------------------
@@ -386,7 +435,6 @@ function closestPath(waypoint){
   }
 
   function deletePoint(){
-    MapsService.currentMarker = null; 
     let req = {
       url: `${SERVER}points/${vm.currentMarker.id}`,
       method: 'DELETE',
@@ -418,6 +466,27 @@ function closestPath(waypoint){
       method: 'PATCH',
       headers: UsersService.getHeaders()
     };
+    console.log(req)
+    return $http(req);
+  }
+
+  function saveHike(hike){
+    let req = {
+      url: `${SERVER}hikes`,
+      data: hike,
+      method: 'POST',
+      headers: UsersService.getHeaders()
+    }
+    return $http(req);
+  }
+
+  function editHike(id, hike){
+    let req = {
+      url: `${SERVER}hikes/${id}`,
+      data: hike,
+      method: 'PATCH',
+      headers: UsersService.getHeaders()
+    }
     return $http(req);
   }
 
@@ -430,11 +499,13 @@ function closestPath(waypoint){
   }
 
   function initChart(){
-    ChartsService.chart(vm.currentPath, vm.markerArray, true);
+    ChartsService.chart(vm.currentHike.path, vm.markerArray, 0, true).then(function(){
+      console.log("chart loaded")
+    });
   }
 
   function chartMark(overide){
-    ChartsService.chart(vm.currentPath, vm.markerArray, (vm.regraphElevation|| overide)).then(function(){
+    ChartsService.chart(vm.currentHike.path, vm.markerArray, Number(vm.currentHike.start), (vm.regraphElevation|| overide)).then(function(){
       safeApply(function(){
         vm.trailInfo.min_elevation = ChartsService.min_elevation;
         vm.trailInfo.max_elevation = ChartsService.max_elevation;
@@ -442,6 +513,15 @@ function closestPath(waypoint){
     })
     vm.trailInfo.distance = round(spherical.computeLength(vm.trailPath)*metersMilesConversion, 2);
     updateMarker();
+  }
+
+  function chartHike(path){
+    ChartsService.chart(path, vm.markerArray, Number(vm.currentHike.start), (vm.regraphElevation || overide)).then(function(){
+      // safeApply(function(){
+      //   vm.currentHike.min_elevation = ChartsService.min_elevation;
+      //   vm.currentHike.max_elevation = ChartsService.max_elevation;
+      // })
+    })
   }
 
   function round(input, places){
@@ -461,37 +541,51 @@ function closestPath(waypoint){
 
   // ----------------- Filtering -------------------------------------------------
 
-  function filterPath(start, end){
+
+  function filterTrailPath(){
+    var start =  Number(vm.panel.start);
+    var end = Number(vm.panel.end);
+    console.log(start, end)
     if (start<=0 && end>=spherical.computeLength(vm.trailPath)*metersMilesConversion){
-      vm.currentPath = vm.trailPath;
-      vm.panel.startInt = 0;
-      vm.panel.endInt = round(spherical.computeLength(vm.trailPath)*metersMilesConversion,2);
+      vm.currentHike.path = vm.trailPath;
+      vm.panel.start = 0;
+      vm.panel.end = round(spherical.computeLength(vm.trailPath)*metersMilesConversion,2);
       showTrailPoly();
-      centerMap();
-      chartMark();
     } else {
       let filteredPath = vm.trailPath.filter(function(element, index){
         let waypointDistance = spherical.computeLength(vm.trailPath.slice(0, index+1))*metersMilesConversion;
-        return (start<waypointDistance && waypointDistance <end)
+        return (start<=waypointDistance && waypointDistance <=end)
       })
       filteredPath.unshift(distToWaypoint(start));
       filteredPath.push(distToWaypoint(end));
-      vm.currentPath = filteredPath;
+      vm.currentHike.path = filteredPath;
       createCurrentPoly(filteredPath);
       showCurrentPoly();
-      centerMap();
-      chartMark();
     }
+    centerMap();
+    updateHike();
+  }
+
+  function filterChartPath(){
+    var start =  Number(vm.panel.start);
+    var end = Number(vm.panel.end);
+    let chartPath = vm.trailPath.filter(function(element, index){
+    let waypointDistance = spherical.computeLength(vm.trailPath.slice(0, index+1))*metersMilesConversion;
+      return (start + (20*vm.chartOffset)<=waypointDistance && waypointDistance<=(start + 20 + 20*vm.chartOffset) && waypointDistance<=end)
+    })
+    chartPath.unshift(distToWaypoint(start));
+    chartPath.push(distToWaypoint(end));
+    chartHike(chartPath);
   }
 
   function distToWaypoint(distance){
     let trail = vm.trailPath;
     let trailLength = spherical.computeLength(trail)*metersMilesConversion;
     if (distance<=0){
-      vm.panel.startInt = 0;
+      vm.panel.start = 0;
       return trail[0];
     } else if (distance >= trailLength){
-      vm.panel.endInt = trailLength;
+      vm.panel.end = trailLength;
       return trail[trail.length-1];
     } else{
       for (var i=0; i<trail.length; i++){
@@ -511,28 +605,28 @@ function closestPath(waypoint){
 
 
   function showTrailPoly(){
-    vm.hikedTrailPoly.forEach(function(poly){
-      poly.setOptions({strokeOpacity: 0})
+    vm.currentHike.poly.setOptions({visible: false});
+    vm.hikedArray.forEach(function(hike){
+      hike.poly.setOptions({visible: false})
     })
-    vm.currentPoly.setOptions({strokeOpacity: 0});
-    vm.trailPoly.setOptions({strokeColor: '#FF0000', strokeOpacity: 1.0, strokeWeight: 3})
+    vm.trailPoly.setOptions({visible: true, strokeColor: '#FF0000', strokeOpacity: 1.0, strokeWeight: 3})
 
   }
 
-  function showHikedTrails(){
-    vm.hikedTrailPoly.forEach(function (poly){
-      poly.setOptions({strokeOpacity: 1})
+  function showHikedPoly(){
+    vm.currentHike.poly.setOptions({visible: false});
+    vm.hikedArray.forEach(function (hike){
+      hike.poly.setOptions({visible: true})
     })
-    vm.currentPoly.setOptions({strokeOpacity: 0});
-    vm.trailPoly.setOptions({strokeColor: '#000000', strokeOpacity: 0.4, strokeWeight: 3});
+    vm.trailPoly.setOptions({visible: true, strokeColor: '#000000', strokeOpacity: 0.4, strokeWeight: 3});
   }
 
   function showCurrentPoly(){
-    vm.hikedTrailPoly.forEach(function(poly){
-      poly.setOptions({strokeOpacity: 0})
+    vm.currentHike.poly.setOptions({strokecolor: "#FF00FF", strokeOpacity: 1.0, strokeWeight: 4});
+    vm.hikedArray.forEach(function(hike){
+      hike.poly.setOptions({visible: false})
     })
-    vm.currentPoly.setOptions({strokecolor: "#FF00FF", strokeOpacity: 1.0, strokeWeight: 4});
-    vm.trailPoly.setOptions({strokeColor: '#000000', strokeOpacity: 0.4, strokeWeight: 3});
+    vm.trailPoly.setOptions({visible: true, strokeColor: '#000000', strokeOpacity: 0.4, strokeWeight: 3});
   }
 
   // Create Poly -----------------------------
@@ -550,39 +644,42 @@ function closestPath(waypoint){
       });
     trailPoly.setMap(vm.map);
     vm.trailPoly = trailPoly;
+    vm.currentHike.poly = trailPoly;
   }
 
   function createCurrentPoly(path){
     if (path[0] && path[1]){
         var hikePoly = new google.maps.Polyline({
-          path: vm.currentPath,
+          path: vm.currentHike.path,
           geodesic: true,
           strokeColor: "#FF00FF",
           strokeOpacity: 1.0,
           strokeWeight: 4
         });
         hikePoly.setMap(vm.map);
-        if (vm.currentPoly) {
-          vm.currentPoly.setMap(null);
+        if (vm.currentHike.poly && vm.currentHike.poly !== vm.trailPoly) {
+          vm.currentHike.poly.setMap(null);
         }
-        vm.currentPoly = hikePoly;
+        vm.currentHike.poly = hikePoly;
+
     }
   }
 
-  function createHikedTrailPoly(path){
-    let index = hikedTrailPoly.length;
-    index = index % hikedTrailColor.length;
-    let color  = hikedTrailColor[index]
+  function createHikedPoly(path){
+    let index = vm.hikedArray.length;
+    index = index % vm.hikedTrailColor.length;
+    console.log(index)
+    let color  = vm.hikedTrailColor[index]
     if (path[0] && path[1]){
         var hikePoly = new google.maps.Polyline({
-          path: vm.currentPath,
+          path: path,
           geodesic: true,
           strokeColor: color,
           strokeOpacity: 1.0,
           strokeWeight: 4
         });
         hikePoly.setMap(vm.map);
-        vm.hikedTrailPoly.push(hikePoly);
+        return hikePoly;
     }
 
   }

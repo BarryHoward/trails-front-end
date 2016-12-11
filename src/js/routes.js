@@ -52,7 +52,7 @@ function routerConfig ($stateProvider , $urlRouterProvider) {
       controller: 'MarkController as mark'
     })
     .state('root.trails.hike', {
-      url: '/hike/:id',
+      url: '/hike/:trailId/users/:userId',
       templateUrl: 'templates/trails.hike.tpl.html',
       controller: 'HikeController as hike'
     })

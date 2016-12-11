@@ -8,11 +8,8 @@ function MarkController (MapsService, UsersService, $stateParams) {
   MapsService.trail_id = $stateParams.id;
   MapsService.delete = false;
   MapsService.snap = true;
-  MapsService.markerArray = [];
-  MapsService.panel={};
   MapsService.regraphElevation = false;
-  MapsService.trailInfo = {};
-  MapsService.hikePolys = [];
+  MapsService.draggable = true;
 
   vm.MapsService = MapsService;
   vm.placeMarker = placeMarker;
@@ -48,13 +45,13 @@ function MarkController (MapsService, UsersService, $stateParams) {
             MapsService.dragListener(marker, waypoint)
             MapsService.clickListener(marker, waypoint)
           });
-          MapsService.initChart(MapsService.trailPath, MapsService.markerArray, true)
+          MapsService.initChart(MapsService.trailPath, MapsService.markerArray, 0, true)
         })
 
 
         //set trail data
         MapsService.trailPath = encoding.decodePath(resp.data.path);
-        MapsService.currentPath = MapsService.trailPath;
+        MapsService.currentHike.path = MapsService.trailPath;
         MapsService.trailInfo = resp.data;
         MapsService.trailInfo.distance = Number(resp.data.distance.toFixed(2));
         MapsService.trailInfo.max_elevation = Number(resp.data.max_elevation.toFixed(2));
@@ -63,19 +60,8 @@ function MarkController (MapsService, UsersService, $stateParams) {
         //create line, center map, and initialize search bar
         MapsService.createTrailPoly();
         MapsService.map.setMapTypeId('terrain');
-        MapsService.centerMap();
-        MapsService.initSearch();
+        MapsService.initSearch().then(MapsService.centerMap())
 
-
-//RIGHT HERE!!!!!!!!!!
-//         let filteredPath = MapsService.filterPath(4, 5);
-// /// -----------------------
-//         MapsService.createHikePoly(filteredPath);
-//         MapsService.centerMap();
-        // console.log(filteredPath)
-        // filteredPath.forEach(function(waypoint){
-        //   MapsService.placeMarker(waypoint);
-        // })
       })
     })
   }
@@ -118,6 +104,9 @@ function MarkController (MapsService, UsersService, $stateParams) {
 
   function editPoint(){
     MapsService.panel.id = MapsService.currentMarker.id;
+    let newPoint = {
+
+    }
     MapsService.editPoint(MapsService.panel).then((resp) => {
     })
   }
@@ -128,15 +117,18 @@ function MarkController (MapsService, UsersService, $stateParams) {
         let markIndex = MapsService.markerArray.indexOf(MapsService.markerArray);
         MapsService.markerArray.splice(markIndex, 1);
         MapsService.currentMarker.setMap(null);
+        var index = MapsService.markerArray.indexOf(MapsService.currentMarker);
+        MapsService.markerArray.splice(index, 1);
+        MapsService.currentMarker = undefined;
         MapsService.chartMark();
-        MapsService.updatePanel();
+        MapsService.updatePanel(true);
       });
     } else {
         let markIndex = MapsService.markerArray.indexOf(MapsService.markerArray);
         MapsService.markerArray.splice(markIndex, 1);
         MapsService.currentMarker.setMap(null);
         MapsService.chartMark();
-        MapsService.updatePanel();
+        MapsService.updatePanel(true);
     }
   }
 

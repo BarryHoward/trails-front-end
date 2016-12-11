@@ -13,6 +13,7 @@ function BlazeEditController (MapsService, UsersService, $stateParams, $state) {
   MapsService.panel={};
   MapsService.regraphElevation = true;
   MapsService.trailInfo = {};
+  MapsService.draggable = true;
 
   vm.MapsService = MapsService;
   vm.placeMarker = placeMarker;
@@ -40,12 +41,11 @@ function BlazeEditController (MapsService, UsersService, $stateParams, $state) {
         MapsService.trailPath = encoding.decodePath(resp.data.path);
         MapsService.trailInfo = resp.data;
         MapsService.trailInfo.saved_url = resp.data.img_url;
-        MapsService.currentPath = MapsService.trailPath;
+        MapsService.currentHike.path = MapsService.trailPath;
 
         //create line, center map, and initialize search bar
         MapsService.createTrailPoly();
-        MapsService.centerMap();
-        MapsService.initSearch();
+        MapsService.initSearch().then(MapsService.centerMap())
         MapsService.map.setMapTypeId('terrain');
 
         //add trail Markers and add listeners;
@@ -55,7 +55,6 @@ function BlazeEditController (MapsService, UsersService, $stateParams, $state) {
           MapsService.clickListener(marker, waypoint);
         });
         MapsService.initChart();
-              console.log(map)
 
       })
     })
