@@ -66,3 +66,12 @@
 <div class="chart-box">
 	<canvas class="chart" id="myChart"></canvas>
 </div>
+<div class="chart-controls">
+
+    <span><button ng-click="hike.MapsService.prevChart()">Previous</button></span>
+    <span ng-repeat="number in hike.MapsService.showChart">
+      <button ng-click="hike.MapsService.chooseChart(number)">{{number + 1}}</button>
+    </span>
+    <span><button ng-click="hike.MapsService.nextChart()">Next</button></span>
+
+</div>

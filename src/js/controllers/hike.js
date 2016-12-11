@@ -62,7 +62,10 @@ function HikeController (MapsService, UsersService, $stateParams) {
 
         //set trail data
         MapsService.trailPath = encoding.decodePath(resp.data.path);
+        MapsService.setOffSetArray(spherical.computeLength(MapsService.trailPath));
         MapsService.currentHike.path = MapsService.trailPath;
+        MapsService.currentHike.start = 0;
+        MapsService.currentHike.end = spherical.computeLength(MapsService.trailPath);
         MapsService.trailInfo = resp.data;
         MapsService.trailInfo.distance = Number(resp.data.distance.toFixed(2));
         MapsService.trailInfo.max_elevation = Number(resp.data.max_elevation.toFixed(2));
@@ -160,16 +163,18 @@ function HikeController (MapsService, UsersService, $stateParams) {
     MapsService.updateHikedPanel();
     MapsService.centerMap();
     MapsService.showSingleHiked(id);
-    MapsService.chartHike(hiked.path)
+    MapsService.chartHike(hiked.path, Number(hiked.start))
+    MapsService.setOffSetArray(spherical.computeLength(hiked.path));
   }
 
   function setInterval(){
-
+      MapsService.chartOffset = 0;
       MapsService.filterTrailPath(Number(MapsService.panel.start), Number(MapsService.panel.end));
       MapsService.filterChartPath(Number(MapsService.panel.start), Number(MapsService.panel.end));
     if (MapsService.currentHike.poly){
       MapsService.currentHike.poly.setPath(MapsService.currentHike.path)
     }
+      MapsService.setOffSetArray(spherical.computeLength(MapsService.currentHike.path));
   }
 
   function clearCurrent(){
@@ -178,7 +183,7 @@ function HikeController (MapsService, UsersService, $stateParams) {
     MapsService.centerMap();
     MapsService.currentHike = {};
     MapsService.updateHikedPanel();
-
+    MapsService.setOffSetArray(spherical.computeLength(MapsService.trailPath));
   }
 
 
