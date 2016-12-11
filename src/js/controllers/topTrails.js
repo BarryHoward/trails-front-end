@@ -1,7 +1,7 @@
 function TopTrailsController (MapsService, UsersService) {
 
 	let vm = this;
-
+	vm.MapsService = MapsService;
 
 	function init(){
 		MapsService.getTrailList().then((resp)=>{

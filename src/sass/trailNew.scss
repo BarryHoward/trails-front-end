@@ -32,7 +32,7 @@
     border-radius: 5px;
     display: inline-block;
   }
-  
+
   .trail-info-input {
     display: block;
     border-style: none;
@@ -43,23 +43,7 @@
     margin: 5px 0px;
   }
 
-  .static-info-container {
-    border: 1px solid black;
-    border-radius: 5px;
-    font-size: 18px;
-    padding: 5px;
-    padding-left: 15px;
-    width: 300px;
-    height: 125px;
-    background-color: #F4F2F2;
-    float: right;
-    div {
-      margin: 2px 0px;
-    }
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-  }
+
 }
 
 .static-info {
@@ -160,4 +144,22 @@
   margin-bottom: 10px;
   max-width: 420px;
   max-height: 100px;
+}
+
+.static-info-container {
+  border: 1px solid black;
+  border-radius: 5px;
+  font-size: 18px;
+  padding: 5px;
+  padding-left: 15px;
+  width: 300px;
+  height: 125px;
+  background-color: #F4F2F2;
+  float: right;
+  div {
+    margin: 2px 0px;
+  }
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 }

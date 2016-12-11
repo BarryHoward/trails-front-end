@@ -67,10 +67,17 @@ function routerConfig ($stateProvider , $urlRouterProvider) {
     })
 
     .state('root.users.home', {
-      url: '/users/:userId/home',
+      url: '/:userId/home',
       templateUrl: 'templates/users.home.tpl.html',
       controller: 'UserHomeController as userHome'
     })
+
+    .state('root.users.createdTrails', {
+      url: '/:userId/createdTrails',
+      temlateUrl: 'templates/users.createdTrails.tpl.html',
+      controller: 'UserCreatedController as userCreated'
+    })
+
 
      $urlRouterProvider.otherwise('/home');
 };

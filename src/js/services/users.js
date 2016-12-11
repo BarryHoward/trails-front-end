@@ -13,6 +13,7 @@ function UsersService ($http, $cookies) {
   vm.newUser = newUser;
   vm.currentUser = currentUser;
   vm.currentUserId = currentUserId;
+  vm.getCreatedTrails = getCreatedTrails;
 
 
 
