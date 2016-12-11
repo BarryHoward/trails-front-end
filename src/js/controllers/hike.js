@@ -183,6 +183,7 @@ function HikeController (MapsService, UsersService, $stateParams) {
     MapsService.centerMap();
     MapsService.currentHike = {};
     MapsService.updateHikedPanel();
+    MapsService.initChart();
     MapsService.setOffSetArray(spherical.computeLength(MapsService.trailPath));
   }
 
