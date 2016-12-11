@@ -29,27 +29,29 @@
     </div>
     <h3 class="controls-header">Controls</h3>
     <div class="control-box">
-    	<div class="distance-input-container">
-    		<span>
-    			<label>Distance: </label>
-    			<input type="text" ng-model="mark.MapsService.panel.distance"></input>
-    						mi. out of {{mark.MapsService.trailInfo.distance}}
-    		</span>
-        <button class="update-trail-button" id='place-distance-button' ng-click="mark.placeDistanceMarker()">Place Point by Distance</button>
-    	</div>
-    	<div class="lat-lng-input-container">
-    		<span>
-          <span class="lat-lng">
-      			<label>Lat: </label>
-      			<input class="point-control-input" type="text" ng-model="mark.MapsService.panel.lat"></input>
-          </span>
-          <span class="lat-lng">
-            <label>Lng: </label>
-      			<input class="point-control-input" type="text" ng-model="mark.MapsService.panel.lng"></input>
-          </span>
-    		</span>
-        <button class="update-trail-button" id="place-lat-lng-button" ng-click="mark.placeLatLngMarker()">Place Point by LatLng</button>
-    	</div>
+      <div class="static-controls">
+      	<div class="distance-input-container">
+      		<span>
+      			<label>Distance: </label>
+      			<input type="text" ng-model="mark.MapsService.panel.distance"></input>
+      						mi. out of <span class='static-info'>{{mark.MapsService.trailInfo.distance}}</span>
+      		</span>
+          <button class="update-trail-button" id='place-distance-button' ng-click="mark.placeDistanceMarker()">Place Point by Distance</button>
+      	</div>
+      	<div class="lat-lng-input-container">
+      		<span id="lat-lng-mark">
+            <span class="lat-lng">
+        			<label>Lat: </label>
+        			<input class="point-control-input" type="text" ng-model="mark.MapsService.panel.lat"></input>
+            </span>
+            <span class="lat-lng">
+              <label>Lng: </label>
+        			<input class="point-control-input" type="text" ng-model="mark.MapsService.panel.lng"></input>
+            </span>
+      		</span>
+          <button class="update-trail-button" id="place-lat-lng-button" ng-click="mark.placeLatLngMarker()">Place Point by LatLng</button>
+      	</div>
+      </div>
       <div id='control-insert-mark' class="insert">
 
       	<div class="type-container">
