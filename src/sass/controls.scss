@@ -1,12 +1,12 @@
 .point-control-container{
 	display: flex;
-	align-items: flex-start;
+	align-items: center;
 	flex-direction: column;
-	align-content: flex-start;
-	width: 600px;
-	height: 450px;
+	align-content: center;
+	width: 500px;
+	height: 550px;
 	background: #F4F2F2;
-	border: 2px solid black;
+	border: 1px solid black;
 	border-radius: 5px;
   margin: 10px 5px;
 	margin-bottom: 5px;
@@ -24,10 +24,11 @@
 		font-size: 18px;
 		background-color: #EA643C;
 		color: white;
-		width: 590px;
+		width: 496px;
 		margin: 0px;
 		margin-left: -5px;
 		margin-right: -5px;
+		padding: 15px;
 		}
 	.interval-header {
 		border-top-right-radius: 3px;
@@ -37,13 +38,85 @@
 	.control-box {
 		display: flex;
 		flex-direction: column;
-		flex-wrap: wrap;
-		padding: 10px 30px;
+		// flex-wrap: wrap;
+		padding: 10px;
+		width: 425px;
+		align-content: center;
+		align-items: center;
+
+		.static-controls {
+			font-size: 12px;
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+			align-content: space-between;
+			align-items: flex-end;
+			width: 100%;
+			div {
+				display: flex;
+				flex-direction: column;
+				align-content: center;
+				align-items: center;
+				justify-content: center;
+				width: 150px;
+				margin: 5px 10px;
+
+				span {
+					width: 200px;
+					align-self: center;
+					font-size: 12px;
+				}
+			}
+			.insert {
+				border: 1px solid red;
+			}
+		}
+
 	}
 
 	#control-insert-mark {
 		display: flex;
 		flex-direction: row;
 		padding: 10px;
+		width: 400px;
+		font-size: 12px;
+		.mark-input-container {
+			margin-left: 10px;
+			border: 2px solid grey;
+			background-color: #D7D5D5;
+			padding: 5px;
+		}
+	}
+}
+
+.insert-buttons {
+  border: 1px solid grey;
+  background-color: #D7D5D5;
+  font-size: 15px;
+  padding: 10px;
+	padding-left: 30px;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  align-items: center;
+
+
+  span {
+    width: 350px;
+    margin: 5px 5px;
+    font-family: 'Coda', cursive;
+
+  }
+  input {
+    margin: 0px 5px;
+    height: 10px;
+    width: 10px;
+  }
+}
+
+#lat-lng-mark {
+	input {
+		width: 60px;
+		height: 15px;
 	}
 }

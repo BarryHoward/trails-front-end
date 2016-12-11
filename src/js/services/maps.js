@@ -44,7 +44,7 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
   // Get map
 
   function getMap(id){
-    
+
     return NgMap.getMap(id)
   }
 
@@ -240,6 +240,7 @@ function closestPath(waypoint){
     //Place marker
 
   function placeMarker(waypoint) {
+    console.log(waypoint.lat(), waypoint.lng())
     if (!vm.delete){
       var markerDistance;
       //change path and change waypoint if snap
@@ -386,7 +387,7 @@ function closestPath(waypoint){
   }
 
   function deletePoint(){
-    MapsService.currentMarker = null; 
+    MapsService.currentMarker = null;
     let req = {
       url: `${SERVER}points/${vm.currentMarker.id}`,
       method: 'DELETE',
@@ -503,7 +504,7 @@ function closestPath(waypoint){
             let percentage = (dist2 - dist1)/(dist3-dist1);
             return spherical.interpolate(trail[i-1], trail[i], percentage);
           }
-      }     
+      }
     }
   }
 

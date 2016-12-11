@@ -7,7 +7,7 @@
 // 	width: 530px;
 // 	height: 500px;
 // 	background: #F4F2F2;
-// 	border: 2px solid black;
+// 	border: 1px solid black;
 // 	border-radius: 5px;
 //   margin: 10px 5px;
 //   padding: 5px;
@@ -21,10 +21,14 @@
   // display: flex;
 	margin: 2px 0px;
 }
-
+#place-lat-lng-button:hover {
+	background-color: #A9B2BA;
+}
 #place-lat-lng-button {
-	background-color: #EA643C;
+	background-color: #758490;
 	display: block;
+	width: 200px;
+	height: 35px;
 }
 
 .title-description {
@@ -79,6 +83,7 @@
 		border-radius: 5px;
 		border-style: none;
 		max-width: 120px;
+		max-height: 80px;
 
 	}
 }
@@ -96,23 +101,27 @@
 }
 
 .distance-input-container {
-	width: 100px;
 	margin: 0px 0px;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	justify-content: space-between;
 	input {
 		width: 50px;
 		border-style: none;
 		border-radius: 10px;
 	}
 	#place-distance-button {
-		width: 120px;
-		background-color: #EA643C;
+		width: 200px;
+		height: 35px;
+		background-color: #758490;
+	}
+	#place-distance-button:hover {
+		background-color: #A9B2BA;
 	}
 }
 
 .point-control-update-delete {
 	display: flex;
-	flex-direction: column;
+	flex-direction: row;
 }
