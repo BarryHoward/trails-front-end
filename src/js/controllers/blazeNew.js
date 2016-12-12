@@ -20,6 +20,7 @@ function BlazeNewController (MapsService, UsersService, $scope, $state) {
   MapsService.trailPath = [];
   MapsService.draggable = true;
   MapsService.trailInfo = {};
+  MapsService.hikeClick = false;
 
   //Constants
   const metersFeetConversion = 3.28084;

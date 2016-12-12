@@ -56,6 +56,11 @@ function routerConfig ($stateProvider , $urlRouterProvider) {
       templateUrl: 'templates/trails.hike.tpl.html',
       controller: 'HikeController as hike'
     })
+    .state('root.trails.hike.modal', {
+      url: '/modal/:id',
+      templateUrl: 'templates/trails.hike.modal.tpl.html',
+      controller: 'ModalController as modal'
+    })
 
 
   // users states --------------------------------
