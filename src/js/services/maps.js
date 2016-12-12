@@ -55,11 +55,15 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
   vm.setOffSetArray = setOffSetArray;
   vm.startInt = startInt;
   vm.endInt = endInt;
+  vm.setInterval = setInterval;
+  vm.fullTrailInt = fullTrailInt;
+  vm.findMaxMin = findMaxMin;
 
   const metersFeetConversion = 3.28084;
   const metersMilesConversion = 0.000621371;
   const encoding = google.maps.geometry.encoding;
   const spherical = google.maps.geometry.spherical;
+  const elevator = new google.maps.ElevationService;
 
 
   vm.hikedArray = [];
@@ -205,7 +209,6 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
   // Listeners
 
   function dragListener (marker, waypoint){
-    console.log(marker)
       google.maps.event.addListener(marker, 'dragend', function (event){
         if (!vm.snap){
           var index = vm.trailPath.indexOf(waypoint);
@@ -216,7 +219,6 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
           console.log(vm.currentMarker)
           updateMarkPanel(true);
         } else {
-          console.log(marker)
           waypoint = marker.getPosition();
           let insert = closestPath(waypoint);
           waypoint = spherical.interpolate(vm.trailPath[insert[0]-1], vm.trailPath[insert[0]], insert[1])
@@ -807,8 +809,73 @@ function closestPath(waypoint){
     vm.panel.end = spherical.computeLength(vm.trailPath) * metersMilesConversion;
   }
 
+  function setInterval(){
+    vm.chartOffset = 0;
+    filterTrailPath(Number(vm.panel.start), Number(vm.panel.end));
+    filterChartPath(Number(vm.panel.start), Number(vm.panel.end));
+    if (vm.currentHike.poly){
+      vm.currentHike.poly.setPath(vm.currentHike.path)
+    }
+      setOffSetArray(spherical.computeLength(vm.currentHike.path));
+  }
+
+  function fullTrailInt(){
+    vm.panel.start = 0;
+    vm.panel.end = spherical.computeLength(vm.trailPath)*metersMilesConversion;
+    setInterval();
+  }
 
 
+  function findMaxMin(){
+    var trailLength = spherical.computeLength(vm.trailPath)*metersMilesConversion;
+    var queries = Math.ceil(trailLength/20);
+    var initElev;
+    elevator.getElevationForLocations({
+      'locations': [vm.trailPath[0]]}, 
+      function (elevations, status){
+        initElev = elevations[0].elevation*metersFeetConversion;
+        maxMinRecurse(queries, 0, initElev, initElev)
+      }
+    )
+  }
+
+  function maxMinRecurse(queries, i, min_elevation, max_elevation){
+    if (i<=queries){
+      console.log(i, queries)
+      let start = i*20;
+      let end = (i+1)*20;
+      var filteredPath = vm.trailPath.filter(function(element, index){
+        let waypointDistancePrev = spherical.computeLength(vm.trailPath.slice(0, index))*metersMilesConversion;
+        let waypointDistanceNext = spherical.computeLength(vm.trailPath.slice(0, index+2))*metersMilesConversion;
+        console.log(waypointDistancePrev, waypointDistanceNext)
+        return (start<=waypointDistanceNext && waypointDistancePrev <=end)
+      })
+      if (filteredPath.length>1){
+        elevator.getElevationAlongPath({'path': filteredPath, 'samples': 200}, 
+          function (elevations, status){
+            console.log(status)
+            for (var j=0; j<elevations.length; j++){
+              let elevation = elevations[j].elevation*metersFeetConversion;
+              if (elevation > max_elevation){
+                max_elevation = elevation;
+              }
+              if (elevation <min_elevation){
+                min_elevation = elevation;
+              }
+            }
+            
+          }
+        )
+      }
+      window.setTimeout(function(){maxMinRecurse(queries, i+1, min_elevation, max_elevation)}, 1000);
+    } else {
+      safeApply(function(){
+        vm.trailInfo.max_elevation = round(max_elevation, 2);
+        vm.trailInfo.min_elevation = round(min_elevation, 2);
+      })
+      console.log(queries, i+1, min_elevation, max_elevation)
+    }
+  }
 
 };
 

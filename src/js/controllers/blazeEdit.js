@@ -24,7 +24,7 @@ function BlazeEditController (MapsService, UsersService, $stateParams, $state) {
   vm.placeMarker = placeMarker;
   vm.editTrail = editTrail;
   vm.deleteTrail = deleteTrail;
-  vm.setInterval = setInterval;
+  // vm.setInterval = setInterval;
   vm.placeLatLngMarker = placeLatLngMarker;
 
   const metersFeetConversion = 3.28084;
@@ -100,16 +100,16 @@ function BlazeEditController (MapsService, UsersService, $stateParams, $state) {
       });
   }
 
-  function setInterval(){
-      MapsService.chartOffset = 0;
-      console.log(MapsService.panel.start, MapsService.panel.end, MapsService.currentHike.poly, MapsService.currentHike.path)
-      MapsService.filterTrailPath(Number(MapsService.panel.start), Number(MapsService.panel.end));
-      MapsService.filterChartPath(Number(MapsService.panel.start), Number(MapsService.panel.end));
-    if (MapsService.currentHike.poly){
-      MapsService.currentHike.poly.setPath(MapsService.currentHike.path)
-    }
-      MapsService.setOffSetArray(spherical.computeLength(MapsService.currentHike.path));
-  }
+  // function setInterval(){
+  //     MapsService.chartOffset = 0;
+  //     console.log(MapsService.panel.start, MapsService.panel.end, MapsService.currentHike.poly, MapsService.currentHike.path)
+  //     MapsService.filterTrailPath(Number(MapsService.panel.start), Number(MapsService.panel.end));
+  //     MapsService.filterChartPath(Number(MapsService.panel.start), Number(MapsService.panel.end));
+  //   if (MapsService.currentHike.poly){
+  //     MapsService.currentHike.poly.setPath(MapsService.currentHike.path)
+  //   }
+  //     MapsService.setOffSetArray(spherical.computeLength(MapsService.currentHike.path));
+  // }
 
   function placeLatLngMarker(){
     let waypoint = new google.maps.LatLng(MapsService.panel.lat, MapsService.panel.lng)
