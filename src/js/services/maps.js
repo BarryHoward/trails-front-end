@@ -53,6 +53,8 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
   vm.prevChart = prevChart;
   vm.chooseChart = chooseChart;
   vm.setOffSetArray = setOffSetArray;
+  vm.startInt = startInt;
+  vm.endInt = endInt;
 
   const metersFeetConversion = 3.28084;
   const metersMilesConversion = 0.000621371;
@@ -169,6 +171,7 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
         icon: icons.blaze,
         draggable: true
     });
+    vm.markerArray.push(marker)
     return marker;
   }
 
@@ -202,14 +205,18 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
   // Listeners
 
   function dragListener (marker, waypoint){
+    console.log(marker)
       google.maps.event.addListener(marker, 'dragend', function (event){
         if (!vm.snap){
           var index = vm.trailPath.indexOf(waypoint);
           waypoint = marker.getPosition();
           vm.trailPath[index] = waypoint;
           vm.trailPoly.setPath(vm.trailPath);
+          vm.currentMarker = marker;
+          console.log(vm.currentMarker)
           updateMarkPanel(true);
         } else {
+          console.log(marker)
           waypoint = marker.getPosition();
           let insert = closestPath(waypoint);
           waypoint = spherical.interpolate(vm.trailPath[insert[0]-1], vm.trailPath[insert[0]], insert[1])
@@ -549,7 +556,7 @@ function closestPath(waypoint){
   }
 
   function chartMark(overide){
-    ChartsService.chart(vm.currentHike.path, vm.markerArray, Number(vm.currentHike.start), (vm.regraphElevation|| overide)).then(function(){
+    ChartsService.chart(vm.currentHike.path, vm.filterdMarkerArray, Number(vm.currentHike.start), (vm.regraphElevation|| overide)).then(function(){
       safeApply(function(){
         vm.trailInfo.min_elevation = ChartsService.min_elevation;
         vm.trailInfo.max_elevation = ChartsService.max_elevation;
@@ -560,7 +567,7 @@ function closestPath(waypoint){
   }
 
   function chartHike(path, start, overide){
-    ChartsService.chart(path, vm.markerArray, start, (vm.regraphElevation || overide)).then(function(){
+    ChartsService.chart(path, vm.filterdMarkerArray, start, (vm.regraphElevation || overide)).then(function(){
     })
   }
 
@@ -652,12 +659,19 @@ function closestPath(waypoint){
   function filterChartPath(){
     var start =  Number(vm.currentHike.start);
     var end = Number(vm.currentHike.end);
+    vm.panel.start = start;
+    vm.panel.end = end;
     var chartStart = start + 20*vm.chartOffset;
     var chartEnd = Math.min(end, (start + 20 + 20*vm.chartOffset))
     let chartPath = vm.trailPath.filter(function(element, index){
       let waypointDistance = spherical.computeLength(vm.trailPath.slice(0, index+1))*metersMilesConversion;
       return (chartStart<=waypointDistance && waypointDistance<=chartEnd)
     })
+
+    vm.filterdMarkerArray = vm.markerArray.filter(function (element){
+      return (element.distance>=start && element.distance<=end)
+    })
+
     chartPath.unshift(distToWaypoint(chartStart));
     chartPath.push(distToWaypoint(chartEnd));
     chartHike(chartPath, chartStart);
@@ -783,6 +797,14 @@ function closestPath(waypoint){
         return hikePoly;
     }
 
+  }
+
+  function startInt(){
+    vm.panel.start = 0;
+  }
+
+  function endInt(){
+    vm.panel.end = spherical.computeLength(vm.trailPath) * metersMilesConversion;
   }
 
 

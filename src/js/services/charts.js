@@ -39,7 +39,7 @@ function ChartsService ($http, $cookies) {
 		      'path': path,
 		      'samples': 200
 		    }, function (elevations, status){
-		    	console.log(status)
+		    	// console.log(status)
 		        var pathElevations = [];
 		        let minObject = elevations.reduce(function (min, newNum){
 		        	if (newNum.elevation<min.elevation){

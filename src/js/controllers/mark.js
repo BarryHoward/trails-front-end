@@ -10,7 +10,15 @@ function MarkController (MapsService, UsersService, $stateParams) {
   MapsService.snap = true;
   MapsService.regraphElevation = false;
   MapsService.draggable = true;
-   MapsService.hikeClick = false;
+  MapsService.hikeClick = false;
+  MapsService.markerArray = [];
+  MapsService.panel={};
+  MapsService.regraphElevation = true;
+  MapsService.trailInfo = {};
+  MapsService.trailPath = [];
+  MapsService.currentMarker = {};
+  MapsService.currentHike = {};
+  MapsService.currentHike.start = 0;
 
   vm.MapsService = MapsService;
   vm.placeMarker = placeMarker;
@@ -52,6 +60,7 @@ function MarkController (MapsService, UsersService, $stateParams) {
 
         //set trail data
         MapsService.trailPath = encoding.decodePath(resp.data.path);
+        MapsService.setOffSetArray(spherical.computeLength(MapsService.trailPath));
         MapsService.currentHike.path = MapsService.trailPath;
         MapsService.trailInfo = resp.data;
         MapsService.trailInfo.distance = Number(resp.data.distance.toFixed(2));
@@ -61,17 +70,11 @@ function MarkController (MapsService, UsersService, $stateParams) {
         //create line, center map, and initialize search bar
         MapsService.createTrailPoly();
         MapsService.map.setMapTypeId('terrain');
-        MapsService.initSearch().then(MapsService.centerMap())
+        MapsService.map.setOptions({scrollwheel: false});
+        MapsService.centerMap()
 
       })
     })
-  }
-
-
-  function setInterval(){
-        let filteredPath = MapsService.filterPath(MapsService.panel.startInt, MapsService.panel.endInt);
-        MapsService.createHikePoly(filteredPath);
-        MapsService.centerMap();
   }
 
   function placeMarker(event){
@@ -131,6 +134,16 @@ function MarkController (MapsService, UsersService, $stateParams) {
         MapsService.chartMark();
         MapsService.updatePanel(true);
     }
+  }
+
+  function setInterval(){
+      MapsService.chartOffset = 0;
+      MapsService.filterTrailPath(Number(MapsService.panel.start), Number(MapsService.panel.end));
+      MapsService.filterChartPath(Number(MapsService.panel.start), Number(MapsService.panel.end));
+    if (MapsService.currentHike.poly){
+      MapsService.currentHike.poly.setPath(MapsService.currentHike.path)
+    }
+      MapsService.setOffSetArray(spherical.computeLength(MapsService.currentHike.path));
   }
 
 }

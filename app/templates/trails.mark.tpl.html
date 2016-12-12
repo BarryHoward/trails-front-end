@@ -17,7 +17,7 @@
 
 <div class="map-controls-container">
   <div class="map-container">
-    <input id="pac-input" class="controls" type="text" placeholder="Search...">
+    <!-- <input id="pac-input" class="controls" type="text" placeholder="Search..."> -->
     <ng-map class="map" id="markMap" on-click="mark.placeMarker($event)">
     </ng-map>
   </div>
@@ -25,9 +25,23 @@
     <h3 class="interval-header">Interval</h3>
 
     <div class="set-interval-box">
-      <!-- Interval stuff -->
+      <div class="lat-lng-input-container">
+        <span>
+          <span class="lat-lng">
+            <button ng-click="mark.MapsService.startInt()">Start: </button>
+            <input class="point-control-input" type="text" ng-model="mark.MapsService.panel.start"></input>
+          </span>
+          <span class="lat-lng">
+            <button ng-click="mark.MapsService.endInt()">End: </button>
+            <input class="point-control-input" type="text" ng-model="mark.MapsService.panel.end"></input>
+          </span>
+        </span>
+            <button ng-click="mark.setInterval()">go to interval</button>
+      </div>
     </div>
-    <h3 class="controls-header">Controls</h3>
+
+
+    <h3 class="controls-header">Mark Controls</h3>
     <div class="control-box">
       <div class="static-controls">
       	<div class="distance-input-container">
@@ -38,7 +52,7 @@
       		</span>
           <button class="update-trail-button" id='place-distance-button' ng-click="mark.placeDistanceMarker()">Place Point by Distance</button>
       	</div>
-      	<div class="lat-lng-input-container">
+<!--       	<div class="lat-lng-input-container">
       		<span id="lat-lng-mark">
             <span class="lat-lng">
         			<label>Lat: </label>
@@ -50,7 +64,7 @@
             </span>
       		</span>
           <button class="update-trail-button" id="place-lat-lng-button" ng-click="mark.placeLatLngMarker()">Place Point by LatLng</button>
-      	</div>
+      	</div> -->
       </div>
       <div id='control-insert-mark' class="insert">
 
@@ -98,4 +112,11 @@
 
 <div class="chart-box">
 	<canvas class="chart" id="myChart" ng-click='mark.testClick($event)'></canvas>
+</div>
+<div class="chart-controls">
+  <span><button ng-click="mark.MapsService.prevChart()">Previous</button></span>
+  <span ng-repeat="number in mark.MapsService.showChart">
+    <button ng-click="mark.MapsService.chooseChart(number)">{{number + 1}}</button>
+  </span>
+  <span><button ng-click="mark.MapsService.nextChart()">Next</button></span>
 </div>
