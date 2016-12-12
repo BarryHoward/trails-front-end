@@ -26,7 +26,7 @@
 
 <div class="map-controls-container">
   <div class="map-container">
-    <input id="pac-input" class="controls" type="text" placeholder="Search...">
+    <!-- <input id="pac-input" class="controls" type="text" placeholder="Search..."> -->
     <ng-map class="map" id="blazeEditMap" on-click="blazeEdit.placeMarker($event)">
     </ng-map>
   </div>
@@ -34,12 +34,47 @@
     <h3 class="interval-header">Interval</h3>
 
     <div class="set-interval-box">
-
-      <!-- Interval stuff here -->
-
+      <div class="lat-lng-input-container">
+        <span>
+          <span class="lat-lng">
+            <label>Start: </label>
+            <input class="point-control-input" type="text" ng-model="blazeEdit.MapsService.panel.start"></input>
+          </span>
+          <span class="lat-lng">
+            <label>End: </label>
+            <input class="point-control-input" type="text" ng-model="blazeEdit.MapsService.panel.end"></input>
+          </span>
+        </span>
+            <button ng-click="blazeEdit.setInterval()">go to interval</button>
+      </div>
     </div>
-    <h3 class="controls-header">Controls</h3>
+
+    <h3 class="controls-header">Blaze Controls</h3>
     <div class="control-box">
+
+      <div class="static-controls">
+<!--         <div class="distance-input-container">
+          <span>
+            <label>Distance: </label>
+            <input type="text" ng-model="blazeEdit.MapsService.panel.distance"></input>
+                  mi. out of <span class='static-info'>{{blazeEdit.MapsService.trailInfo.distance}}</span>
+          </span>
+          <button class="update-trail-button" id='place-distance-button' ng-click="blazeEdit.placeDistanceMarker()">Place Point by Distance</button>
+        </div> -->
+        <div class="lat-lng-input-container">
+          <span id="lat-lng-mark">
+            <span class="lat-lng">
+              <label>Lat: </label>
+              <input class="point-control-input" type="text" ng-model="blazeEdit.MapsService.panel.lat"></input>
+            </span>
+            <span class="lat-lng">
+              <label>Lng: </label>
+              <input class="point-control-input" type="text" ng-model="blazeEdit.MapsService.panel.lng"></input>
+            </span>
+          </span>
+          <button class="update-trail-button" id="place-lat-lng-button" ng-click="blazeEdit.placeLatLngMarker()">Place Point by LatLng</button>
+        </div>
+      </div>
       <div class="points-header">
         Add or Remove Points
       </div>
@@ -66,4 +101,11 @@
 <div class="elevation-header"><h2>Elevation Information</h2></div>
 <div class="chart-box">
 	<canvas class="chart" id="myChart" ng-click="blazeEdit.testClick($event)"></canvas>
+</div>
+<div class="chart-controls">
+  <span><button ng-click="blazeEdit.MapsService.prevChart()">Previous</button></span>
+  <span ng-repeat="number in blazeEdit.MapsService.showChart">
+    <button ng-click="blazeEdit.MapsService.chooseChart(number)">{{number + 1}}</button>
+  </span>
+  <span><button ng-click="blazeEdit.MapsService.nextChart()">Next</button></span>
 </div>

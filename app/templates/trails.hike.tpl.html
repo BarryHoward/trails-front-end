@@ -17,7 +17,7 @@
 
 <div class="map-controls-container">
   <div class="map-container">
-    <input id="pac-input" class="controls" type="text" placeholder="Search...">
+    <!-- <input id="pac-input" class="controls" type="text" placeholder="Search..."> -->
     <ng-map class="map" id="hikeMap" on-click="hike.placeMarker($event)">
     </ng-map>
   </div>
@@ -40,7 +40,7 @@
 
       </div>
     </div>
-    <h3 class="controls-header">Controls</h3>
+    <h3 class="controls-header">Hike Controls</h3>
     <div class="control-box">
       <div ng-repeat="singleHiked in hike.MapsService.hikedArray">
       <button  ng-click="hike.gotoHiked(singleHiked.id)">
@@ -67,13 +67,11 @@
 	<canvas class="chart" id="myChart"></canvas>
 </div>
 <div class="chart-controls">
-
     <span><button ng-click="hike.MapsService.prevChart()">Previous</button></span>
     <span ng-repeat="number in hike.MapsService.showChart">
       <button ng-click="hike.MapsService.chooseChart(number)">{{number + 1}}</button>
     </span>
     <span><button ng-click="hike.MapsService.nextChart()">Next</button></span>
-
 </div>
 
 <div ui-view></div>

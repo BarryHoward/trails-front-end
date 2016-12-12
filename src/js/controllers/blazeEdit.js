@@ -13,13 +13,19 @@ function BlazeEditController (MapsService, UsersService, $stateParams, $state) {
   MapsService.panel={};
   MapsService.regraphElevation = true;
   MapsService.trailInfo = {};
+  MapsService.trailPath = [];
   MapsService.draggable = true;
   MapsService.hikeClick = false;
+  MapsService.currentMarker = {};
+  MapsService.currentHike = {};
+  MapsService.currentHike.start = 0;
 
   vm.MapsService = MapsService;
   vm.placeMarker = placeMarker;
   vm.editTrail = editTrail;
   vm.deleteTrail = deleteTrail;
+  vm.setInterval = setInterval;
+  vm.placeLatLngMarker = placeLatLngMarker;
 
   const metersFeetConversion = 3.28084;
   const metersMilesConversion = 0.000621371;
@@ -40,14 +46,16 @@ function BlazeEditController (MapsService, UsersService, $stateParams, $state) {
 
         //set trail data
         MapsService.trailPath = encoding.decodePath(resp.data.path);
+        MapsService.setOffSetArray(spherical.computeLength(MapsService.trailPath));
         MapsService.trailInfo = resp.data;
         MapsService.trailInfo.saved_url = resp.data.img_url;
         MapsService.currentHike.path = MapsService.trailPath;
 
         //create line, center map, and initialize search bar
         MapsService.createTrailPoly();
-        MapsService.initSearch().then(MapsService.centerMap())
+        MapsService.centerMap()
         MapsService.map.setMapTypeId('terrain');
+        MapsService.map.setOptions({scrollwheel: false});
 
         //add trail Markers and add listeners;
         MapsService.trailPath.forEach(function (waypoint) {
@@ -93,10 +101,21 @@ function BlazeEditController (MapsService, UsersService, $stateParams, $state) {
   }
 
   function setInterval(){
-      let filteredPath = MapsService.filterPath(MapsService.panel.startInt, MapsService.panel.endInt);
-      MapsService.createHikePoly(filteredPath);
-      MapsService.centerMap();
-      MapsService.chartMark(true);
+      MapsService.chartOffset = 0;
+      console.log(MapsService.panel.start, MapsService.panel.end, MapsService.currentHike.poly, MapsService.currentHike.path)
+      MapsService.filterTrailPath(Number(MapsService.panel.start), Number(MapsService.panel.end));
+      MapsService.filterChartPath(Number(MapsService.panel.start), Number(MapsService.panel.end));
+    if (MapsService.currentHike.poly){
+      MapsService.currentHike.poly.setPath(MapsService.currentHike.path)
+    }
+      MapsService.setOffSetArray(spherical.computeLength(MapsService.currentHike.path));
+  }
+
+  function placeLatLngMarker(){
+    let waypoint = new google.maps.LatLng(MapsService.panel.lat, MapsService.panel.lng)
+    let marker = MapsService.placeMarker(waypoint);
+    MapsService.dragListener(marker, waypoint)
+    MapsService.clickListener(marker, waypoint)
   }
 }
 

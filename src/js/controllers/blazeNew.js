@@ -6,6 +6,8 @@ function BlazeNewController (MapsService, UsersService, $scope, $state) {
   //functions
   vm.placeMarker = placeMarker;
   vm.newTrail = newTrail;
+  vm.setInterval = setInterval;
+  vm.placeLatLngMarker = placeLatLngMarker;
 
   //Maps Service
   vm.MapsService = MapsService;
@@ -21,6 +23,9 @@ function BlazeNewController (MapsService, UsersService, $scope, $state) {
   MapsService.draggable = true;
   MapsService.trailInfo = {};
   MapsService.hikeClick = false;
+  MapsService.currentMarker = {};
+  MapsService.currentHike ={};
+  MapsService.currentHike.start = 0;
 
   //Constants
   const metersFeetConversion = 3.28084;
@@ -44,6 +49,7 @@ function BlazeNewController (MapsService, UsersService, $scope, $state) {
       MapsService.createTrailPoly();
       MapsService.initSearch();
       MapsService.map.setMapTypeId('terrain');
+      MapsService.map.setOptions({scrollwheel: false});
       centerByLocation();
     })
   }
@@ -68,10 +74,21 @@ function BlazeNewController (MapsService, UsersService, $scope, $state) {
   }
 
   function setInterval(){
-      let filteredPath = MapsService.filterPath(MapsService.panel.startInt, MapsService.panel.endInt);
-      MapsService.createHikePoly(filteredPath);
-      MapsService.centerMap();
-      MapsService.chartMark(true);
+      MapsService.chartOffset = 0;
+      console.log(MapsService.panel.start, MapsService.panel.end, MapsService.currentHike.poly, MapsService.currentHike.path)
+      MapsService.filterTrailPath(Number(MapsService.panel.start), Number(MapsService.panel.end));
+      MapsService.filterChartPath(Number(MapsService.panel.start), Number(MapsService.panel.end));
+    if (MapsService.currentHike.poly){
+      MapsService.currentHike.poly.setPath(MapsService.currentHike.path)
+    }
+      MapsService.setOffSetArray(spherical.computeLength(MapsService.currentHike.path));
+  }
+
+  function placeLatLngMarker(){
+    let waypoint = new google.maps.LatLng(MapsService.panel.lat, MapsService.panel.lng)
+    let marker = MapsService.placeMarker(waypoint);
+    MapsService.dragListener(marker, waypoint)
+    MapsService.clickListener(marker, waypoint)
   }
 
 

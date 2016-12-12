@@ -169,6 +169,7 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
         icon: icons.blaze,
         draggable: true
     });
+    vm.markerArray.push(marker)
     return marker;
   }
 
@@ -202,14 +203,18 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
   // Listeners
 
   function dragListener (marker, waypoint){
+    console.log(marker)
       google.maps.event.addListener(marker, 'dragend', function (event){
         if (!vm.snap){
           var index = vm.trailPath.indexOf(waypoint);
           waypoint = marker.getPosition();
           vm.trailPath[index] = waypoint;
           vm.trailPoly.setPath(vm.trailPath);
+          vm.currentMarker = marker;
+          console.log(vm.currentMarker)
           updateMarkPanel(true);
         } else {
+          console.log(marker)
           waypoint = marker.getPosition();
           let insert = closestPath(waypoint);
           waypoint = spherical.interpolate(vm.trailPath[insert[0]-1], vm.trailPath[insert[0]], insert[1])
