@@ -13,6 +13,8 @@ function UsersService ($http, $cookies) {
   vm.newUser = newUser;
   vm.currentUser = currentUser;
   vm.currentUserId = currentUserId;
+  vm.getCreatedTrails = getCreatedTrails;
+  vm.getHikedTrails = getHikedTrails;
 
 
 
@@ -72,11 +74,11 @@ function UsersService ($http, $cookies) {
 
   // Backend not setup yet for these two! ----------------
   function getCreatedTrails(id){
-    return $http.get(`${SERVER}/users/${id}/createdTrails`)
+    return $http.get(`${SERVER}trails/users/${id}/`)
   }
 
   function getHikedTrails(id){
-    return $http.get(`${SERVER}/users/${id}/hikedTrails`)
+    return $http.get(`${SERVER}hikes/users/${id}/trails`)
   }
   // -------------------------------------------------------
 

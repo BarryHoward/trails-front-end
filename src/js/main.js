@@ -17,8 +17,14 @@ import {TrailController} from "./controllers/trail";
 //Trail Controllers
 import {BlazeNewController} from "./controllers/blazeNew";
 import {BlazeEditController} from "./controllers/blazeEdit";
-import {MarkController} from "./controllers/mark"
+import {MarkController} from "./controllers/mark";
 import {HikeController} from "./controllers/hike";
+
+//User Controllers
+import {UsersController} from "./controllers/users";
+import {UserHomeController} from "./controllers/userHome";
+import {UserCreatedController} from "./controllers/userCreated";
+import {UserHikedController} from "./controllers/userHiked";
 
 //Services
 import {UsersService} from "./services/users";
@@ -43,6 +49,11 @@ angular.module('app', ['ngMap', 'ui.router', 'ngCookies', 'chart.js'])
 	.controller('BlazeEditController', BlazeEditController)
 	.controller('MarkController', MarkController)
 	.controller('HikeController', HikeController)
+
+	.controller('UsersController', UsersController)
+	.controller('UserHomeController', UserHomeController)
+	.controller('UserCreatedController', UserCreatedController)
+	.controller('UserHikedController', UserHikedController)
 
 	.service('UsersService', UsersService)
 	.service('MapsService', MapsService)

@@ -65,6 +65,26 @@ function routerConfig ($stateProvider , $urlRouterProvider) {
       templateUrl: 'templates/users.tpl.html',
       controller: 'UsersController as users'
     })
+
+    .state('root.users.home', {
+      url: '/:userId/home',
+      templateUrl: 'templates/users.home.tpl.html',
+      controller: 'UserHomeController as userHome'
+    })
+
+    .state('root.users.createdTrails', {
+      url: '/:userId/createdTrails',
+      templateUrl: 'templates/users.createdTrails.tpl.html',
+      controller: 'UserCreatedController as userCreated'
+    })
+
+    .state('root.users.hikedTrails', {
+      url: '/:userId/hikedTrails',
+      templateUrl: 'templates/users.hikedTrails.tpl.html',
+      controller: 'UserHikedController as userHiked'
+    })
+
+
      $urlRouterProvider.otherwise('/home');
 };
 
