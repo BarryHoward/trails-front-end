@@ -72,8 +72,9 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
 
 
 // ----- Reset markers
-  $rootScope.$on('$stateChangeStart', (event, toState) =>{
-    if (!(toState.name = "root.trails.hike.modal")){
+  $rootScope.$on('$stateChangeStart', (event, toState, toParams, fromState) =>{
+    console.log(toState.name)
+    if (toState.name !== "root.trails.hike.modal" && fromState.name !== "root.trails.hike.modal"){
       vm.markerArray.forEach(function(marker){
         marker.setMap(null);
       })
@@ -247,7 +248,7 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
             updateMarkPanel(true)
           }
         } else {
-
+          vm.currentMarker = marker;
           $state.go("root.trails.hike.modal", {'id': marker.id})
         }
 
