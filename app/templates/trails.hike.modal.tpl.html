@@ -5,6 +5,21 @@
   <div>{{modal.marker.title}}</div>
   <div>{{modal.marker.description}}</div>
   <div>{{modal.marker.distance}}</div>
+  <img src='images/png/tent.png' ng-show="modal.marker.campsite">
+  <img src='images/png/shelter.png' ng-show="modal.marker.shelter">
+  <img src='images/png/water-drop.png' ng-show="modal.marker.water">
+  <img src='images/png/parking.png' ng-show="modal.marker.parking">
+  <img src='images/png/binoculars.png' ng-show="modal.marker.view">
+  <img src='images/png/list.png' ng-show="modal.marker.resupply">
+  <img src='images/png/road.png' ng-show="modal.marker.road"
+
+<!--   		campgroundImg.src = 'images/png/tent.png';
+		waterImg.src = 'images/png/water-drop.png';
+		parkingImg.src = 'images/png/parking.png';
+		roadImg.src = 'images/png/road.png';
+		shelterImg.src = 'images/png/shelter.png';
+		viewImg.src = 'images/png/binoculars.png';
+		resupplyImg.src = 'images/png/list.png'; -->
   </div>
   <button ng-click="modal.parent()" class="modal-close"></button>
 </div>

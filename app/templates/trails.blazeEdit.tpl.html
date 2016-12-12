@@ -37,11 +37,11 @@
       <div class="lat-lng-input-container">
         <span>
           <span class="lat-lng">
-            <label>Start: </label>
+            <button ng-click="blazeEdit.MapsService.startInt()">Start: </button>
             <input class="point-control-input" type="text" ng-model="blazeEdit.MapsService.panel.start"></input>
           </span>
           <span class="lat-lng">
-            <label>End: </label>
+            <button ng-click="blazeEdit.MapsService.endInt()">End: </button>
             <input class="point-control-input" type="text" ng-model="blazeEdit.MapsService.panel.end"></input>
           </span>
         </span>

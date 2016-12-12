@@ -60,9 +60,11 @@ function BlazeNewController (MapsService, UsersService, $scope, $state) {
     let newTrail = MapsService.trailInfo;
     let encodeString = encoding.encodePath(MapsService.trailPath);
     newTrail.path = encodeString;
-    MapsService.newTrail(newTrail).then(function (resp) {
+    MapsService.newTrail(newTrail).then(function (resp){
         vm.status = "Trail Saved";
         $state.go("root.topTrails")
+      }, (reject) => {
+        console.log(reject)
       })
   }
 
@@ -75,7 +77,6 @@ function BlazeNewController (MapsService, UsersService, $scope, $state) {
 
   function setInterval(){
       MapsService.chartOffset = 0;
-      console.log(MapsService.panel.start, MapsService.panel.end, MapsService.currentHike.poly, MapsService.currentHike.path)
       MapsService.filterTrailPath(Number(MapsService.panel.start), Number(MapsService.panel.end));
       MapsService.filterChartPath(Number(MapsService.panel.start), Number(MapsService.panel.end));
     if (MapsService.currentHike.poly){

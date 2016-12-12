@@ -74,6 +74,7 @@ function HikeController (MapsService, UsersService, $stateParams) {
 
         //create line, center map, and initialize search bar
         MapsService.createTrailPoly();
+        MapsService.currentHike.poly = MapsService.trailPoly;
         MapsService.centerMap()
         MapsService.getHikes().then(function(resp){
           let previousHikes = resp.data;
@@ -107,7 +108,8 @@ function HikeController (MapsService, UsersService, $stateParams) {
     if (!newHike.title){
       newHike.title = "Hike"
     }
-    newHike.trail_id = Number($stateParams.id)
+    newHike.trail_id = Number($stateParams.trailId)
+    console.log(newHike.trail_id)
     let encodeString = encoding.encodePath(MapsService.currentHike.path);
     newHike.path = encodeString;
     MapsService.saveHike(newHike).then(function (resp) {
