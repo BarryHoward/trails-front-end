@@ -1,3 +1,30 @@
+<div class="user-profile-main-header">
+<a href="#/users/{{root.user_id}}/profile"><span class="my-profile">My Profile</span></a>
+</div>
+<div class="profile-container">
+  <div class="profile-head">
+    <div class="trail-image-container" id="profile-pic">
+      <img src="#">
+    </div>
+    <div class="user-profile-info">
+      <span class="static-info">{{root.username}}</span>
+      <div>Trails Created: <span class="static-info">{{users.createdTrailList.length}}</span></div>
+      <div>Trails Hiked: <span class="static-info">{{users.hikedTrailList.length}}</span></div>
+    </div>
+    <div class="tabs">
+      <div class="profile-tab">
+          <a href="#/users/{{root.user_id}}/profile" ng-show="root.loggedIn">About</a>
+      </div>
+      <div class="profile-tab">
+        <a href="#/users/{{root.user_id}}/createdTrails" ng-show="root.loggedIn">Created Trails</a>
+      </div>
+      <div class="profile-tab">
+         <a href="#/users/{{root.user_id}}/hikedTrails" ng-show="root.loggedIn">Hiked Trails</a>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="users-container" ui-view>
 
 </div>

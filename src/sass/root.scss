@@ -10,12 +10,14 @@
   margin-top: 5px;
   margin-bottom: 15px;
   span {
-    a {
-      text-decoration: none;
-      color: black;
-      font-family: 'Coda', cursive;
-    }
+
   }
+}
+
+.site-nav-link {
+  text-decoration: none;
+  color: black;
+  font-family: 'Coda', cursive;
 }
 
 .user-nav {
@@ -42,4 +44,8 @@
 
 #current-user {
   color: #D7D5D5;
+}
+
+#current-user:hover {
+  color: #9FA7AF;
 }
