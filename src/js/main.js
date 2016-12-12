@@ -24,6 +24,7 @@ import {HikeController} from "./controllers/hike";
 import {UsersController} from "./controllers/users";
 import {UserHomeController} from "./controllers/userHome";
 import {UserCreatedController} from "./controllers/userCreated";
+import {UserHikedController} from "./controllers/userHiked";
 
 //Services
 import {UsersService} from "./services/users";
@@ -52,6 +53,7 @@ angular.module('app', ['ngMap', 'ui.router', 'ngCookies', 'chart.js'])
 	.controller('UsersController', UsersController)
 	.controller('UserHomeController', UserHomeController)
 	.controller('UserCreatedController', UserCreatedController)
+	.controller('UserHikedController', UserHikedController)
 
 	.service('UsersService', UsersService)
 	.service('MapsService', MapsService)

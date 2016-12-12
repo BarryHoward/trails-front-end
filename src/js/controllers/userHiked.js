@@ -1,4 +1,4 @@
-function UserCreatedController ($state, UsersService, MapsService) {
+function UserHikedController (UsersService, MapsService) {
   let vm = this;
 	vm.MapsService = MapsService;
   vm.trailList = [];
@@ -10,7 +10,7 @@ function UserCreatedController ($state, UsersService, MapsService) {
     }
     console.log(vm.user_id);
 
-		UsersService.getCreatedTrails(vm.user_id).then((resp)=>{
+		UsersService.getHikedTrails(vm.user_id).then((resp)=>{
 			vm.trailList = resp.data;
       console.log('vm.trailList', vm.trailList)
 		});
@@ -24,6 +24,6 @@ function UserCreatedController ($state, UsersService, MapsService) {
 
 };
 
-UserCreatedController.$inject = ['$state', 'UsersService', 'MapsService'];
+UserHikedController.$inject = ['UsersService', 'MapsService'];
 
-export {UserCreatedController};
+export {UserHikedController};

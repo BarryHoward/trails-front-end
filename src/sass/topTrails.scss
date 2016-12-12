@@ -20,29 +20,43 @@
 
 
     #top-trail-title {
-      font-size: 35px;
+      font-size: 32px;
       font-family: 'Nunito', sans-serif;
     }
   }
 
   .top-trail-buttons {
     position: absolute;
-    bottom: 10px;
-    right: 70px;
+    bottom: 50px;
+    right: -56px;
   }
 
   #mark-button {
     position: absolute;
-    bottom: 10px;
-    right: 130px;
+    bottom: 90px;
+    right: -56px;
   }
 
   .hike-button {
     position: absolute;
     bottom: 10px;
-    right: 10px;
+    right: -56px;
   }
+
 }
+  #blaze-link {
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border: 1px solid black;
+    width: 50px;
+  }
+
+  #mark-link {
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border: 1px solid black;
+    width: 50px;
+  }
 
 .update-delete {
   position: absolute;

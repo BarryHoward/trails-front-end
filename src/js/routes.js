@@ -74,8 +74,14 @@ function routerConfig ($stateProvider , $urlRouterProvider) {
 
     .state('root.users.createdTrails', {
       url: '/:userId/createdTrails',
-      temlateUrl: 'templates/users.createdTrails.tpl.html',
+      templateUrl: 'templates/users.createdTrails.tpl.html',
       controller: 'UserCreatedController as userCreated'
+    })
+
+    .state('root.users.hikedTrails', {
+      url: '/:userId/hikedTrails',
+      templateUrl: 'templates/users.hikedTrails.tpl.html',
+      controller: 'UserHikedController as userHiked'
     })
 
 
