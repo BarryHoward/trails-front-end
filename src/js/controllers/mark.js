@@ -10,6 +10,7 @@ function MarkController (MapsService, UsersService, $stateParams) {
   MapsService.snap = true;
   MapsService.regraphElevation = false;
   MapsService.draggable = true;
+   MapsService.hikeClick = false;
 
   vm.MapsService = MapsService;
   vm.placeMarker = placeMarker;

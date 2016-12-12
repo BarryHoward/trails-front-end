@@ -2,7 +2,7 @@
 
 //-- Chart Icons dont show up on initial graph sometimes.  Other times they're slow.
 
-function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootScope) {
+function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootScope, $state) {
 
   const SERVER = "https://trails-back-end.herokuapp.com/";
 
@@ -226,25 +226,32 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
 
   function clickListener (marker, waypoint){
       google.maps.event.addListener(marker, 'click', function (event){
-        waypoint = marker.getPosition();
-        if (vm.delete){
-          if (!vm.snap){
-            var index = vm.trailPath.indexOf(waypoint);
-            vm.trailPath.splice(index, 1);
-            vm.trailPoly.setPath(vm.trailPath);
+        if (!vm.hikeClick){
+          waypoint = marker.getPosition();
+          if (vm.delete){
+            if (!vm.snap){
+              var index = vm.trailPath.indexOf(waypoint);
+              vm.trailPath.splice(index, 1);
+              vm.trailPoly.setPath(vm.trailPath);
+            }
+            var markIndex = vm.markerArray.indexOf(marker);
+            vm.markerArray.splice(markIndex, 1);
+            marker.setMap(null);
+            if (vm.trailPath.length > 1) {
+              chartMark();
+            }
+            vm.currentMarker = {};
+            updateMarkPanel(true)
+          } else {
+            vm.currentMarker = marker;
+            updateMarkPanel(true)
           }
-          var markIndex = vm.markerArray.indexOf(marker);
-          vm.markerArray.splice(markIndex, 1);
-          marker.setMap(null);
-          if (vm.trailPath.length > 1) {
-            chartMark();
-          }
-          vm.currentMarker = {};
-          updateMarkPanel(true)
         } else {
-          vm.currentMarker = marker;
-          updateMarkPanel(true)
+
+          $state.go("root.trails.hike.modal", {'id': marker.id})
         }
+
+
     })
   }
 
@@ -785,5 +792,5 @@ function closestPath(waypoint){
 
 
 
-MapsService.$inject = ['$http', 'ChartsService', 'UsersService', 'NgMap', 'icons', '$rootScope'];
+MapsService.$inject = ['$http', 'ChartsService', 'UsersService', 'NgMap', 'icons', '$rootScope', '$state'];
 export { MapsService };

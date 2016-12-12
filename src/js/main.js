@@ -19,6 +19,7 @@ import {BlazeNewController} from "./controllers/blazeNew";
 import {BlazeEditController} from "./controllers/blazeEdit";
 import {MarkController} from "./controllers/mark";
 import {HikeController} from "./controllers/hike";
+import {ModalController} from "./controllers/modal";
 
 //User Controllers
 import {UsersController} from "./controllers/users";
@@ -49,6 +50,7 @@ angular.module('app', ['ngMap', 'ui.router', 'ngCookies', 'chart.js'])
 	.controller('BlazeEditController', BlazeEditController)
 	.controller('MarkController', MarkController)
 	.controller('HikeController', HikeController)
+	.controller('ModalController', ModalController)
 
 	.controller('UsersController', UsersController)
 	.controller('UserHomeController', UserHomeController)
