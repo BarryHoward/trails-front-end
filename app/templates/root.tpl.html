@@ -1,20 +1,24 @@
 <img class="banner" src="images/banner.png" alt="">
-<!-- <h1><a id="title" href='#/home'>The Cranky Cartographer</a></h1> -->
 <nav class="nav-links">
 	<span class="site-nav">
-		<span><a href="#/home" ng-hide="root.loggedIn">Home</a><a href="#/users/{{root.user_id}}/home" ng-show="root.loggedIn">Home</a></span>
-		<span><a href="#/trails/blaze/new">New Trail</a></span>
-		<span><a href="#/topTrails">Top Trails</a></span>
+		<span><a class="site-nav-link" href="#/home">Home</a></span>
+		<span>|</span>
+		<span><a class="site-nav-link" href="#/trails/blaze/new">New Trail</a></span>
+		<span>|</span>
+		<span><a class="site-nav-link" href="#/topTrails">Top Trails</a></span>
+		<!-- <span>|</span>
 		<span><a href="#/users/{{root.user_id}}/createdTrails" ng-show="root.loggedIn">My Trails</a></span>
-		<span><a href="#/users/{{root.user_id}}/hikedTrails" ng-show="root.loggedIn">Hiked Trails</a></span>
+		<span>|</span>
+		<span><a href="#/users/{{root.user_id}}/hikedTrails" ng-show="root.loggedIn">Hiked Trails</a></span> -->
 
 	</span>
 	<span class='user-nav' ng-hide="root.loggedIn">
 		<span><a href="#/login">Login</a></span>
+		<span>|</span>
 		<span><a href="#/register">Register</a></span>
 	</span>
 	<span class='user-nav' ng-show="root.loggedIn">
-		<span><small><span class="logged-in">Logged in as</span ></small><span id="current-user">{{root.username}}</span></span>
+		<span><small><span class="logged-in">Logged in as</span ></small><a href="#/users/{{root.user_id}}/profile"><span id="current-user">{{root.username}}</span></a></span>
 		<button class="logout-button" ng-click="root.logout()">Logout</button>
 	</span>
 

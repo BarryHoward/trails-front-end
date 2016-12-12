@@ -6,7 +6,7 @@ function LoginController (UsersService, $state, $rootScope) {
     UsersService.login(userInfo).then((resp) => {
       UsersService.setUser(resp.data)
       $rootScope.$broadcast('loginChange', {});
-      $state.go('root.users.home')
+      $state.go('root.home')
       console.log(resp)
     },(errors) => {
       console.log(errors)

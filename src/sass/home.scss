@@ -33,8 +33,10 @@
     .home-description {
       font-size: 14px;
       margin-right: 10px;
+      list-style: disc;
+      margin: 20px 25px;
       li {
-        margin: 5px 0px;
+        margin: 5px auto;
       }
       a {
         text-decoration: none;

@@ -89,6 +89,11 @@ function routerConfig ($stateProvider , $urlRouterProvider) {
       controller: 'UserHikedController as userHiked'
     })
 
+    .state('root.users.profile', {
+      url: '/:userId/profile',
+      templateUrl: 'templates/users.profile.tpl.html',
+      controller: 'UserProfileController as userProfile'
+    })
 
      $urlRouterProvider.otherwise('/home');
 };
