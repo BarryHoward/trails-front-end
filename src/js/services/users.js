@@ -15,6 +15,8 @@ function UsersService ($http, $cookies) {
   vm.currentUserId = currentUserId;
   vm.getCreatedTrails = getCreatedTrails;
   vm.getHikedTrails = getHikedTrails;
+  vm.getUser = getUser;
+  vm.editUser = editUser;
 
 
 
@@ -63,7 +65,7 @@ function UsersService ($http, $cookies) {
   }
   //
   function getUser (id) {
-    return $http.get(`${SERVER}/users/${id}`)
+    return $http.get(`${SERVER}users/${id}`)
   }
 
   function getAllTrails (){
@@ -82,9 +84,16 @@ function UsersService ($http, $cookies) {
   }
   // -------------------------------------------------------
 
-
+  function editUser(user){
+    let req = {
+      url: `${SERVER}users/${user.id}`,
+      data: user,
+      method: 'PATCH',
+      headers: getHeaders()
+    }
+    return $http(req);
+  }
 
 };
-
 UsersService.$inject = ['$http', '$cookies'];
 export { UsersService };
