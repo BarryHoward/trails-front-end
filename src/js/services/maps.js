@@ -73,12 +73,14 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
 
 // ----- Reset markers
   $rootScope.$on('$stateChangeStart', (event, toState) =>{
-    vm.markerArray.forEach(function(marker){
-      marker.setMap(null);
-    })
-    vm.hikedArray.forEach(function(hike){
-      hike.poly.setMap(null);
-    })
+    if (!(toState.name = "root.trails.hike.modal")){
+      vm.markerArray.forEach(function(marker){
+        marker.setMap(null);
+      })
+      vm.hikedArray.forEach(function(hike){
+        hike.poly.setMap(null);
+      })
+   }
   })
 
 // -----------------------------------------------------------------------
@@ -86,7 +88,6 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
   // Get map
 
   function getMap(id){
-
     return NgMap.getMap(id)
   }
 
@@ -288,7 +289,6 @@ function closestPath(waypoint){
     //Place marker
 
   function placeMarker(waypoint) {
-    console.log(waypoint.lat(), waypoint.lng())
     if (!vm.delete){
       var markerDistance;
       //change path and change waypoint if snap
@@ -608,7 +608,6 @@ function closestPath(waypoint){
         vm.showChart.push(vm.chartOffset+i)
       }
     }
-    console.log(vm.showChart);
   }
 
   function nextChart(){
@@ -653,7 +652,6 @@ function closestPath(waypoint){
     })
     chartPath.unshift(distToWaypoint(chartStart));
     chartPath.push(distToWaypoint(chartEnd));
-    console.log(chartPath, start + (20*vm.chartOffset), vm.currentHike)
     chartHike(chartPath, chartStart);
   }
 
@@ -702,7 +700,6 @@ function closestPath(waypoint){
   }
 
   function showSingleHiked(id){
-    console.log(vm.hikedArray)
     if (vm.currentHike.poly){
       vm.currentHike.poly.setOptions({visible: false});
     }
