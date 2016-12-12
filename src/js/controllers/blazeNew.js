@@ -6,7 +6,7 @@ function BlazeNewController (MapsService, UsersService, $scope, $state) {
   //functions
   vm.placeMarker = placeMarker;
   vm.newTrail = newTrail;
-  vm.setInterval = setInterval;
+  // vm.setInterval = setInterval;
   vm.placeLatLngMarker = placeLatLngMarker;
 
   //Maps Service
@@ -75,15 +75,15 @@ function BlazeNewController (MapsService, UsersService, $scope, $state) {
     MapsService.clickListener(marker, waypoint, $scope)
   }
 
-  function setInterval(){
-      MapsService.chartOffset = 0;
-      MapsService.filterTrailPath(Number(MapsService.panel.start), Number(MapsService.panel.end));
-      MapsService.filterChartPath(Number(MapsService.panel.start), Number(MapsService.panel.end));
-    if (MapsService.currentHike.poly){
-      MapsService.currentHike.poly.setPath(MapsService.currentHike.path)
-    }
-      MapsService.setOffSetArray(spherical.computeLength(MapsService.currentHike.path));
-  }
+  // function setInterval(){
+  //     MapsService.chartOffset = 0;
+  //     MapsService.filterTrailPath(Number(MapsService.panel.start), Number(MapsService.panel.end));
+  //     MapsService.filterChartPath(Number(MapsService.panel.start), Number(MapsService.panel.end));
+  //   if (MapsService.currentHike.poly){
+  //     MapsService.currentHike.poly.setPath(MapsService.currentHike.path)
+  //   }
+  //     MapsService.setOffSetArray(spherical.computeLength(MapsService.currentHike.path));
+  // }
 
   function placeLatLngMarker(){
     let waypoint = new google.maps.LatLng(MapsService.panel.lat, MapsService.panel.lng)

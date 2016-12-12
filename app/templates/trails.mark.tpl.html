@@ -26,6 +26,7 @@
 
     <div class="set-interval-box">
       <div class="lat-lng-input-container">
+        <button ng-click="mark.MapsService.fullTrailInt()">Full Trail</button>
         <span>
           <span class="lat-lng">
             <button ng-click="mark.MapsService.startInt()">Start: </button>
@@ -36,7 +37,7 @@
             <input class="point-control-input" type="text" ng-model="mark.MapsService.panel.end"></input>
           </span>
         </span>
-            <button ng-click="mark.setInterval()">go to interval</button>
+        <button ng-click="mark.MapsService.setInterval()">Go to Inteval</button>
       </div>
     </div>
 
