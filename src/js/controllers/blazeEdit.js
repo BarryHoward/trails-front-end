@@ -14,6 +14,7 @@ function BlazeEditController (MapsService, UsersService, $stateParams, $state) {
   MapsService.regraphElevation = true;
   MapsService.trailInfo = {};
   MapsService.draggable = true;
+  MapsService.hikeClick = false;
 
   vm.MapsService = MapsService;
   vm.placeMarker = placeMarker;

@@ -19,6 +19,7 @@ function HikeController (MapsService, UsersService, $stateParams) {
   MapsService.currentHike ={};
   MapsService.currentHike.start = 0;
   MapsService.chartOffset = 0;
+  MapsService.hikeClick = true;
 
   vm.loggedIn = UsersService.isLoggedIn();
   vm.status = "Hike a Trail";
@@ -74,7 +75,6 @@ function HikeController (MapsService, UsersService, $stateParams) {
         //create line, center map, and initialize search bar
         MapsService.createTrailPoly();
         MapsService.initSearch().then(MapsService.centerMap())
-
         MapsService.getHikes().then(function(resp){
           let previousHikes = resp.data;
           previousHikes.forEach(function(hike){

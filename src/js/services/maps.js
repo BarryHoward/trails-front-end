@@ -2,7 +2,7 @@
 
 //-- Chart Icons dont show up on initial graph sometimes.  Other times they're slow.
 
-function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootScope) {
+function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootScope, $state) {
 
   const SERVER = "https://trails-back-end.herokuapp.com/";
 
@@ -72,13 +72,16 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
 
 
 // ----- Reset markers
-  $rootScope.$on('$stateChangeStart', (event, toState) =>{
-    vm.markerArray.forEach(function(marker){
-      marker.setMap(null);
-    })
-    vm.hikedArray.forEach(function(hike){
-      hike.poly.setMap(null);
-    })
+  $rootScope.$on('$stateChangeStart', (event, toState, toParams, fromState) =>{
+    console.log(toState.name)
+    if (toState.name !== "root.trails.hike.modal" && fromState.name !== "root.trails.hike.modal"){
+      vm.markerArray.forEach(function(marker){
+        marker.setMap(null);
+      })
+      vm.hikedArray.forEach(function(hike){
+        hike.poly.setMap(null);
+      })
+   }
   })
 
 // -----------------------------------------------------------------------
@@ -86,7 +89,6 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
   // Get map
 
   function getMap(id){
-
     return NgMap.getMap(id)
   }
 
@@ -225,25 +227,32 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
 
   function clickListener (marker, waypoint){
       google.maps.event.addListener(marker, 'click', function (event){
-        waypoint = marker.getPosition();
-        if (vm.delete){
-          if (!vm.snap){
-            var index = vm.trailPath.indexOf(waypoint);
-            vm.trailPath.splice(index, 1);
-            vm.trailPoly.setPath(vm.trailPath);
+        if (!vm.hikeClick){
+          waypoint = marker.getPosition();
+          if (vm.delete){
+            if (!vm.snap){
+              var index = vm.trailPath.indexOf(waypoint);
+              vm.trailPath.splice(index, 1);
+              vm.trailPoly.setPath(vm.trailPath);
+            }
+            var markIndex = vm.markerArray.indexOf(marker);
+            vm.markerArray.splice(markIndex, 1);
+            marker.setMap(null);
+            if (vm.trailPath.length > 1) {
+              chartMark();
+            }
+            vm.currentMarker = {};
+            updateMarkPanel(true)
+          } else {
+            vm.currentMarker = marker;
+            updateMarkPanel(true)
           }
-          var markIndex = vm.markerArray.indexOf(marker);
-          vm.markerArray.splice(markIndex, 1);
-          marker.setMap(null);
-          if (vm.trailPath.length > 1) {
-            chartMark();
-          }
-          vm.currentMarker = {};
-          updateMarkPanel(true)
         } else {
           vm.currentMarker = marker;
-          updateMarkPanel(true)
+          $state.go("root.trails.hike.modal", {'id': marker.id})
         }
+
+
     })
   }
 
@@ -288,7 +297,6 @@ function closestPath(waypoint){
     //Place marker
 
   function placeMarker(waypoint) {
-    console.log(waypoint.lat(), waypoint.lng())
     if (!vm.delete){
       var markerDistance;
       //change path and change waypoint if snap
@@ -608,7 +616,6 @@ function closestPath(waypoint){
         vm.showChart.push(vm.chartOffset+i)
       }
     }
-    console.log(vm.showChart);
   }
 
   function nextChart(){
@@ -653,7 +660,6 @@ function closestPath(waypoint){
     })
     chartPath.unshift(distToWaypoint(chartStart));
     chartPath.push(distToWaypoint(chartEnd));
-    console.log(chartPath, start + (20*vm.chartOffset), vm.currentHike)
     chartHike(chartPath, chartStart);
   }
 
@@ -702,7 +708,6 @@ function closestPath(waypoint){
   }
 
   function showSingleHiked(id){
-    console.log(vm.hikedArray)
     if (vm.currentHike.poly){
       vm.currentHike.poly.setOptions({visible: false});
     }
@@ -788,5 +793,5 @@ function closestPath(waypoint){
 
 
 
-MapsService.$inject = ['$http', 'ChartsService', 'UsersService', 'NgMap', 'icons', '$rootScope'];
+MapsService.$inject = ['$http', 'ChartsService', 'UsersService', 'NgMap', 'icons', '$rootScope', '$state'];
 export { MapsService };

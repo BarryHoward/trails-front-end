@@ -1,3 +1,5 @@
+@import "bulma";
+
 @import 'root';
 @import 'home';
 @import 'maps';
@@ -10,6 +12,8 @@
 @import 'mark';
 @import 'controls';
 @import 'userHome';
+
+
 
 html {
 	background-color: #748491;
@@ -39,5 +43,9 @@ h3 {
 }
 
 
-
+.modal-content{
+	height: 800px;
+	width: 800px;
+	background: white;
+}
 // IGNORE ME!
