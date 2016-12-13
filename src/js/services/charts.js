@@ -10,8 +10,10 @@ function ChartsService ($http, $cookies) {
 	const spherical = google.maps.geometry.spherical;
 
 
-	function chart(path, markers, start, regraph){
+	function chart(path, markers, start, regraph, min, max){
 		return new Promise(function(chartResolve, chartReject) {
+			vm.min = min;
+			vm.max = max;
 			var waypoints = []
 			markers.forEach(function(marker){
 				waypoints.push(marker.position)
@@ -222,8 +224,8 @@ function ChartsService ($http, $cookies) {
 				}],
 				yAxes: [{
 					ticks: {
-						min: Math.floor(vm.min_elevation/1000)*1000,
-						max: Math.ceil(vm.max_elevation/1000)*1000,
+						min: Math.floor(vm.min/1000)*1000,
+						max: Math.ceil(vm.max/1000)*1000,
 						beginAtZero: true
 					}
 				}],
