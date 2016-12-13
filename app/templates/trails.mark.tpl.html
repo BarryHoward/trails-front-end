@@ -53,7 +53,7 @@
       		</span>
           <button class="update-trail-button" id='place-distance-button' ng-click="mark.placeDistanceMarker()">Place Point by Distance</button>
       	</div>
-<!--       	<div class="lat-lng-input-container">
+<!--<div class="lat-lng-input-container">
       		<span id="lat-lng-mark">
             <span class="lat-lng">
         			<label>Lat: </label>
@@ -113,11 +113,11 @@
 
 <div class="chart-box">
 	<canvas class="chart" id="myChart" ng-click='mark.testClick($event)'></canvas>
-</div>
-<div class="chart-controls">
-  <span><button ng-click="mark.MapsService.prevChart()">Previous</button></span>
-  <span ng-repeat="number in mark.MapsService.showChart">
-    <button ng-click="mark.MapsService.chooseChart(number)">{{number + 1}}</button>
-  </span>
-  <span><button ng-click="mark.MapsService.nextChart()">Next</button></span>
+  <div class="chart-controls">
+    <span><button class="turn-page" ng-click="mark.MapsService.prevChart()">Previous</button></span>
+    <span ng-repeat="number in mark.MapsService.showChart">
+      <button class="interval-button" ng-click="mark.MapsService.chooseChart(number)">{{number + 1}}</button>
+    </span>
+    <span><button class="turn-page" ng-click="mark.MapsService.nextChart()">Next</button></span>
+  </div>
 </div>

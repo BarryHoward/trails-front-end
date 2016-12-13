@@ -4,8 +4,9 @@
   padding: 5px;
   padding-top: 0px;
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   margin: 5px 0px;
   margin-top: 0px;
   background-color: #D7D5D5;
@@ -33,4 +34,13 @@
   margin: 5px 0px;
   width: 100%;
   max-height: 222px;
+}
+
+.turn-page {
+  background-color: #748491;
+  color: white;
+  border-style: none;
+  border-radius: 5px;
+  height: 35px;
+  width: 100px;
 }

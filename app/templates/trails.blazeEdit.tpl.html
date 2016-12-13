@@ -105,11 +105,11 @@
 <div class="elevation-header"><h2>Elevation Information</h2></div>
 <div class="chart-box">
 	<canvas class="chart" id="myChart" ng-click="blazeEdit.testClick($event)"></canvas>
-</div>
-<div class="chart-controls">
-  <span><button ng-click="blazeEdit.MapsService.prevChart()">Previous</button></span>
-  <span ng-repeat="number in blazeEdit.MapsService.showChart">
-    <button ng-click="blazeEdit.MapsService.chooseChart(number)">{{number + 1}}</button>
-  </span>
-  <span><button ng-click="blazeEdit.MapsService.nextChart()">Next</button></span>
+  <div class="chart-controls">
+    <span><button class="turn-page" ng-click="blazeEdit.MapsService.prevChart()">Previous</button></span>
+    <span ng-repeat="number in blazeEdit.MapsService.showChart">
+      <button class="interval-button" ng-click="blazeEdit.MapsService.chooseChart(number)">{{number + 1}}</button>
+    </span>
+    <span><button class="turn-page" ng-click="blazeEdit.MapsService.nextChart()">Next</button></span>
+  </div>
 </div>
