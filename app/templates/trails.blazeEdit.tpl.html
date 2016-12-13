@@ -31,9 +31,10 @@
     <h3 class="interval-header">Interval</h3>
 
     <div class="set-interval-box">
-    <button ng-click="blazeEdit.MapsService.findMaxMin()">MaxMin</button>
+    <button class="update-trail-button" ng-click="blazeEdit.MapsService.findMaxMin()">MaxMin</button>
       <div class="lat-lng-input-container">
-        <button ng-click="blazeEdit.MapsService.clearCurrent()">Full Trail</button>
+        <button class="update-trail-button" ng-click="blazeEdit.MapsService.clearCurrent()">Full Trail</button>
+
         <span>
           <span class="lat-lng">
             <button class="interval-button" ng-click="blazeEdit.MapsService.startInt()">Start: </button>
