@@ -231,9 +231,8 @@ function ChartsService ($http, $cookies) {
 				}],
 			},
 			animation: false,
-			hover: {
-				intersect: true,
-				mode: 'point'
+			tooltips: {
+				enabled: false
 			}
 		}
 
