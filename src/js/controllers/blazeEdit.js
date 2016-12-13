@@ -81,6 +81,9 @@ function BlazeEditController (MapsService, UsersService, $stateParams, $state) {
   function editTrail(){
     vm.status = "Trail Updating...";
     let newTrail = MapsService.trailInfo;
+    if (!newTrail.title){
+      newTrail.title = "Trail";
+    }
     let encodeString = encoding.encodePath(MapsService.trailPath);
     newTrail.path = encodeString;
 
