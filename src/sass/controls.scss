@@ -8,9 +8,9 @@
 	background: #F4F2F2;
 	border: 1px solid black;
 	border-radius: 5px;
-  margin: 10px 5px;
+  	margin: 10px 5px;
 	margin-bottom: 5px;
-  padding: 5px;
+  	padding: 0px;
 	padding-top: 0px;
 	font-size: 10px;
 	.set-interval-box {
@@ -18,14 +18,14 @@
 		font-size: 14px;
 	}
 	div {
-		margin: 10px auto;
+		margin: 8px auto;
 	}
 	h3 {
 		text-align: center;
 		font-size: 18px;
 		background-color: #EA643C;
 		color: white;
-		width: 496px;
+		width: 100%;
 		margin: 0px;
 		margin-left: -5px;
 		margin-right: -5px;
@@ -42,31 +42,35 @@
 		// flex-wrap: wrap;
 		width: 100%;
 		height: 100%;
+		padding: 0px;
+		margin: 0px;
 		align-content: flex-start;
 		align-items: flex-start;
 		justify-content: flex-start;
 
 		.static-controls {
-			font-size: 12px;
+			margin: 0px;
+			padding: 0px;
+			font-size: 14px;
 			display: flex;
 			flex-direction: column;
 			justify-content: center;
 			align-items: center;
 			width: 100%;
-			height: 150px;
+			height: 100px;
 			div {
 				display: flex;
 				flex-direction: column;
 				align-content: center;
 				align-items: center;
 				justify-content: center;
-				width: 150px;
+				width: 200px;
 				margin: 5px 10px;
 
 				span {
-					width: 200px;
+					width: 250px;
 					align-self: center;
-					font-size: 12px;
+					font-size: 14px;
 				}
 			}
 			.insert {
@@ -101,7 +105,7 @@
   width: 100%;
   align-items: center;
 	justify-content: center;
-	height: 100px;
+	height: 50px;
 	padding-left: 20px;
 
   span {
@@ -119,8 +123,9 @@
 
 #lat-lng-mark {
 	input {
+		padding: 0 8px;
 		width: 60px;
-		height: 15px;
+		height: 25px;
 	}
 }
 
