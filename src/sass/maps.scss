@@ -29,15 +29,16 @@
 }
 
 .map-controls-container {
+  padding: 10px;
   border: 2px solid  #1D3042;
   border-bottom: none;
   margin-bottom: none;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  align-content: flex-start;
+  // justify-content: center;
+  // align-items: flex-start;
+  // align-content: flex-start;
   background-color: #D7D5D5;
-	min-width: 100%;
+	width: 100%;
 }
 
 .trail-container {
@@ -48,8 +49,8 @@
   border: 1px solid black;
   border-radius: 5px;
   height: 550px;
-  width: 950px;
-  min-width: 800px;
+  width: 70%;
+  min-width: 650px;
   margin: 10px 5px;
   margin-bottom: 5px;
   padding: 10px;

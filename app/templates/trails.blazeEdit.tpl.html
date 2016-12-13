@@ -14,7 +14,7 @@
     <div>Distance: <span class='static-info'>{{blazeEdit.MapsService.trailInfo.distance}} mi</span></div>
     <div>Max Elevation: <span class='static-info'>{{blazeEdit.MapsService.trailInfo.max_elevation}} ft</span></div>
     <div>Min Elevation: <span class='static-info'>{{blazeEdit.MapsService.trailInfo.min_elevation}} ft</span></div>
-    <div>Created by: <span class='static-info'>{{blazeEdit.MapsService.trailInfo.username}}</span></div>
+    <button class="update-trail-button" id="recalculate" ng-click="blazeEdit.MapsService.findMaxMin()">Recalculate Elevations</button>
   </div>
 </div>
 
@@ -31,7 +31,6 @@
     <h3 class="interval-header">Interval</h3>
 
     <div class="set-interval-box">
-    <button class="update-trail-button" ng-click="blazeEdit.MapsService.findMaxMin()">MaxMin</button>
       <div class="lat-lng-input-container">
         <button class="update-trail-button" ng-click="blazeEdit.MapsService.clearCurrent()">Full Trail</button>
 
