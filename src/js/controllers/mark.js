@@ -19,6 +19,9 @@ function MarkController (MapsService, UsersService, $stateParams) {
   MapsService.currentMarker = {};
   MapsService.currentHike = {};
   MapsService.currentHike.start = 0;
+  MapsService.pointSaveStatus = "Save Point";
+  MapsService.pointEditStatus = "Edit Point";
+  MapsService.pointDeleteStatus = "Delete Point";
 
   vm.MapsService = MapsService;
   vm.placeMarker = placeMarker;
@@ -101,24 +104,39 @@ function MarkController (MapsService, UsersService, $stateParams) {
   }
 
   function savePoint(){
+    MapsService.pointSaveStatus = "Saving...";
     MapsService.panel.trail_id = Number($stateParams.id);
     MapsService.savePoint(MapsService.panel).then((resp) => {
-      vm.MapsService.currentMarker.id = resp.data.id;
+      MapsService.currentMarker.id = resp.data.id;
+      MapsService.pointSaveStatus = "Point Saved";
+    }, (reject)=>{
+      MapsService.pointSaveStatus = "Save Failed";
     })
   }
 
   function editPoint(){
+    console.log("edit")
+    MapsService.pointEditStatus = "Editing..."
     MapsService.panel.id = MapsService.currentMarker.id;
-    let newPoint = {
-
-    }
+    vm.
     MapsService.editPoint(MapsService.panel).then((resp) => {
+      MapsService.safeApply(function (){
+        MapsService.pointEditStatus = "Point Edited"
+      })
+    }, (reject)=>{
+      MapsService.safeApply(function (){
+        MapsService.pointEditStatus = "Edit Failed"
+      })
     })
   }
 
   function deletePoint(){
     if (MapsService.currentMarker.id){
+      MapsService.pointDeleteStatus = "Deleting..."
       MapsService.deletePoint().then((resp) => {
+        MapsService.safeApply(function(){
+          MapsService.pointDeleteStatus = "Point Deleted"
+        })
         let markIndex = MapsService.markerArray.indexOf(MapsService.markerArray);
         MapsService.markerArray.splice(markIndex, 1);
         MapsService.currentMarker.setMap(null);
@@ -126,14 +144,15 @@ function MarkController (MapsService, UsersService, $stateParams) {
         MapsService.markerArray.splice(index, 1);
         MapsService.currentMarker = undefined;
         MapsService.chartMark();
-        MapsService.updatePanel(true);
+        MapsService.updateMarkPanel(true);
       });
     } else {
+        MapsService.pointDeleteStatus = "Point Deleted"
         let markIndex = MapsService.markerArray.indexOf(MapsService.markerArray);
         MapsService.markerArray.splice(markIndex, 1);
         MapsService.currentMarker.setMap(null);
         MapsService.chartMark();
-        MapsService.updatePanel(true);
+        MapsService.updateMarkPanel(true);
     }
   }
 
