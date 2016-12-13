@@ -91,7 +91,7 @@
 			border: 2px solid grey;
 			background-color: #D7D5D5;
 			padding: 5px;
-			width: 100%;
+			width: 150px;
 		}
 	}
 }
@@ -155,7 +155,8 @@
 // HIKE STUFF
 
 .hike-list{
-	max-height: 200px;
+	max-height: 160px;
+	height: 160px;
 	overflow-y: scroll;
 }
 
@@ -171,7 +172,10 @@ div .choose-hike-button-container{
 	display: flex;
 	align-items: center;
 	justify-content: center;
-
+	border-style: none;
+	border-radius: 5px;
+	border: 1px solid lightgrey;
+	background-image: linear-gradient(lightgrey,white);
 	.hike-title{
 		display: inline-block;
 		margin: 0px;

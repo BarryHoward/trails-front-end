@@ -1,6 +1,6 @@
 <div class="trail-info-container">
   <div class="trail-image-container">
-    <img src="{{hike.MapsService.trailInfo.img_url}}">
+    <img class="trail-image" src="{{hike.MapsService.trailInfo.img_url}}">
   </div>
   <div class="title-description">
     <div>Title: <span class='static-info'>{{hike.MapsService.trailInfo.title}}</span></div>
@@ -44,26 +44,30 @@
     </div>
     <h3 class="controls-header">Hike Controls</h3>
     <div class="control-box">
-      <div class="hike-list">
-        <div class="choose-hike-button-container" ng-repeat="singleHiked in hike.MapsService.hikedArray">
-          <button class="choose-hike-button" ng-click="hike.gotoHiked(singleHiked.id)">
-            <div class="color-box" ng-style="{background:'{{singleHiked.poly.strokeColor}}'}"></div>
-            <div class="hike-title">{{singleHiked.title}}</div>
-          </button>
+      <div class="hike-controls">
+        <div class="hike-list">
+          <div class="choose-hike-button-container" ng-repeat="singleHiked in hike.MapsService.hikedArray">
+            <button class="choose-hike-button hike-button-repeat" ng-click="hike.gotoHiked(singleHiked.id)">
+              <div class="color-box" ng-style="{background:'{{singleHiked.poly.strokeColor}}'}"></div>
+              <div class="hike-title">{{singleHiked.title}}</div>
+            </button>
+          </div>
         </div>
-      </div>
-      <button class="choose-hike-button" ng-click="hike.clearCurrent()">+ New</button>
+        <button class="choose-hike-button" ng-click="hike.clearCurrent()">+ New</button>
 
-      <div class="hike-box">
-        <input type="text" ng-model="hike.MapsService.panel.title" placeholder="title">
-        <input type="date" ng-model="hike.MapsService.panel.start_date">
-        <input type="date" ng-model="hike.MapsService.panel.end_date">
-        <textarea ng-model="hike.MapsService.panel.description"></textarea>
-      </div>
-      <div class="save-delete-container">
-        <button class="save-hike-button update-trail-button" ng-hide="hike.MapsService.currentHike.id" ng-click="hike.saveHike()">{{hike.hikeSaveStatus}}</button>
-        <button class="edit-hike-button update-trail-button" ng-show="hike.MapsService.currentHike.id" ng-click="hike.editHike()">{{hike.hikeEditStatus}}</button>
-        <button class="delete-hike-button delete-trail-button" ng-click="hike.deleteHike()">{{hike.hikeDeleteStatus}}</button>
+        <div class="hike-box">
+          <input class='hike-input' type="text" ng-model="hike.MapsService.panel.title" placeholder="Title...">
+          <div class="hike-dates">
+            <input class='hike-input' type="date" ng-model="hike.MapsService.panel.start_date">
+            <input class='hike-input' type="date" ng-model="hike.MapsService.panel.end_date">
+          </div>
+          <textarea class="hike-description" placeholder="Edit description..." ng-model="hike.MapsService.panel.description"></textarea>
+        </div>
+        <div class="save-delete-container">
+          <button class="save-hike-button update-trail-button" ng-hide="hike.MapsService.currentHike.id" ng-click="hike.saveHike()">{{hike.hikeSaveStatus}}</button>
+          <button class="edit-hike-button update-trail-button" ng-show="hike.MapsService.currentHike.id" ng-click="hike.editHike()">{{hike.hikeEditStatus}}</button>
+          <button class="delete-hike-button delete-trail-button" ng-click="hike.deleteHike()">{{hike.hikeDeleteStatus}}</button>
+        </div>
       </div>
     </div>
   </div>
