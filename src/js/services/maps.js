@@ -56,8 +56,10 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
   vm.startInt = startInt;
   vm.endInt = endInt;
   vm.setInterval = setInterval;
-  vm.fullTrailInt = fullTrailInt;
+  // vm.fullTrailInt = fullTrailInt;
+  vm.clearCurrent = clearCurrent;
   vm.findMaxMin = findMaxMin;
+
 
   const metersFeetConversion = 3.28084;
   const metersMilesConversion = 0.000621371;
@@ -567,7 +569,12 @@ function closestPath(waypoint){
     })
     setOffSetArray(spherical.computeLength(vm.trailPath))
     filterChartPath();
-    // // ChartsService.chart(vm.currentHike.path, vm.filterdMarkerArray, Number(vm.currentHike.start), (vm.regraphElevation|| overide)).then(function(){
+    console.log("hi");
+    safeApply(function(){
+     vm.trailInfo.min_elevation = ChartsService.min_elevation;
+      vm.trailInfo.max_elevation = ChartsService.max_elevation;
+    })
+    // // ChartsService.chart(vm.currentHike.path, vm.filteredMarkerArray, Number(vm.currentHike.start), (vm.regraphElevation|| overide)).then(function(){
     // //   safeApply(function(){
     // //     vm.trailInfo.min_elevation = ChartsService.min_elevation;
     // //     vm.trailInfo.max_elevation = ChartsService.max_elevation;
@@ -577,7 +584,7 @@ function closestPath(waypoint){
   }
 
   function chartHike(path, start, overide){
-    ChartsService.chart(path, vm.filterdMarkerArray, start, (vm.regraphElevation || overide), vm.trailInfo.min_elevation, vm.trailInfo.max_elevation).then(function(){
+    ChartsService.chart(path, vm.filteredMarkerArray, start, (vm.regraphElevation || overide), vm.trailInfo.min_elevation, vm.trailInfo.max_elevation).then(function(){
     })
   }
 
@@ -662,7 +669,6 @@ function closestPath(waypoint){
     for (var i=0; i<=number; i++){
       vm.offSetArray.push(i);
     }
-    console.log(length, number, vm.offSetArray)
     updateShownChart()
 
   }
@@ -680,7 +686,7 @@ function closestPath(waypoint){
       return (chartStart<=waypointDistance && waypointDistance<=chartEnd)
     })
 
-    vm.filterdMarkerArray = vm.markerArray.filter(function (element){
+    vm.filteredMarkerArray = vm.markerArray.filter(function (element){
       return (element.distance>=start && element.distance<=end)
     })
 
@@ -716,7 +722,9 @@ function closestPath(waypoint){
 
 
   function showTrailPoly(){
-    vm.currentHike.poly.setOptions({visible: false});
+    if (vm.currentHike.poly){
+      vm.currentHike.poly.setOptions({visible: false});
+    }
     vm.hikedArray.forEach(function(hike){
       hike.poly.setOptions({visible: false})
     })
@@ -794,7 +802,7 @@ function closestPath(waypoint){
   }
 
   function createHikedPoly(path){
-    let index = vm.hikedArray.length;
+    let index = vm.hikedArray.length-1;
     index = index % vm.hikedTrailColor.length;
     let color  = vm.hikedTrailColor[index]
     if (path[0] && path[1]){
@@ -820,6 +828,7 @@ function closestPath(waypoint){
   }
 
   function setInterval(){
+    console.log("set interval")
     vm.chartOffset = 0;
     filterTrailPath(Number(vm.panel.start), Number(vm.panel.end));
     filterChartPath(Number(vm.panel.start), Number(vm.panel.end));
@@ -829,12 +838,23 @@ function closestPath(waypoint){
       setOffSetArray(spherical.computeLength(vm.currentHike.path));
   }
 
-  function fullTrailInt(){
-    vm.panel.start = 0;
-    vm.panel.end = spherical.computeLength(vm.trailPath)*metersMilesConversion;
-    setInterval();
-  }
+  // function fullTrailInt(){
+  //   vm.currentHike
+  //   vm.panel.start = 0;
+  //   vm.panel.end = spherical.computeLength(vm.trailPath)*metersMilesConversion;
+  //   setInterval();
+  // }
 
+
+  function clearCurrent(){
+    vm.showTrailPoly();
+    vm.currentHike = {};
+    vm.currentHike.path = vm.trailPath;
+    vm.centerMap();
+    vm.updateHikedPanel();
+    vm.initChart();
+    vm.setOffSetArray(spherical.computeLength(vm.trailPath));
+  }
 
   function findMaxMin(){
     var trailLength = spherical.computeLength(vm.trailPath)*metersMilesConversion;
@@ -883,7 +903,6 @@ function closestPath(waypoint){
         vm.trailInfo.max_elevation = round(max_elevation, 2);
         vm.trailInfo.min_elevation = round(min_elevation, 2);
       })
-      console.log(queries, i+1, min_elevation, max_elevation)
     }
   }
 
