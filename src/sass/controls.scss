@@ -53,7 +53,7 @@
 			justify-content: center;
 			align-items: center;
 			width: 100%;
-			height: 150px;
+			height: 90px;
 			div {
 				display: flex;
 				flex-direction: column;
@@ -79,14 +79,14 @@
 	#control-insert-mark {
 		display: flex;
 		flex-direction: row;
-		width: 400px;
+		width: 100%;
 		font-size: 12px;
+		height: 500px;
 		.mark-input-container {
 			margin-left: 10px;
 			border: 2px solid grey;
 			background-color: #D7D5D5;
 			padding: 5px;
-			overflow: scroll;
 			width: 100%;
 		}
 	}
@@ -141,9 +141,10 @@
 }
 
 .control-save-delete {
-	height: 35px;
+	height: 25px;
 	width: 200px;
 	font-size: 12px;
+	margin: 0px 5px;
 }
 
 // HIKE STUFF
@@ -186,3 +187,6 @@ div .choose-hike-button-container{
 	flex-direction: row;
 }
 
+#marker-distance {
+	width: 100%;
+}
