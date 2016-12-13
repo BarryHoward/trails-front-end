@@ -116,8 +116,9 @@ function HikeController (MapsService, UsersService, $stateParams) {
         vm.status = "Hike Saved";
         newHike.id = resp.data.id
         newHike.path = encoding.decodePath(newHike.path);
-        newHike.poly = MapsService.createHikedPoly(MapsService.currentHike.path)
         MapsService.hikedArray.push(newHike)
+        newHike.poly = MapsService.createHikedPoly(MapsService.currentHike.path)
+
 
       }, (reject) => {
         console.log(reject)
@@ -161,11 +162,13 @@ function HikeController (MapsService, UsersService, $stateParams) {
     let hiked = MapsService.hikedArray.find(function(element){
       return element.id === id;
     });
+    console.log(hiked)
     MapsService.currentHike = hiked;
     MapsService.updateHikedPanel();
     MapsService.centerMap();
     MapsService.showSingleHiked(id);
-    MapsService.chartHike(hiked.path, Number(hiked.start))
+    console.log(spherical.computeLength(hiked.path), hiked.start)
+    MapsService.filterChartPath(hiked.path, Number(hiked.start))
     MapsService.setOffSetArray(spherical.computeLength(hiked.path));
   }
 
