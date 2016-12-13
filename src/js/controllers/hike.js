@@ -20,6 +20,9 @@ function HikeController (MapsService, UsersService, $stateParams) {
   MapsService.currentHike.start = 0;
   MapsService.chartOffset = 0;
   MapsService.hikeClick = true;
+  vm.hikeSaveStatus = 'Save Hike';
+  vm.hikeEditStatus = 'Edit Hike';
+  vm.hikeDeleteStatus = 'Delete Hike';
 
   vm.loggedIn = UsersService.isLoggedIn();
   vm.status = "Hike a Trail";
@@ -31,7 +34,6 @@ function HikeController (MapsService, UsersService, $stateParams) {
   vm.editHike = editHike;
   vm.deleteHike = deleteHike;
   vm.gotoHiked = gotoHiked;
-  vm.clearCurrent = clearCurrent;
 
   const metersFeetConversion = 3.28084;
   const metersMilesConversion = 0.000621371;
@@ -95,39 +97,42 @@ function HikeController (MapsService, UsersService, $stateParams) {
   }
 
   function saveHike(){
-    vm.status = "Adding Hike...";
+    vm.hikeSaveStatus = "Saving...";
     MapsService.updateHike();
-    MapsService.currentHike.poly.setMap(null);
-    let newHike = {};
-      newHike.title = MapsService.panel.title;
-      newHike.description = MapsService.panel.description;
-      newHike.start = Number(MapsService.panel.start);
-      newHike.end = Number(MapsService.panel.end);
-      newHike.start_date = MapsService.panel.start_date;
-      newHike.end_date = MapsService.panel.end_date;
-    if (!newHike.title){
-      newHike.title = "Hike"
+    if (MapsService.currentHike.poly){
+      MapsService.currentHike.poly.setMap(null);
     }
-    newHike.trail_id = Number($stateParams.trailId)
-    console.log(newHike.trail_id)
-    let encodeString = encoding.encodePath(MapsService.currentHike.path);
-    newHike.path = encodeString;
-    MapsService.saveHike(newHike).then(function (resp) {
-        vm.status = "Hike Saved";
-        newHike.id = resp.data.id
-        newHike.path = encoding.decodePath(newHike.path);
-        MapsService.hikedArray.push(newHike)
-        newHike.poly = MapsService.createHikedPoly(MapsService.currentHike.path)
-
-
-      }, (reject) => {
-        console.log(reject)
-    })
+      let newHike = {};
+        newHike.title = MapsService.panel.title;
+        newHike.description = MapsService.panel.description;
+        newHike.start = Number(MapsService.panel.start);
+        newHike.end = Number(MapsService.panel.end);
+        newHike.start_date = MapsService.panel.start_date;
+        newHike.end_date = MapsService.panel.end_date;
+      if (!newHike.title){
+        newHike.title = "Hike"
+      }
+      newHike.trail_id = Number($stateParams.trailId)
+      console.log(newHike.trail_id)
+      let encodeString = encoding.encodePath(MapsService.currentHike.path);
+      newHike.path = encodeString;
+      MapsService.saveHike(newHike).then(function (resp) {
+          vm.hikeSaveStatus = "Hike Saved";
+          newHike.id = resp.data.id
+          newHike.path = encoding.decodePath(newHike.path);
+          MapsService.hikedArray.push(newHike)
+          newHike.poly = MapsService.createHikedPoly(MapsService.currentHike.path)
+        }, (reject) => {
+          vm.hikeSaveStatus = "Save Failed";
+        })
   }
 
   function editHike(){
-    vm.status = "Editing Hike...";
+    vm.hikeEditStatus = "Editing...";
     let newHike = MapsService.panel;
+    if (!newHike.title){
+      newHike.title = "Hike";
+    }
     newHike.start = MapsService.currentHike.start;
     newHike.end = MapsService.currentHike.end;
     newHike.distance = newHike.end-newHike.start;
@@ -136,24 +141,25 @@ function HikeController (MapsService, UsersService, $stateParams) {
     newHike.path = encodeString;
     MapsService.editHike(newHike.id, newHike).then(function (resp) {
       console.log(resp)
-        vm.status = "Hike Edited";
+        vm.hikeEditStatus = "Hike Edited";
         MapsService.updateHike();
       }, (reject) => {
+        vm.hikeEditStatus = "Edit Failed";
         console.log(reject)
     })
   }
 
   function deleteHike(){
-    vm.status = "Deleting Hike...";
+    vm.hikeDeleteStatus = "Deleting...";
     let id = MapsService.currentHike.id;
     MapsService.deleteHike(id).then(function (resp) {
-        vm.status = "Hike Edited";
+        vm.hikeDeleteStatus = "Hike Deleted";
         MapsService.currentHike.poly.setMap(null)
         var index = MapsService.hikedArray.indexOf(MapsService.currentHike);
         MapsService.hikedArray.splice(index, 1);
-        clearCurrent();
+        MapsService.clearCurrent();
       }, (reject) => {
-        console.log(reject)
+        vm.hikeDeleteStatus = "Delete Failed";
     })
     
   }
@@ -162,14 +168,15 @@ function HikeController (MapsService, UsersService, $stateParams) {
     let hiked = MapsService.hikedArray.find(function(element){
       return element.id === id;
     });
-    console.log(hiked)
     MapsService.currentHike = hiked;
     MapsService.updateHikedPanel();
     MapsService.centerMap();
     MapsService.showSingleHiked(id);
-    console.log(spherical.computeLength(hiked.path), hiked.start)
     MapsService.filterChartPath(hiked.path, Number(hiked.start))
     MapsService.setOffSetArray(spherical.computeLength(hiked.path));
+    vm.hikeSaveStatus = 'Save Hike';
+    vm.hikeEditStatus = 'Edit Hike';
+    vm.hikeDeleteStatus = 'Delete Hike';
   }
 
   function setInterval(){
@@ -183,13 +190,10 @@ function HikeController (MapsService, UsersService, $stateParams) {
   }
 
   function clearCurrent(){
-    MapsService.showHikedPoly();
-    MapsService.currentHike.path = MapsService.trailPath;
-    MapsService.centerMap();
-    MapsService.currentHike = {};
-    MapsService.updateHikedPanel();
-    MapsService.initChart();
-    MapsService.setOffSetArray(spherical.computeLength(MapsService.trailPath));
+    vm.hikeSaveStatus = 'Save Hike';
+    vm.hikeEditStatus = 'Edit Hike';
+    vm.hikeDeleteStatus = 'Delete Hike';
+    MapsService.clearCurrent();
   }
 
 

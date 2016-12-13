@@ -26,7 +26,7 @@
 
     <div class="set-interval-box">
       <div class="lat-lng-input-container">
-        <button id="full-trail-button" class="update-trail-button" ng-click="hike.MapsService.clearCurrent()">Full Trail</button>
+        <button id="full-trail-button" class="update-trail-button" ng-click="hike.clearCurrent()">Full Trail</button>
 
         <span>
           <span class="lat-lng">
@@ -64,9 +64,9 @@
           <textarea class="hike-description" placeholder="Edit description..." ng-model="hike.MapsService.panel.description"></textarea>
         </div>
         <div class="save-delete-container">
-          <button class="save-hike-button update-trail-button" ng-hide="hike.MapsService.currentHike.id" ng-click="hike.saveHike()">Save Hike</button>
-          <button class="edit-hike-button update-trail-button" ng-show="hike.MapsService.currentHike.id" ng-click="hike.editHike()">Edit Hike</button>
-          <button class="delete-hike-button delete-trail-button" ng-click="hike.deleteHike()">Delete Hike</button>
+          <button class="save-hike-button update-trail-button" ng-hide="hike.MapsService.currentHike.id" ng-click="hike.saveHike()">{{hike.hikeSaveStatus}}</button>
+          <button class="edit-hike-button update-trail-button" ng-show="hike.MapsService.currentHike.id" ng-click="hike.editHike()">{{hike.hikeEditStatus}}</button>
+          <button class="delete-hike-button delete-trail-button" ng-click="hike.deleteHike()">{{hike.hikeDeleteStatus}}</button>
         </div>
       </div>
     </div>

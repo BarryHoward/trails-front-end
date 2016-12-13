@@ -10,9 +10,7 @@ function TopTrailsController (MapsService, UsersService) {
 			vm.trailList = resp.data;
 			vm.trailList.forEach(function(element){
 				if (element.img_url === null){
-					console.log("nada")
 					element.img_url = vm.img_default;
-					console.log(element.img_url)
 				}
 			})
 			console.log(vm.trailList)
@@ -23,7 +21,6 @@ function TopTrailsController (MapsService, UsersService) {
 	if (!vm.user_id){
 		vm.user_id = 0;
 	}
-	console.log(vm.user_id);
 
 	init();
 
