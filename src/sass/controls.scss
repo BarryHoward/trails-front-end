@@ -144,3 +144,44 @@
 	width: 200px;
 	font-size: 12px;
 }
+
+// HIKE STUFF
+
+.hike-list{
+	max-height: 200px;
+	overflow-y: scroll;
+}
+
+div .choose-hike-button-container{
+	margin: 0px;
+	padding: 0px;
+}
+.choose-hike-button{
+	font-family: 'Coda', cursive;
+	width: 300px;
+	height: 30px;
+	margin: 0px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	.hike-title{
+		display: inline-block;
+		margin: 0px;
+		flex-grow: 2;
+	}
+
+	.color-box{
+		margin: 0px;
+		display: inline-block;
+		height: 20px;
+		width: 20px;
+		align-self: left;
+	}
+}
+
+.save-delete-container{
+	display: flex;
+	flex-direction: row;
+}
+
