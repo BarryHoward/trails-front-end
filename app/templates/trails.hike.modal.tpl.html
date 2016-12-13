@@ -1,18 +1,19 @@
 <div class="modal is-active">
   <div class="modal-background"></div>
   <div class="modal-content">
-  <img src="{{modal.marker.img_url}}">
-  <div>{{modal.marker.title}}</div>
+  <div id="modal-title">{{modal.marker.title}}</div>
+  <img id="modal-main-image" src="{{modal.marker.img_url}}">
   <div>{{modal.marker.description}}</div>
   <div>{{modal.marker.distance}}</div>
-  <img src='images/png/tent.png' ng-show="modal.marker.campsite">
-  <img src='images/png/shelter.png' ng-show="modal.marker.shelter">
-  <img src='images/png/water-drop.png' ng-show="modal.marker.water">
-  <img src='images/png/parking.png' ng-show="modal.marker.parking">
-  <img src='images/png/binoculars.png' ng-show="modal.marker.view">
-  <img src='images/png/list.png' ng-show="modal.marker.resupply">
-  <img src='images/png/road.png' ng-show="modal.marker.road"
-
+  <div class="images">
+    <img src='images/png/tent.png' ng-show="modal.marker.campsite">
+    <img src='images/png/shelter.png' ng-show="modal.marker.shelter">
+    <img src='images/png/water-drop.png' ng-show="modal.marker.water">
+    <img src='images/png/parking.png' ng-show="modal.marker.parking">
+    <img src='images/png/binoculars.png' ng-show="modal.marker.view">
+    <img src='images/png/list.png' ng-show="modal.marker.resupply">
+    <img src='images/png/road.png' ng-show="modal.marker.road">
+  </div>
 <!--   		campgroundImg.src = 'images/png/tent.png';
 		waterImg.src = 'images/png/water-drop.png';
 		parkingImg.src = 'images/png/parking.png';

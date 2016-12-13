@@ -13,6 +13,7 @@
 @import 'controls';
 @import 'userHome';
 @import 'profile';
+@import 'modal';
 
 
 @import "bulma";
@@ -33,7 +34,7 @@ h1 {
 	color: #D7D5D5;
 	font-size: 30px;
 	text-align: center;
-	border-bottom: 1px solid #D7D5D5;
+	margin: 15px;
 }
 
 h2 {
@@ -43,7 +44,7 @@ h2 {
 h3 {
 	color: #CD5C5C ;
 	font-family: 'Nunito', sans-serif;
-	margin-bottom: 15px;
+	margin: 15px;
 }
 
 .container {
@@ -56,10 +57,4 @@ h3 {
 	min-width: 100%;
 }
 
-
-.modal-content{
-	height: 800px;
-	width: 800px;
-	background: white;
-}
 // IGNORE ME!
