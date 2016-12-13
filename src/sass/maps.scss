@@ -28,6 +28,22 @@
   border: 1px solid #CCCCC3
 }
 
+.map-controls-container {
+  border: 2px solid  #1D3042;
+  border-bottom: none;
+  margin-bottom: none;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  align-content: flex-start;
+  background-color: #D7D5D5;
+	min-width: 100%;
+}
+
+.trail-container {
+	min-width: 100%;
+}
+
 .map-container {
   border: 1px solid black;
   border-radius: 5px;
