@@ -13,7 +13,7 @@
       <div>Distance: <span class='static-info'>{{blazeNew.MapsService.trailInfo.distance}} mi</span></div>
       <div>Max Elevation: <span class='static-info'>{{blazeNew.MapsService.trailInfo.max_elevation}} ft</span></div>
       <div>Min Elevation: <span class='static-info'>{{blazeNew.MapsService.trailInfo.min_elevation}} ft</span></div>
-      <button class="update-trail-button" id="recalculate" ng-click="blazeNew.MapsService.findMaxMin()">Recalculate Elevations</button>
+      <button class="update-trail-button" id="recalculate" ng-click="blazeNew.MapsService.findMaxMin()">{{blazeNew.MapsService.recalculateStatus}}</button>
     </div>
 </div>
 
@@ -31,7 +31,7 @@
     <div class="set-interval-box">
 
         <div class="lat-lng-input-container">
-          <button class="update-trail-button" ng-click="blazeNew.MapsService.clearCurrent()">Full Trail</button>
+          <button id="full-trail-button" class="update-trail-button" ng-click="blazeNew.MapsService.clearCurrent()">Full Trail</button>
           <span>
             <span class="lat-lng">
               <button class="interval-button" ng-click="blazeNew.MapsService.startInt()">Start: </button>
@@ -42,7 +42,7 @@
               <input class="point-control-input" type="text" ng-model="blazeNew.MapsService.panel.end"></input>
             </span>
             </span>
-              <button class="update-trail-button" ng-click="blazeNew.setInterval()">go to interval</button>
+              <button id="interval-button" class="update-trail-button" ng-click="blazeNew.MapsService.setInterval()">Interval</button>
 
         </div>
 
@@ -93,7 +93,7 @@
           <input type="radio" ng-model="blazeNew.MapsService.insert" name="insert" value="backInsert"></input>
           <span>Add to End</span>
       </div>
-        <button id="create-trail-button" ng-click="blazeNew.newTrail()" class="add-trail-button">{{blazeNew.status}}</button>
+        <button id="create-trail-button" ng-click="blazeNew.newTrail()" class="update-trail-button">{{blazeNew.status}}</button>
     </div>
 
   </div>

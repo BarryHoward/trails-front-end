@@ -26,6 +26,7 @@ function BlazeNewController (MapsService, UsersService, $scope, $state) {
   MapsService.currentMarker = {};
   MapsService.currentHike ={};
   MapsService.currentHike.start = 0;
+  MapsService.recalculateStatus = "Recalculate Elevations";
 
   //Constants
   const metersFeetConversion = 3.28084;
@@ -64,7 +65,7 @@ function BlazeNewController (MapsService, UsersService, $scope, $state) {
         vm.status = "Trail Saved";
         $state.go("root.topTrails")
       }, (reject) => {
-        console.log(reject)
+        vm.status = "Save Failed"
       })
   }
 

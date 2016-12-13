@@ -19,6 +19,7 @@ function BlazeEditController (MapsService, UsersService, $stateParams, $state) {
   MapsService.currentMarker = {};
   MapsService.currentHike = {};
   MapsService.currentHike.start = 0;
+  MapsService.recalculateStatus = "Recalculate Elevations";
 
   vm.MapsService = MapsService;
   vm.placeMarker = placeMarker;
