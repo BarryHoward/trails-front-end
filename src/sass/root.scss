@@ -11,8 +11,13 @@
 }
 
 .nav-links {
-  margin-top: 5px;
-  margin-bottom: 15px;
+  margin-top: -5px;
+  margin-bottom: 5px;
+  background-color: #0B4C93;
+  height: 45px;
+  padding: 7px 30px;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
   span {
 
   }
@@ -20,8 +25,10 @@
 
 .site-nav-link {
   text-decoration: none;
-  color: black;
+  color: white;
   font-family: 'Coda', cursive;
+  font-size: 16px;
+
 }
 
 .user-nav {
@@ -32,8 +39,12 @@
 }
 
 .site-nav {
+  display: inline-block;
+  margin-top: 5px;
   span {
+    min-height: 30px;
     margin: 0px 5px;
+    color: white;
   }
 }
 
@@ -52,4 +63,8 @@
 
 #current-user:hover {
   color: #9FA7AF;
+}
+
+.logged-in {
+  color: #758490;
 }
