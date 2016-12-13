@@ -104,11 +104,11 @@
 <div class="elevation-header"><h2>Elevation Information</h2></div>
 <div class="chart-box">
 	<canvas class="chart" id="myChart"></canvas>
-</div>
-<div class="chart-controls">
-  <span><button ng-click="blazeNew.MapsService.prevChart()">Previous</button></span>
-  <span ng-repeat="number in blazeNew.MapsService.showChart">
-    <button ng-click="blazeNew.MapsService.chooseChart(number)">{{number + 1}}</button>
-  </span>
-  <span><button ng-click="blazeNew.MapsService.nextChart()">Next</button></span>
+  <div class="chart-controls">
+    <span><button class="turn-page" ng-click="blazeNew.MapsService.prevChart()">Previous</button></span>
+    <span ng-repeat="number in blazeNew.MapsService.showChart">
+      <button class="interval-button" ng-click="blazeNew.MapsService.chooseChart(number)">{{number + 1}}</button>
+    </span>
+    <span><button class="turn-page" ng-click="blazeNew.MapsService.nextChart()">Next</button></span>
+  </div>
 </div>
