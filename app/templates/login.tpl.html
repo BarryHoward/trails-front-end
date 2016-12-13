@@ -1,17 +1,18 @@
 
-<h2>Login!</h2>
-
-<form class="login" ng-submit="login.login(user)" method="post">
-  <span class="login-labels"><label>Username: </label></span>
-  <input class="register-login-input" type="text" name="username" value=""
-    ng-model="user.username">
-    <span class="login-labels"><label>Password: </label></span>
-  <input class="register-login-input" type="password" name="password" value=""
-    ng-model="user.password">
-  <button class="login-button" type="button" name="loginButton" ng-click="login.login(user)">Log in</button>
-</form>
-<p>
-  <small>
-    <span>New User? <a href="#/register">Register Here</a></span>
-  </small>
-</p>
+<h1>Login</h1>
+<div class="login-container">
+  <form class="login" ng-submit="login.login(user)" method="post">
+    <span class="login-labels"><label>Username: </label></span>
+    <input class="register-login-input" type="text" name="username" value=""
+      ng-model="user.username">
+      <span class="login-labels"><label>Password: </label></span>
+    <input class="register-login-input" type="password" name="password" value=""
+      ng-model="user.password">
+    <button class="login-button" type="button" name="loginButton" ng-click="login.login(user)">Log in</button>
+  </form>
+  <p>
+    <small>
+      <span id="new-user">New User? <a id="register-here" href="#/register">Register Here</a></span>
+    </small>
+  </p>
+</div>

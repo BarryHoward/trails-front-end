@@ -12,10 +12,10 @@
 		<span><a href="#/users/{{root.user_id}}/hikedTrails" ng-show="root.loggedIn">Hiked Trails</a></span> -->
 
 	</span>
-	<span class='user-nav' ng-hide="root.loggedIn">
-		<span><a href="#/login">Login</a></span>
+	<span class='user-nav nav-logged-out' ng-hide="root.loggedIn">
+		<span><a class="site-nav-link" href="#/login">Login</a></span>
 		<span>|</span>
-		<span><a href="#/register">Register</a></span>
+		<span><a class="site-nav-link" href="#/register">Register</a></span>
 	</span>
 	<span class='user-nav' ng-show="root.loggedIn">
 		<span><small><span class="logged-in">Logged in as</span ></small><a href="#/users/{{root.user_id}}/profile"><span id="current-user">{{root.username}}</span></a></span>

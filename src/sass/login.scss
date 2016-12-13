@@ -10,5 +10,24 @@
 
 .login-labels {
   width: 200px;
+  margin: 0px 5px;
+  color: white;
   font-family: 'Nunito', sans-serif;
+}
+
+.login-container {
+  width: 850px;
+  margin: 0px auto;
+}
+
+#new-user {
+  margin-left: 5px;
+}
+
+#register-here {
+  color: #D7D5D5;
+}
+
+#register-here:hover {
+  color: white;
 }
