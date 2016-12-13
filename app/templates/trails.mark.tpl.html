@@ -1,6 +1,6 @@
 <div class="trail-info-container">
   <div class="trail-image-container">
-    <img src="{{mark.MapsService.trailInfo.img_url}}">
+    <img class="trail-image" src="{{mark.MapsService.trailInfo.img_url}}">
   </div>
   <div class="title-description">
     <div>Title: <span class='static-info'>{{mark.MapsService.trailInfo.title}}</span></div>
@@ -76,15 +76,14 @@
           <div class="type-row">
         		<label>shelter: </label><input type="checkbox" ng-change="mark.MapsService.chartMark()" ng-model="mark.MapsService.panel.shelter">
         		<label>campsite: </label><input type="checkbox" ng-change="mark.MapsService.chartMark()" ng-model="mark.MapsService.panel.campsite">
-        		<br>
+        	</div>
+          <div class="type-row">
         		<label>water: </label><input type="checkbox" ng-change="mark.MapsService.chartMark()" ng-model="mark.MapsService.panel.water">
         		<label>view: </label><input type="checkbox" ng-change="mark.MapsService.chartMark()" ng-model="mark.MapsService.panel.view">
-        		<br>
           </div>
           <div class="type-row">
         		<label>road: </label><input type="checkbox" ng-change="mark.MapsService.chartMark()" ng-model="mark.MapsService.panel.road">
         		<label>parking: </label><input type="checkbox" ng-change="mark.MapsService.chartMark()" ng-model="mark.MapsService.panel.parking">
-        		<br>
         		<label>resupply: </label><input type="checkbox" ng-change="mark.MapsService.chartMark()" ng-model="mark.MapsService.panel.resupply">
         </div>
         </div>
