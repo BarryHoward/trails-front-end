@@ -1,22 +1,3 @@
-<!-- <div class="trail-info-container">
-    <div class="trail-image-container">
-      <img src="{{blazeNew.MapsService.trailInfo.saved_url}}">
-    </div>
-    <div class="title-img-container">
-      <label>Name Your Trail</label>
-      <input class='trail-info-input' type="text" placeholder="Trail Name..." ng-model="blazeNew.MapsService.trailInfo.title">
-      <label>Add a Custom Trail Image (optional)</label>
-      <input class='trail-info-input' type="text" placeholder="Image url..." ng-model="blazeNew.MapsService.trailInfo.img_url">
-    </div>
-    <textarea name='trail-description' class='trail-description' placeholder="Trail description..." ng-model="blazeNew.MapsService.trailInfo.description"></textarea>
-    <div class="static-info-container">
-      <div>Distance: <span class='static-info'>{{blazeNew.MapsService.trailInfo.distance}} mi</span></div>
-      <div>Max Elevation: <span class='static-info'>{{blazeNew.MapsService.trailInfo.max_elevation}} ft</span></div>
-      <div>Min Elevation: <span class='static-info'>{{blazeNew.MapsService.trailInfo.min_elevation}} ft</span></div>
-      <button class="update-trail-button" id="recalculate" ng-click="blazeNew.MapsService.findMaxMin()">{{blazeNew.MapsService.recalculateStatus}}</button>
-    </div>
-</div> -->
-
   <div class="trail-info-container" id="trail-info-map">
     <div class="side-box" id="left-side">
     <img class="trail-image" src="{{blazeNew.MapsService.trailInfo.saved_url}}">
@@ -39,9 +20,6 @@
       <button class="update-trail-button" id="recalculate" ng-click="blazeNew.MapsService.findMaxMin()">{{blazeNew.MapsService.recalculateStatus}}</button>
     </div>
     <div class="blaze-mark-hike-buttons">
-    <!--     <button ng-click="blazeNew.MapsService.goToBlaze(blazeNew.MapsService.trailInfo.id, blazeNew.MapsService.trailInfo.user_id)" ng-class="{greyButt: (root.user_id !== blazeNew.MapsService.trailInfo.user_id), orangeButt: (root.user_id === blazeNew.MapsService.trailInfo.user_id)}" class='BMH-link'>Blaze</button>
-        <button ng-click="blazeNew.MapsService.goToMark(blazeNew.MapsService.trailInfo.id, blazeNew.MapsService.trailInfo.user_id)" ng-class="{greyButt: (root.user_id !== blazeNew.MapsService.trailInfo.user_id), orangeButt: (root.user_id === blazeNew.MapsService.trailInfo.user_id)}" class='BMH-link'>Mark</button>
-        <button class='orangeButt BMH-link' ng-click="blazeNew.MapsService.goToHike(blazeNew.MapsService.trailInfo.id)">Hike</button> -->
     </div>
     </div>
   </div>

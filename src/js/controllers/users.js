@@ -10,7 +10,6 @@ function UsersController (MapsService, UsersService, $state) {
     if (!vm.user_id){
       vm.user_id = 0;
     }
-    // console.log(vm.user_id);
 
     UsersService.getUser(vm.user_id).then(function (resp) {
       vm.user = resp.data;

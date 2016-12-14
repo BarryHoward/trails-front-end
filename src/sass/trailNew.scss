@@ -1,55 +1,3 @@
-
-// .trail-image-container {
-//   height: 110px;
-//   width: 125px;
-//   float: left;
-//   margin-right: 10px;
-//   background-color: #C8C7C7;
-//   img {
-//     height: 110px;
-//     width: 125px;
-//   }
-// }
-// .trail-info-container {
-//   border: 2px solid black;
-//   background-color: #D7D5D5;
-//   margin: 5px 0px;
-//   padding: 15px;
-//   min-width: 1200px;
-//   height: 162px;
-//   display: flex;
-//   justify-content: space-around;
-//   align-items: center;
-//   flex-direction: row;
-
-//   .trail-description {
-//     height: 90px;
-//     width: 200px;
-//     padding: 5px;
-//     bottom: 30px;
-//     left: 460px;
-//     border-style: none;
-//     border-radius: 5px;
-//     display: inline-block;
-//   }
-
-//   .trail-info-input {
-//     display: block;
-//     border-style: none;
-//     border-radius: 5px;
-//     padding: 5px;
-//     height: 30px;
-//     width: 300px;
-//     margin: 5px 0px;
-//   }
-
-
-// }
-
-// .static-info {
-//   color: #EA643C;
-// }
-
 .new-trail {
   border: 1px solid grey;
   width: 500px;
@@ -136,15 +84,9 @@
   max-height: 100px;
 }
 
-
-
-
 #recalculate {
   margin: 0px;
   padding: 0px;
-  // width: 130px;
-  // height: 60px;
-  // width: 90px;
 }
 
 #create-trail-button{
