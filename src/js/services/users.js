@@ -39,11 +39,7 @@ function UsersService ($http, $cookies) {
     console.log(info)
     return $http.post(`${SERVER}users`, info)
   }
-  //
-  // function isAdmin () {
-  //   return $cookies.get('admin') === 'true';
-  // }
-  //
+
   function logout () {
     $cookies.remove('username');
     $cookies.remove('access_token');
@@ -72,9 +68,6 @@ function UsersService ($http, $cookies) {
     return $http.get(`${SERVER}trails`)
   }
 
-
-
-  // Backend not setup yet for these two! ----------------
   function getCreatedTrails(id){
     return $http.get(`${SERVER}trails/users/${id}/`)
   }
@@ -82,7 +75,6 @@ function UsersService ($http, $cookies) {
   function getHikedTrails(id){
     return $http.get(`${SERVER}hikes/users/${id}/trails`)
   }
-  // -------------------------------------------------------
 
   function editUser(user){
     let req = {

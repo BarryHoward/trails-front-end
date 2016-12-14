@@ -156,22 +156,6 @@ function MarkController (MapsService, UsersService, $stateParams) {
     }
   }
 
-  // function setInterval(){
-  //     MapsService.chartOffset = 0;
-  //     MapsService.filterTrailPath(Number(MapsService.panel.start), Number(MapsService.panel.end));
-  //     MapsService.filterChartPath(Number(MapsService.panel.start), Number(MapsService.panel.end));
-  //   if (MapsService.currentHike.poly){
-  //     MapsService.currentHike.poly.setPath(MapsService.currentHike.path)
-  //   }
-  //     MapsService.setOffSetArray(spherical.computeLength(MapsService.currentHike.path));
-  // }
-
-  // function fullTrailInt(){
-  //   MapsService.panel.start = 0;
-  //   MapsService.panel.end = spherical.computeLength(vm.MapsService.trailPath)*metersMilesConversion;
-  //   setInterval();
-  // }
-
 }
 
 MarkController.$inject = ['MapsService', 'UsersService', '$stateParams'];

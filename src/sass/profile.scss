@@ -3,7 +3,6 @@
   background-color: #D7D5D5;
   margin: 25px 0px;
   width: 200px;
-  // min-height: 200px;
   display: inline-flex;
   justify-content: flex-end;
   align-items: center;
@@ -89,4 +88,23 @@
 
 .update-user {
   color: #758490;
+}
+
+.avatar {
+  max-width: 200px;
+  text-overflow: ellipsis;
+  overflow-x: hidden;
+  white-space:nowrap;
+  display: inline-block;
+  position: relative;
+
+}
+
+.change-button {
+  display: inline;
+  position: absolute;
+}
+
+.update-profile-button {
+  display: block;
 }

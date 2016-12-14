@@ -8,7 +8,6 @@
 @import 'trailUpdate';
 @import 'register';
 @import 'login';
-@import 'topTrails';
 @import 'mark';
 @import 'controls';
 @import 'userHome';
@@ -76,17 +75,6 @@ h3 {
   flex-direction: row;
   overflow: hidden;
   margin-bottom: 30px;
-
-  // .title-description {
-  //   height: 90px;
-  //   width: 200px;
-  //   padding: 5px;
-  //   bottom: 30px;
-  //   left: 460px;
-  //   border-style: none;
-  //   border-radius: 5px;
-  //   display: inline-block;
-  // }
 
   .trail-title{
   	color: #0B4C93;
@@ -196,9 +184,6 @@ border-radius: 50px 0px 0px 50px;
 	flex-direction: column;
 	margin: 0px;
  .BMH-link {
-
-    // border-top-left-radius: 0px;
-    // border-bottom-left-radius: 0px;
     height: 100%;
     margin: -2px;
     width: 100px;
@@ -206,14 +191,12 @@ border-radius: 50px 0px 0px 50px;
 
 	  color: white;
 	  font-size: 16px;
-	  // border-style: none;
 	  padding: 5px;
 	  font-family: 'Nunito', sans-serif;
 	  }
 
-	.BMH-link:focus { 
+	.BMH-link:focus {
     	outline: none;
-    	// box-shadow: 0px 0px 5px 5px black;
 	}
 
 

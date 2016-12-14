@@ -1,26 +1,3 @@
-<!-- <div class="trail-info-container">
-    <div class="trail-image-container">
-    <img class="trail-image" src="{{blazeEdit.MapsService.trailInfo.saved_url}}">
-</div>
-<div class="title-img-container">
-  <label>Edit Trail Name:</label>
-  <input class='trail-info-input' type="text" placeholder="Trail Name" ng-model="blazeEdit.MapsService.trailInfo.title">
-  <label>Edit Trail Image:</label>
-  <input class='trail-info-input' type="text" placeholder="Image url" ng-model="blazeEdit.MapsService.trailInfo.img_url">
-</div>
-  <textarea class="trail-description" placeholder="Trail description" ng-model="blazeEdit.MapsService.trailInfo.description"></textarea>
-
-  <div class="static-info-container">
-    <div>Distance: <span class='static-info'>{{blazeEdit.MapsService.trailInfo.distance}} mi</span></div>
-    <div>Max Elevation: <span class='static-info'>{{blazeEdit.MapsService.trailInfo.max_elevation}} ft</span></div>
-    <div>Min Elevation: <span class='static-info'>{{blazeEdit.MapsService.trailInfo.min_elevation}} ft</span></div>
-    <button class="update-trail-button" id="recalculate" ng-click="blazeEdit.MapsService.findMaxMin()">{{blazeEdit.MapsService.recalculateStatus}}</button>
-  </div>
-</div>
-
-	</div>
-</div> -->
-
   <div class="trail-info-container" id="trail-info-map">
     <div class="side-box" id="left-side">
     <img class="trail-image" src="{{blazeEdit.MapsService.trailInfo.saved_url}}">
@@ -52,7 +29,6 @@
 
 <div class="map-controls-container">
   <div class="map-container">
-    <!-- <input id="pac-input" class="controls" type="text" placeholder="Search..."> -->
     <ng-map class="map" id="blazeEditMap" on-click="blazeEdit.placeMarker($event)">
     </ng-map>
   </div>
@@ -81,14 +57,6 @@
     <div class="control-box">
 
       <div class="static-controls">
-<!--         <div class="distance-input-container">
-          <span>
-            <label>Distance: </label>
-            <input type="text" ng-model="blazeEdit.MapsService.panel.distance"></input>
-                  mi. out of <span class='static-info'>{{blazeEdit.MapsService.trailInfo.distance}}</span>
-          </span>
-          <button class="update-trail-button" id='place-distance-button' ng-click="blazeEdit.placeDistanceMarker()">Place Point by Distance</button>
-        </div> -->
         <div class="lat-lng-input-container">
           <span id="lat-lng-mark">
             <span class="lat-lng">
