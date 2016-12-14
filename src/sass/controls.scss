@@ -142,6 +142,11 @@
 	width: 50px;
 }
 
+.interval-button:hover {
+  background-color: #A9B2BA;
+}
+
+
 .point-control-input {
 	height: 35px;
 	padding: 3px;
@@ -209,8 +214,15 @@ div .choose-hike-button-container{
 	background: #F020F0;
 }
 
+#interval-button:hover {
+	background: #F674F6;
+}
 #full-trail-button {
 	background: #FF5547;
+}
+
+#full-trail-button:hover {
+	background: #FF6A5E;
 }
 
 #blaze-update-delete {
