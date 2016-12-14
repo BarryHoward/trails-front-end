@@ -46,9 +46,10 @@
 
 .add-delete {
   border: 1px solid grey;
+  border-radius: 5px;
   background-color: #D7D5D5;
   font-size: 15px;
-  padding: 10px;
+  padding: 5px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -70,8 +71,9 @@
 
 .points-header {
   font-size: 14px;
-  text-decoration: underline;
-  height: 15px;
+  padding: 5px 10px;
+  border: 1px solid grey;
+  border-radius: 30px;
 }
 
 .save-trail {
