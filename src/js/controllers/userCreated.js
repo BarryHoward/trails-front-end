@@ -8,7 +8,6 @@ function UserCreatedController ($state, UsersService, MapsService) {
     if (!vm.user_id){
       vm.user_id = 0;
     }
-    console.log(vm.user_id);
 
 		UsersService.getCreatedTrails(vm.user_id).then((resp)=>{
 			vm.trailList = resp.data;
