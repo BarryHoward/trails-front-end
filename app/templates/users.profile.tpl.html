@@ -1,22 +1,21 @@
 <div class="about-container">
   <div class="about-header">
-      <div id="about-username">{{users.user.username}}</div>
-      <div id="about-avatar"><img src="{{users.user.img_url}}" alt=""></div>
+      <div id="about-username">{{userProfile.user.username}}</div>
+      <div id="about-avatar"><img src="{{userProfile.user.img_url}}" alt=""></div>
   </div>
   <div class="about-body">
     <div class="username">
-      Username: <span ng-hide="userProfile.updatingUsername" class='static-info'>{{users.user.username}}</span><input class="user-profile-input" ng-show="userProfile.updatingUsername" type="text" name="" ng-model="users.user.username"><button class="update-trail-button" ng-click="userProfile.editUser(users.user); userProfile.changeUsername()" ng-show="userProfile.updatingUsername" type="button" name="button">Save Changes</button>
+
+      Username: <span ng-hide="userProfile.updatingUsername" class='static-info'>{{userProfile.user.username}}</span><input class="user-profile-input" ng-show="userProfile.updatingUsername" type="text" name="" ng-model="userProfile.user.username"><button ng-click="userProfile.changeUsername()" ng-show="userProfile.updatingUsername" type="button" name="button">Save Changes</button>
       <a class="update-user" ng-hide="userProfile.updatingUsername" ng-click="userProfile.changeUsername()"><small>(change)</small></a>
     </div>
     <div class="email">
-      Email Address: <span ng-hide="userProfile.updatingEmail" class='static-info'>{{users.user.email}}</span><input class="user-profile-input" ng-show="userProfile.updatingEmail" type="text" name="" ng-model="users.user.email"><button class="update-trail-button " ng-click="userProfile.changeEmail()" ng-show="userProfile.updatingEmail" type="button" name="button">Save Changes</button>
+      Email Address: <span ng-hide="userProfile.updatingEmail" class='static-info'>{{userProfile.user.email}}</span><input class="user-profile-input" ng-show="userProfile.updatingEmail" type="text" name="" ng-model="userProfile.user.email"><button ng-click="userProfile.changeEmail()" ng-show="userProfile.updatingEmail" type="button" name="button">Save Changes</button>
       <a class="update-user" ng-hide="userProfile.updatingEmail" ng-click="userProfile.changeEmail()"><small>(change)</small></a>
 
     </div>
     <div class="avatar">
-      Avatar Url: <span ng-hide="userProfile.updatingAvatar" id="user-img_url" class='static-info'>{{users.user.img_url}}</span><input class="user-profile-input" ng-show="userProfile.updatingAvatar" type="text" name="" ng-model="users.user.img_url">
-    </div>
-    <div class="change-button">
+      Avatar Url: <span ng-hide="userProfile.updatingAvatar" class='static-info'>{{userProfile.user.img_url}}</span><input class="user-profile-input" ng-show="userProfile.updatingAvatar" type="text" name="" ng-model="userProfile.user.img_url"><button ng-click="userProfile.changeAvatar()" ng-show="userProfile.updatingAvatar" type="button" name="button">Save Changes</button>
       <a class="update-user" ng-hide="userProfile.updatingAvatar" ng-click="userProfile.changeAvatar()"><small>(change)</small></a>
     </div>
     <button class="update-trail-button update-profile-button" ng-click="userProfile.changeAvatar()" ng-show="userProfile.updatingAvatar" type="button" name="button">Save Changes</button>
