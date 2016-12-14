@@ -14,9 +14,9 @@
       <div>Created by: <span class='static-info'>{{mark.MapsService.trailInfo.username}}</span></div>
     </div>
     <div class="blaze-mark-hike-buttons">
-        <button ng-click="mark.MapsService.goToBlaze(mark.MapsService.trailInfo.id, mark.MapsService.trailInfo.user_id)" ng-class="{greyButt: (root.user_id !== mark.MapsService.trailInfo.user_id), orangeButt: (root.user_id === mark.MapsService.trailInfo.user_id)}" class='BMH-link'>Blaze</button>
-        <button ng-click="mark.MapsService.goToMark(mark.MapsService.trailInfo.id, mark.MapsService.trailInfo.user_id)" ng-class="{greyButt: (root.user_id !== mark.MapsService.trailInfo.user_id), orangeButt: (root.user_id === mark.MapsService.trailInfo.user_id)}" class='BMH-link'>Mark</button>
-        <button class='orangeButt BMH-link' ng-click="mark.MapsService.goToHike(mark.MapsService.trailInfo.id)">Hike</button>
+        <button ng-click="mark.MapsService.goToBlaze(mark.MapsService.trailInfo.id, mark.MapsService.trailInfo.user_id)" ng-class="{greyButt: (root.user_id !== mark.MapsService.trailInfo.user_id), orangeButt: (root.user_id === mark.MapsService.trailInfo.user_id)}" class='unclicked-top BMH-link'>Blaze</button>
+        <button ng-click="mark.MapsService.goToMark(mark.MapsService.trailInfo.id, mark.MapsService.trailInfo.user_id)" ng-class="{greyButt: (root.user_id !== mark.MapsService.trailInfo.user_id), orangeButt: (root.user_id === mark.MapsService.trailInfo.user_id)}" class='clicked c-mark BMH-link'>Mark</button>
+        <button class='unclicked-bottom orangeButt BMH-link' ng-click="mark.MapsService.goToHike(mark.MapsService.trailInfo.id)">Hike</button>
     </div>
     </div>
   </div>

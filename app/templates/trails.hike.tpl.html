@@ -15,8 +15,8 @@
     </div>
     <div class="blaze-mark-hike-buttons">
         <button ng-click="hike.MapsService.goToBlaze(hike.MapsService.trailInfo.id, hike.MapsService.trailInfo.user_id)" ng-class="{greyButt: (root.user_id !== hike.MapsService.trailInfo.user_id), orangeButt: (root.user_id === hike.MapsService.trailInfo.user_id)}" class='BMH-link'>Blaze</button>
-        <button ng-click="hike.MapsService.goToMark(hike.MapsService.trailInfo.id, hike.MapsService.trailInfo.user_id)" ng-class="{greyButt: (root.user_id !== hike.MapsService.trailInfo.user_id), orangeButt: (root.user_id === hike.MapsService.trailInfo.user_id)}" class='BMH-link'>Mark</button>
-        <button class='orangeButt BMH-link' ng-click="hike.MapsService.goToHike(hike.MapsService.trailInfo.id)">Hike</button>
+        <button ng-click="hike.MapsService.goToMark(hike.MapsService.trailInfo.id, hike.MapsService.trailInfo.user_id)" ng-class="{greyButt: (root.user_id !== hike.MapsService.trailInfo.user_id), orangeButt: (root.user_id === hike.MapsService.trailInfo.user_id)}" class='unclicked-top BMH-link'>Mark</button>
+        <button class='orangeButt clicked c-hike BMH-link' ng-click="hike.MapsService.goToHike(hike.MapsService.trailInfo.id)">Hike</button>
     </div>
     </div>
   </div>
