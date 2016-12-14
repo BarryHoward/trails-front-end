@@ -61,12 +61,18 @@
         <button class="choose-hike-button" ng-click="hike.clearCurrent()">+ New</button>
 
         <div class="hike-box">
-          <input class='hike-input hike-title' type="text" ng-model="hike.MapsService.panel.title" placeholder="Title...">
-          <div class="hike-dates">
+          <div>
+            <label>Title: </label>
+            <input class='hike-input hike-title' type="text" ng-model="hike.MapsService.panel.title" placeholder="Title...">
+            <label>Description: </label>
+          <textarea class="hike-input hike-description" placeholder="Edit description..." ng-model="hike.MapsService.panel.description"></textarea>
+          </div>
+          <div>
+            <label>Start Date:</label>
             <input class='hike-input hike-date' type="date" ng-model="hike.MapsService.panel.start_date">
+            <label>End Date:</label>
             <input class='hike-input hike-date' type="date" ng-model="hike.MapsService.panel.end_date">
           </div>
-          <textarea class="hike-input hike-description" placeholder="Edit description..." ng-model="hike.MapsService.panel.description"></textarea>
         </div>
         <div class="save-delete-container">
           <button class="save-hike-button update-trail-button" ng-hide="hike.MapsService.currentHike.id" ng-click="hike.saveHike()">{{hike.hikeSaveStatus}}</button>
