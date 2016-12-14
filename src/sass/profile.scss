@@ -10,8 +10,17 @@
   margin-bottom: 0px;
   float: left;
   padding-top: 15px;
+  border-radius: 5px;
+  background-color: #F4F2F2;
   #profile-pic {
-    margin: 10px auto;
+    margin: 10px 5px;
+    padding: 10px;
+    img {
+      padding: 3px;
+      border: 1px solid black;
+      background-color: white;
+      border-radius: 100px;
+    }
   }
 }
 
@@ -52,7 +61,8 @@
 }
 
 .about-container {
-  border: 2px solid #1D3042;
+  border: 1px solid #1D3042;
+  border-radius: 5px;
   background-color: #D7D5D5;
   display: flex;
   flex-direction: column;
@@ -97,6 +107,17 @@
   white-space:nowrap;
   display: inline-block;
   position: relative;
+
+}
+
+#about-avatar {
+  img {
+  margin: 10px auto;
+  padding: 10px;
+  border: 1px solid black;
+  background-color: white;
+  border-radius: 10px;
+  }
 
 }
 
