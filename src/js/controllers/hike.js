@@ -110,6 +110,7 @@ function HikeController (MapsService, UsersService, $stateParams) {
         newHike.description = MapsService.panel.description;
         newHike.start = Number(MapsService.panel.start);
         newHike.end = Number(MapsService.panel.end);
+        newHike.distance = MapsService.round(newHike.end - newHike.start, 2);
         newHike.start_date = MapsService.panel.start_date;
         newHike.end_date = MapsService.panel.end_date;
       if (!newHike.title){
