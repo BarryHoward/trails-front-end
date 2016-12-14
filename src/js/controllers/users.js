@@ -29,7 +29,7 @@ function UsersController (MapsService, UsersService, $state) {
 
 
 
-  init();
+  // init();
 
 
 };
