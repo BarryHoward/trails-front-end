@@ -1,6 +1,6 @@
 
 .modal-content{
-	height: 600px;
+	height: 470px;
 	width: 800px;
 	background: #F4F2F2;
 	padding-top: 10px;
@@ -8,6 +8,7 @@
 	justify-content: center;
 	flex-direction: column;
 	overflow: scroll;
+	border-radius: 30px;
 
   #modal-title {
     color: white;
@@ -27,7 +28,7 @@
     border-top: 1px solid black;
     border-bottom: 1px solid black;
 		width: 100%;
-		height: 450px;
+		height: 300px;
 		order: 1;
 
   }
