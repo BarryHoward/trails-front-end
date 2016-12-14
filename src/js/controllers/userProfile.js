@@ -15,7 +15,7 @@ function UserProfileController ($state, UsersService, MapsService) {
   function init(){
       UsersService.getUser(vm.user_id).then(function (resp) {
       vm.user = resp.data;
-      console.log('vm.user', vm.user)
+      // console.log('vm.user', vm.user)
 
     });
   }
