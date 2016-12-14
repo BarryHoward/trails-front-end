@@ -8,13 +8,13 @@
     <div id="modal-description">"{{modal.marker.description}}"</div>
     <div id="modal-distance">Mile Marker: <span class="static-info">{{modal.round(modal.marker.distance, 2)}}</span></div>
     <div class="images">
-      <img src='images/png/tent.png' ng-show="modal.marker.campsite">
-      <img src='images/png/shelter.png' ng-show="modal.marker.shelter">
-      <img src='images/png/water-drop.png' ng-show="modal.marker.water">
-      <img src='images/png/parking.png' ng-show="modal.marker.parking">
-      <img src='images/png/binoculars.png' ng-show="modal.marker.view">
       <img src='images/png/list.png' ng-show="modal.marker.resupply">
+      <img src='images/png/parking.png' ng-show="modal.marker.parking">
       <img src='images/png/road.png' ng-show="modal.marker.road">
+      <img src='images/png/shelter.png' ng-show="modal.marker.shelter">
+      <img src='images/png/tent.png' ng-show="modal.marker.campsite">
+      <img src='images/png/water-drop.png' ng-show="modal.marker.water">
+      <img src='images/png/binoculars.png' ng-show="modal.marker.view">
     </div>
   </div>
   <button ng-click="modal.parent()" class="modal-close"></button>

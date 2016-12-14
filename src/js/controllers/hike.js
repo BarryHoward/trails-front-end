@@ -58,6 +58,7 @@ function HikeController (MapsService, UsersService, $stateParams) {
             let marker = MapsService.loadPointMarker(waypoint)
             MapsService.dragListener(marker, waypoint)
             MapsService.clickListener(marker, waypoint)
+            MapsService.setHikeIcon(marker);
           });
           MapsService.initChart()
         })

@@ -60,6 +60,7 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
   vm.goToBlaze = goToBlaze;
   vm.goToMark = goToMark;
   vm.goToHike = goToHike;
+  vm.setHikeIcon = setHikeIcon;
 
 
   const metersFeetConversion = 3.28084;
@@ -863,7 +864,7 @@ function closestPath(waypoint){
 
   function maxMinRecurse(queries, i, min_elevation, max_elevation){
     safeApply(function(){
-      vm.recalculateStatus = (i/(queries+1))*100 + "% complete."
+      vm.recalculateStatus = round((i/(queries+1))*100, 2) + "% complete."
       })
     if (i<=queries){
       let start = i*40;
@@ -912,6 +913,16 @@ function closestPath(waypoint){
   }
   function goToHike(id){
     $state.go('root.trails.hike', {trailId: id, userId: UsersService.currentUserId()})
+  }
+
+  function setHikeIcon(marker){
+    if (marker.resuply){marker.setIcon(icons.resupply)}
+    else if (marker.parking){marker.setIcon(icons.parking)}
+    else if (marker.road){marker.setIcon(icons.road)}
+    else if (marker.shelter){marker.setIcon(icons.shelter)}
+    else if (marker.campsite){marker.setIcon(icons.campsite)}
+    else if (marker.water){marker.setIcon(icons.water)}
+    else if (marker.view){marker.setIcon(icons.view)}
   }
 };
 
