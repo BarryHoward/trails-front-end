@@ -1,4 +1,4 @@
-<div class="trail-info-container">
+<!-- <div class="trail-info-container">
   <div class="trail-image-container">
     <img class="trail-image" src="{{hike.MapsService.trailInfo.img_url}}">
   </div>
@@ -13,7 +13,30 @@
     <div>Min Elevation: <span class='static-info'>{{hike.MapsService.trailInfo.min_elevation}} ft</span></div>
     <div>Created by: <span class='static-info'>{{hike.MapsService.trailInfo.username}}</span></div>
   </div>
-</div>
+</div> -->
+
+  <div class="trail-info-container">
+    <div class="side-box" id="left-side">
+    <img class="trail-image" src="{{hike.MapsService.trailInfo.saved_url}}">
+    <div class='title-description'>
+      <div class="trail-title">{{hike.MapsService.trailInfo.title}}</div>
+      <div class="trail-description">{{hike.MapsService.trailInfo.description}}</div>
+    </div>
+    </div>
+    <div class="side-box" id="right-side">
+    <div class="static-info-container">
+      <div>Distance: <span class='static-info'>{{hike.MapsService.trailInfo.distance}} mi</span></div>
+      <div>Max Elevation: <span class='static-info'>{{hike.MapsService.trailInfo.max_elevation}} ft</span></div>
+      <div>Min Elevation: <span class='static-info'>{{hike.MapsService.trailInfo.min_elevation}} ft</span></div>
+      <div>Created by: <span class='static-info'>{{hike.MapsService.trailInfo.username}}</span></div>
+    </div>
+    <div class="blaze-mark-hike-buttons">
+        <button ng-click="hike.MapsService.goToBlaze(hike.MapsService.trailInfo.id, hike.MapsService.trailInfo.user_id)" ng-class="{greyButt: (root.user_id !== hike.MapsService.trailInfo.user_id), orangeButt: (root.user_id === hike.MapsService.trailInfo.user_id)}" class='BMH-link'>Blaze</button>
+        <button ng-click="hike.MapsService.goToMark(hike.MapsService.trailInfo.id, hike.MapsService.trailInfo.user_id)" ng-class="{greyButt: (root.user_id !== hike.MapsService.trailInfo.user_id), orangeButt: (root.user_id === hike.MapsService.trailInfo.user_id)}" class='BMH-link'>Mark</button>
+        <button class='orangeButt BMH-link' ng-click="hike.MapsService.goToHike(hike.MapsService.trailInfo.id)">Hike</button>
+    </div>
+    </div>
+  </div>
 
 <div class="map-controls-container">
   <div class="map-container">

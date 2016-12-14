@@ -4,13 +4,14 @@ function RootController (UsersService, $rootScope) {
 	vm.loggedIn = UsersService.isLoggedIn();
 	vm.username = UsersService.currentUser();
 	vm.user_id = UsersService.currentUserId();
+	console.log(vm.user_id)
 
 	vm.logout = logout;
 	$rootScope.$on('loginChange', (event, data) => {
 		vm.loggedIn = UsersService.isLoggedIn();
 		vm.username = UsersService.currentUser();
 		vm.user_id = UsersService.currentUserId();
-		console.log(vm.loggedIn)
+		console.log(vm.loggedIn, vm.username, vm.user_id)
 	});
 
 	function logout(){
