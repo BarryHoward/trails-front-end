@@ -1,4 +1,3 @@
-//Outstanding Issues
 
 //-- Chart Icons dont show up on initial graph sometimes.  Other times they're slow.
 
@@ -43,7 +42,7 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
   vm.filterChartPath = filterChartPath;
   vm.distToWaypoint = distToWaypoint;
   vm.createHikedPoly = createHikedPoly;
-  vm.createCurrentPoly = createCurrentPoly; 
+  vm.createCurrentPoly = createCurrentPoly;
   vm.showTrailPoly = showTrailPoly;
   vm.showHikedPoly = showHikedPoly;
   vm.showCurrentPoly = showCurrentPoly;
@@ -56,7 +55,6 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
   vm.startInt = startInt;
   vm.endInt = endInt;
   vm.setInterval = setInterval;
-  // vm.fullTrailInt = fullTrailInt;
   vm.clearCurrent = clearCurrent;
   vm.findMaxMin = findMaxMin;
   vm.goToBlaze = goToBlaze;
@@ -425,7 +423,6 @@ function closestPath(waypoint){
       vm.currentHike.end = Number(vm.panel.end);
       vm.currentHike.start_date = vm.panel.start_date;
       vm.currentHike.end_date = vm.panel.end_date;
-      // vm.currentHike.distance = vm.currentHike.end - vm.currentHike.start;
     } else {
       vm.currentHike = {};
     }
@@ -562,8 +559,7 @@ function closestPath(waypoint){
     vm.currentHike.start = 0;
     vm.currentHike.end = spherical.computeLength(vm.trailPath)*metersMilesConversion;
     filterChartPath();
-    // ChartsService.chart(vm.currentHike.path, vm.markerArray, 0, true).then(function(){
-    // });
+
   }
 
   function chartMark(overide){
@@ -583,12 +579,7 @@ function closestPath(waypoint){
         vm.trailInfo.max_elevation = ChartsService.max_elevation;
       }
     })
-    // // ChartsService.chart(vm.currentHike.path, vm.filteredMarkerArray, Number(vm.currentHike.start), (vm.regraphElevation|| overide)).then(function(){
-    // //   safeApply(function(){
-    // //     vm.trailInfo.min_elevation = ChartsService.min_elevation;
-    // //     vm.trailInfo.max_elevation = ChartsService.max_elevation;
-    // //   })
-    // // })
+
     updateMarker();
   }
 
@@ -762,7 +753,6 @@ function closestPath(waypoint){
       }
     })
 
-    // vm.currentHike.poly.setOptions({visible: true})
     vm.trailPoly.setOptions({visible: true, strokeColor: '#000000', strokeOpacity: 0.4, strokeWeight: 3});
   }
 
@@ -863,7 +853,7 @@ function closestPath(waypoint){
     var queries = Math.ceil(trailLength/40);
     var initElev;
     elevator.getElevationForLocations({
-      'locations': [vm.trailPath[0]]}, 
+      'locations': [vm.trailPath[0]]},
       function (elevations, status){
         initElev = elevations[0].elevation*metersFeetConversion;
         maxMinRecurse(queries, 0, initElev, initElev)
@@ -884,7 +874,7 @@ function closestPath(waypoint){
         return (start<=waypointDistanceNext && waypointDistancePrev <=end)
       })
       if (filteredPath.length>1){
-        elevator.getElevationAlongPath({'path': filteredPath, 'samples': 200}, 
+        elevator.getElevationAlongPath({'path': filteredPath, 'samples': 200},
           function (elevations, status){
             for (var j=0; j<elevations.length; j++){
               let elevation = elevations[j].elevation*metersFeetConversion;
@@ -895,7 +885,7 @@ function closestPath(waypoint){
                 min_elevation = elevation;
               }
             }
-            
+
           }
         )
       }
@@ -911,10 +901,7 @@ function closestPath(waypoint){
 
 
   function goToBlaze(id, user_id){
-    console.log("blaze")
-    console.log(id, user_id)
     if (user_id === UsersService.currentUserId()){
-      console.log("hi")
       $state.go('root.trails.blazeEdit', {id: id});
     }
   }
@@ -924,7 +911,6 @@ function closestPath(waypoint){
     }
   }
   function goToHike(id){
-    console.log("hike")
     $state.go('root.trails.hike', {trailId: id, userId: UsersService.currentUserId()})
   }
 };
