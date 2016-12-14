@@ -16,7 +16,7 @@
     url: 'images/png/water-drop.png'
   }
 
-  const campground = {
+  const campsite = {
     url: 'images/png/tent.png'
   }
 
@@ -42,7 +42,7 @@ var icons = {
 	pointSaved: savedIcon,
   parking: parking,
   water: water,
-  campground: campground,
+  campsite: campsite,
   resupply: resupply,
   view, view,
   shelter, shelter,

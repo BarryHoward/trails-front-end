@@ -58,6 +58,7 @@ function HikeController (MapsService, UsersService, $stateParams) {
             let marker = MapsService.loadPointMarker(waypoint)
             MapsService.dragListener(marker, waypoint)
             MapsService.clickListener(marker, waypoint)
+            console.log(marker)
             MapsService.setHikeIcon(marker);
           });
           MapsService.initChart()
@@ -162,7 +163,7 @@ function HikeController (MapsService, UsersService, $stateParams) {
       }, (reject) => {
         vm.hikeDeleteStatus = "Delete Failed";
     })
-    
+
   }
 
   function gotoHiked(id){
