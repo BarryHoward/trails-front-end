@@ -75,9 +75,9 @@
           </div>
         </div>
         <div class="save-delete-container">
-          <button class="save-hike-button update-trail-button" ng-hide="hike.MapsService.currentHike.id" ng-click="hike.saveHike()">{{hike.hikeSaveStatus}}</button>
-          <button class="edit-hike-button update-trail-button" ng-show="hike.MapsService.currentHike.id" ng-click="hike.editHike()">{{hike.hikeEditStatus}}</button>
-          <button class="delete-hike-button delete-trail-button" ng-click="hike.deleteHike()">{{hike.hikeDeleteStatus}}</button>
+          <button class="control-save-delete update-trail-button" ng-hide="hike.MapsService.currentHike.id" ng-click="hike.saveHike()">{{hike.hikeSaveStatus}}</button>
+          <button class="control-save-delete update-trail-button" ng-show="hike.MapsService.currentHike.id" ng-click="hike.editHike()">{{hike.hikeEditStatus}}</button>
+          <button class="control-save-delete delete-trail-button" ng-click="hike.deleteHike()">{{hike.hikeDeleteStatus}}</button>
         </div>
       </div>
     </div>

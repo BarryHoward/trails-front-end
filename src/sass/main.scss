@@ -34,6 +34,7 @@ h1 {
 	font-size: 30px;
 	text-align: center;
 	margin: 15px;
+	margin-bottom: 50px;
 }
 
 h2 {
@@ -209,4 +210,18 @@ border-radius: 50px 0px 0px 50px;
 
 .orangeButt{
 	background: #EA643C;
+}
+
+
+.bold-header {
+	border: 1px solid black;
+	border-radius: 75px;
+	padding: 20px 40px;
+	width: 300px;
+	color: white;
+	background-color: #124E91;
+	-webkit-box-shadow: 2px 6px 50px -12px rgba(0,0,0,0.75);
+-moz-box-shadow: 2px 6px 50px -12px rgba(0,0,0,0.75);
+box-shadow: 2px 6px 50px -12px rgba(0,0,0,0.75);
+
 }

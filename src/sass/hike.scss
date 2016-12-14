@@ -7,6 +7,7 @@
 }
 
 .hike-box {
+
   width: 90%;
   display: flex;
   flex-direction: column;
@@ -24,6 +25,7 @@
     margin-bottom: 5px;
     justify-content: space-between;
   }
+
 }
 
 // .hike-dates {
@@ -40,6 +42,7 @@
   border-radius: 5px;
   border-style: none;
   padding: 3px;
+  margin: 5px;
 }
 
 .hike-description {
