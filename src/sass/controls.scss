@@ -175,6 +175,9 @@ div .choose-hike-button-container{
 }
 .choose-hike-button{
 	font-family: 'Coda', cursive;
+	color: black;
+	font-size: 14pt;
+	opacity: 0.5;
 	width: 300px;
 	height: 30px;
 	margin: 0px;
@@ -186,7 +189,8 @@ div .choose-hike-button-container{
 	border: 1px solid lightgrey;
 	background-image: linear-gradient(lightgrey,white);
 	.hike-title{
-		display: inline-block;
+		display: flex;
+		justify-content: space-between;
 		margin: 0px;
 		flex-grow: 2;
 	}
@@ -198,6 +202,12 @@ div .choose-hike-button-container{
 		width: 20px;
 		align-self: left;
 	}
+
+}
+
+.choose-hike-button:focus {
+    outline: none;
+    opacity: 1;
 }
 
 .save-delete-container{
@@ -215,4 +225,10 @@ div .choose-hike-button-container{
 
 #blaze-update-delete {
 	margin-top: 25px;
+}
+
+#new-hike-button{
+	background: #EA643C;
+	color: white;
+	opacity: 1;
 }

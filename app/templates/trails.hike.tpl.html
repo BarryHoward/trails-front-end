@@ -31,7 +31,7 @@
 
     <div class="set-interval-box">
       <div class="lat-lng-input-container">
-        <button id="full-trail-button" class="update-trail-button" ng-click="hike.clearCurrent()">Full Trail</button>
+        <button id="full-trail-button" class="update-trail-button" ng-click="hike.MapsService.clearCurrent()">Full Trail</button>
 
         <span>
           <span class="lat-lng">
@@ -52,13 +52,16 @@
       <div class="hike-controls">
         <div class="hike-list">
           <div class="choose-hike-button-container" ng-repeat="singleHiked in hike.MapsService.hikedArray">
-            <button class="choose-hike-button hike-button-repeat" ng-click="hike.gotoHiked(singleHiked.id)">
+            <button class="choose-hike-button hike-button-repeat" ng-click="hike.gotoHiked(singleHiked.id)" ng-style="{background:'{{singleHiked.poly.strokeColor}}'}">
               <div class="color-box" ng-style="{background:'{{singleHiked.poly.strokeColor}}'}"></div>
-              <div class="hike-title">{{singleHiked.title}}</div>
+              <div class="hike-title">
+                <span>{{singleHiked.title}}</span>
+                <span>{{singleHiked.distance}} mi</span>
+              </div>
             </button>
           </div>
         </div>
-        <button class="choose-hike-button" ng-click="hike.clearCurrent()">+ New</button>
+        <button class="choose-hike-button" id="new-hike-button" ng-click="hike.MapsService.clearCurrent()">+ New</button>
 
         <div class="hike-box">
           <div>
