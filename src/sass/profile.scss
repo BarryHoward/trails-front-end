@@ -89,3 +89,22 @@
 .update-user {
   color: #758490;
 }
+
+.avatar {
+  max-width: 200px;
+  text-overflow: ellipsis;
+  overflow-x: hidden;
+  white-space:nowrap;
+  display: inline-block;
+  position: relative;
+
+}
+
+.change-button {
+  display: inline;
+  position: absolute;
+}
+
+.update-profile-button {
+  display: block;
+}
