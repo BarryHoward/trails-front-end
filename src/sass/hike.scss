@@ -3,26 +3,40 @@
   flex-direction: column;
   align-items: center;
   font-size: 12px;
+  width: 100%;
 }
 
 .hike-box {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  justify-content: space-between;
-  height: 150px;
-}
 
-.hike-title-description {
+  width: 90%;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  border: 2px solid grey;
+  background-color: #D7D5D5;
+  padding: 5px;
+
+  div{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    margin-top: 0px;
+    margin-bottom: 5px;
+    justify-content: space-between;
+  }
+
 }
 
-.hike-dates {
-  display: flex;
-  flex-direction: column;
-}
+// .hike-dates {
+//   width: 95%;
+//   display: flex;
+//   flex-direction: row;
+//   justify-content: space-around;
+//   input {
+//     width: 45%;
+//   }
+// }
 
 .hike-input {
   border-radius: 5px;
@@ -35,6 +49,11 @@
   border-radius: 5px;
   border-style: none;
   padding: 3px;
+}
+
+.hike-date{
+  padding: 1px;
+  width: 125px;
 }
 
 .hike-button-repeat {
