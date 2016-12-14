@@ -113,12 +113,13 @@
 }
 
 #about-avatar {
+  overflow: visible;
+  border-radius: 120px;
   img {
   margin: 10px auto;
-  padding: 10px;
   border: 1px solid black;
   background-color: white;
-  border-radius: 10px;
+  border-radius: 120px;
   }
 
 }
