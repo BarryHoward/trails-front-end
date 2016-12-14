@@ -66,7 +66,7 @@ function BlazeNewController (MapsService, UsersService, $scope, $state) {
     newTrail.path = encodeString;
     MapsService.newTrail(newTrail).then(function (resp){
         vm.status = "Trail Saved";
-        $state.go("root.topTrails")
+        $state.go("root.users.createdTrails")
       }, (reject) => {
         vm.status = "Save Failed"
       })

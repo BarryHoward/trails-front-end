@@ -98,7 +98,7 @@ function BlazeEditController (MapsService, UsersService, $stateParams, $state) {
   function deleteTrail(){
     MapsService.deleteTrail($stateParams.id).then((resp) => {
       vm.status = "Trail Deleted!"
-      $state.go("root.topTrails")
+      $state.go("root.users.createdTrails")
     }, (reject) => {
         console.log(reject)
       });
