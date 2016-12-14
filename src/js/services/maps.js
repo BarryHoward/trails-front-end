@@ -61,6 +61,7 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
   vm.goToMark = goToMark;
   vm.goToHike = goToHike;
   vm.setHikeIcon = setHikeIcon;
+  vm.round = round;
 
 
   const metersFeetConversion = 3.28084;
@@ -78,7 +79,7 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
   vm.currentHike ={};
   vm.currentHike.start = 0;
   vm.chartOffset = 0;
-  vm.hikedTrailColor = ["#00FFFF", "#0000FF", "#00FF00", "#FFFF00", "#FF00FF"]
+  vm.hikedTrailColor = ["#00FFFF", "#3030DF", "#00FF00", "#FFFF00", "#FF00FF"]
 
 
 // ----- Reset markers
@@ -916,7 +917,7 @@ function closestPath(waypoint){
   }
 
   function setHikeIcon(marker){
-    if (marker.resuply){marker.setIcon(icons.resupply)}
+    if (marker.resupply){marker.setIcon(icons.resupply)}
     else if (marker.parking){marker.setIcon(icons.parking)}
     else if (marker.road){marker.setIcon(icons.road)}
     else if (marker.shelter){marker.setIcon(icons.shelter)}

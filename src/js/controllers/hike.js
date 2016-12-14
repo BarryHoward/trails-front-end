@@ -84,6 +84,7 @@ function HikeController (MapsService, UsersService, $stateParams) {
           let previousHikes = resp.data;
           previousHikes.forEach(function(hike){
             hike.path = encoding.decodePath(hike.path);
+            hike.distance = MapsService.round((hike.end - hike.start), 2);
             MapsService.hikedArray.push(hike);
             hike.poly = MapsService.createHikedPoly(hike.path);
           })
