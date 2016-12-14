@@ -47,7 +47,7 @@ function UsersService ($http, $cookies) {
   function logout () {
     $cookies.remove('username');
     $cookies.remove('access_token');
-    // $cookies.remove('admin');
+    $cookies.put('user_id', 0);
   }
   //
   function setUser (data) {
@@ -58,7 +58,7 @@ function UsersService ($http, $cookies) {
   }
 
   function currentUserId () {
-    return $cookies.get('user_id')
+    return Number($cookies.get('user_id'))
   }
   function currentUser (){
     return $cookies.get('username')

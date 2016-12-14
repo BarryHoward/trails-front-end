@@ -59,6 +59,9 @@ function MapsService ($http, ChartsService, UsersService, NgMap, icons, $rootSco
   // vm.fullTrailInt = fullTrailInt;
   vm.clearCurrent = clearCurrent;
   vm.findMaxMin = findMaxMin;
+  vm.goToBlaze = goToBlaze;
+  vm.goToMark = goToMark;
+  vm.goToHike = goToHike;
 
 
   const metersFeetConversion = 3.28084;
@@ -906,6 +909,24 @@ function closestPath(waypoint){
     }
   }
 
+
+  function goToBlaze(id, user_id){
+    console.log("blaze")
+    console.log(id, user_id)
+    if (user_id === UsersService.currentUserId()){
+      console.log("hi")
+      $state.go('root.trails.blazeEdit', {id: id});
+    }
+  }
+  function goToMark(id, user_id){
+    if (user_id === UsersService.currentUserId()){
+      $state.go('root.trails.mark', {id: id});
+    }
+  }
+  function goToHike(id){
+    console.log("hike")
+    $state.go('root.trails.hike', {trailId: id, userId: UsersService.currentUserId()})
+  }
 };
 
 

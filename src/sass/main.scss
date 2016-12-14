@@ -58,3 +58,172 @@ h3 {
 }
 
 // IGNORE ME!
+
+
+.trail-info-container {
+	border-radius: 70px 0px 0px 70px;
+	box-shadow: 10px 5px 5px black;
+  border: 2px solid black;
+  background-color: #D7D5D5;
+  padding: 0px;
+  width: 85%;
+  min-width: 850px;
+  height: 162px;
+  display: flex;
+  margin: 10px auto;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+  overflow: hidden;
+  margin-bottom: 30px;
+
+  // .title-description {
+  //   height: 90px;
+  //   width: 200px;
+  //   padding: 5px;
+  //   bottom: 30px;
+  //   left: 460px;
+  //   border-style: none;
+  //   border-radius: 5px;
+  //   display: inline-block;
+  // }
+
+  .trail-title{
+  	color: #0B4C93;
+  	font-size: 20pt;
+  	padding: 5px;
+  }
+  .trail-description{
+  	padding: 5px;
+  	font-size: 12pt;
+  	color: black;
+
+
+  }
+
+  .trail-info-input {
+    display: block;
+    border-style: none;
+    border-radius: 5px;
+    padding: 5px;
+    height: 30px;
+    width: 230px;
+    margin: 5px 0px;
+  }
+}
+
+#trail-info-map{
+  min-width: 1200px;
+}
+
+.static-info {
+  color: #EA643C;
+}
+
+.side-box{
+	display: flex;
+	flex-direction: row;
+	height: 100%;
+	align-items: center;
+	width: 49%;
+}
+
+#left-side{
+	justify-content: flex-start;
+}
+#right-side{
+	justify-content: flex-end;
+}
+
+.title-description{
+	padding: 0px;
+	padding-left: 40px;
+	height: 80%;
+      display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-around;
+}
+
+.trail-description-input{
+  width: 100%;
+  height: 75%;
+      border-style: none;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 8px 0px;
+}
+
+.description-input-box{
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 250px;
+  height: 80%;
+  align-items: flex-start;
+}
+.trail-image{
+border-radius: 50px 0px 0px 50px;
+  width: 160px;
+  height: 120px;
+  margin-left: 20px;
+  background-size: 125px 100px;
+  border: none;
+  background-image:url('http://previews.123rf.com/images/alex_star/alex_star0812/alex_star081200333/4005652-Compass-on-old-map-Stock-Photo.jpg')
+}
+
+.static-info-container {
+  border: 1px solid black;
+  border-radius: 5px;
+  font-size: 18px;
+  padding: 5px;
+  padding-left: 15px;
+  width: 300px;
+  height: 125px;
+  background-color: #F4F2F2;
+  div {
+    margin: 2px 0px;
+  }
+  display: flex;
+  flex-direction: column;
+  margin-right: 20px;
+  justify-content: space-around;
+}
+
+.blaze-mark-hike-buttons{
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	margin: 0px;
+ .BMH-link {
+
+    // border-top-left-radius: 0px;
+    // border-bottom-left-radius: 0px;
+    height: 100%;
+    margin: -2px;
+    width: 100px;
+    border: 1px solid black;
+
+	  color: white;
+	  font-size: 16px;
+	  // border-style: none;
+	  padding: 5px;
+	  font-family: 'Nunito', sans-serif;
+	  }
+
+	.BMH-link:focus { 
+    	outline: none;
+    	// box-shadow: 0px 0px 5px 5px black;
+	}
+
+
+ }
+
+
+.greyButt{
+	background: grey;
+}
+
+.orangeButt{
+	background: #EA643C;
+}

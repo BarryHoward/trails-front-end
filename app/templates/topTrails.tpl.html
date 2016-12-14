@@ -2,23 +2,25 @@
 
 <div ng-repeat="trail in topTrails.trailList">
   <div class="trail-info-container">
+    <div class="side-box" id="left-side">
     <img class="trail-image" src="{{trail.img_url}}">
-    <span class='top-trail-info'>
-      <span id="top-trail-title">{{trail.title}}</span>
-    </span>
+    <div class='title-description'>
+      <div class="trail-title">{{trail.title}}</div>
+      <div class="trail-description">{{trail.description}}</div>
+    </div>
+    </div>
+
+    <div class="side-box" id="right-side">
     <div class="static-info-container">
       <div>Distance: <span class='static-info'>{{trail.distance}} mi</span></div>
       <div>Max Elevation: <span class='static-info'>{{trail.max_elevation}} ft</span></div>
       <div>Min Elevation: <span class='static-info'>{{trail.min_elevation}} ft</span></div>
     </div>
-    <div id="mark-button">
-      <a id="update-link" href="#/trails/blaze/{{trail.id}}"><button class='add-trail-button' type="button" id='blaze-link' name="button">Blaze</button></a>
+    <div class="blaze-mark-hike-buttons">
+        <button ng-click="topTrails.goToBlaze(trail.id, trail.user_id)" ng-class="{greyButt: (root.user_id !== trail.user_id), orangeButt: (root.user_id === trail.user_id)}" class='BMH-link'>Blaze</button>
+        <button ng-click="topTrails.goToMark(trail.id, trail.user_id)" ng-class="{greyButt: (root.user_id !== trail.user_id), orangeButt: (root.user_id === trail.user_id)}" class='BMH-link'>Mark</button>
+        <button class='orangeButt BMH-link' ng-click="topTrails.goToHike(trail.id)">Hike</button>
     </div>
-    <div class="top-trail-buttons">
-      <a id="marker-link" href="#trails/mark/{{trail.id}}"><button class='add-trail-button' type="button" id='mark-link' name="button">Mark</button></a>
-    </div>
-    <div class="hike-button">
-      <a id="hike-link" href="#trails/hike/{{trail.id}}/users/{{root.user_id}}"><button class='add-trail-button' type="button" id='mark-link' name="button">Hike</button></a>
     </div>
   </div>
 </div>

@@ -1,7 +1,10 @@
-function TopTrailsController (MapsService, UsersService) {
+function TopTrailsController (MapsService, UsersService, $state) {
 
 	let vm = this;
 	vm.MapsService = MapsService;
+	vm.goToBlaze = goToBlaze;
+	vm.goToMark = goToMark;
+	vm.goToHike = goToHike;
 
 	vm.img_default = "http://previews.123rf.com/images/alex_star/alex_star0812/alex_star081200333/4005652-Compass-on-old-map-Stock-Photo.jpg";
 
@@ -24,7 +27,21 @@ function TopTrailsController (MapsService, UsersService) {
 
 	init();
 
+	function goToBlaze(id, user_id){
+		if (user_id === UsersService.currentUserId()){
+			$state.go('root.trails.blazeEdit', {id: id});
+		}
+	}
+	function goToMark(id, user_id){
+		if (user_id === UsersService.currentUserId()){
+			$state.go('root.trails.mark', {id: id});
+		}
+	}
+	function goToHike(id){
+		$state.go('root.trails.hike', {trailId: id, userId: UsersService.currentUserId()})
+	}
+
 }
 
-TopTrailsController.$inject = ['MapsService', 'UsersService'];
+TopTrailsController.$inject = ['MapsService', 'UsersService', '$state'];
 export {TopTrailsController}
