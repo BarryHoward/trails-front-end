@@ -14,6 +14,10 @@
   margin-bottom: 0px;
 }
 
+.update-trail-button:hover {
+  background: #97C670;
+}
+
 .delete-trail-button {
   background-color: #CD5C5C;
   color: white;
@@ -23,6 +27,10 @@
   border-radius: 10px;
   margin: 10px 10px;
   margin-bottom: 0px;
+}
+
+.delete-trail-button:hover {
+  background: #D37070;
 }
 
 .update-input {

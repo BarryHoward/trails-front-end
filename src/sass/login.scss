@@ -7,6 +7,9 @@
     border-radius: 10px;
     margin: 10px 0px;
 }
+.login-button:hover {
+	background: #EB785B;
+}
 
 .login-labels {
   width: 200px;
@@ -30,4 +33,8 @@
 
 #register-here:hover {
   color: white;
+}
+
+.logout-button:hover {
+	background: #EB785B;
 }
