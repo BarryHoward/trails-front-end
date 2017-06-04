@@ -2,10 +2,4 @@
 
 node_modules/
 
-app/css/main.css
-app/css/main.css.map
 
-app/js/bundle.js
-app/js/bundle.js.map
-
-src/js/access.js
