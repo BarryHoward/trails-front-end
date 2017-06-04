@@ -20,6 +20,13 @@
     <div class="change-button">
       <a class="update-user" ng-hide="userProfile.updatingAvatar" ng-click="userProfile.changeAvatar()"><small>(change)</small></a>
     </div>
+
+ <!--    <div class="avatar">
+      Password: <span ng-hide="userProfile.updatingAvatar" class='static-info'>{{userProfile.user.password}}</span><input class="user-profile-input" ng-show="userProfile.updatingAvatar" type="text" name="" ng-model="userProfile.user.password"><button ng-click="userProfile.changeAvatar()" ng-show="userProfile.updatingAvatar" type="button" name="button">Save Changes</button>
+    </div>
+    <div class="change-button">
+      <a class="update-user" ng-hide="userProfile.updatingAvatar" ng-click="userProfile.changeAvatar()"><small>(change)</small></a>
+    </div> -->
     <button class="update-trail-button update-profile-button" ng-click="userProfile.changeAvatar()" ng-show="userProfile.updatingAvatar" type="button" name="button">Save Changes</button>
 
   </div>
